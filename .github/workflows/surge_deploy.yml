@@ -50,12 +50,12 @@ jobs:
       - name: copy file
         uses: canastro/copy-file-action@master
         with:
-          source: "index.html"
-          target: "200.html"
+          source: "build/index.html"
+          target: "build/200.html"
       - name: Deploy to telemedicine-doctor.surge.sh
         uses: dswistowski/surge-sh-action@v1
         with:
           domain: 'telemedicine-doctor.surge.sh'
-          project: '.'
+          project: 'build'
           login: ${{ secrets.surge_login }}
           token: ${{ secrets.surge_token }}
