@@ -7,7 +7,7 @@ import RoutesCollapse from "./components/RoutesCollapse";
 import { routes } from "./data";
 
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
-import { ListItemIcon, ListItem, Divider, Toolbar, ListItemText, IconButton } from "@mui/material";
+import { ListItemIcon, ListItem, Divider, Toolbar, ListItemText } from "@mui/material";
 
 export type ChildrenType = {
     fatherIndex: number;
@@ -16,7 +16,6 @@ export type ChildrenType = {
 };
 
 const ListRoutes = () => {
-    const [count, setCount] = useState(0);
     const itemSelected = sessionStorage.getItem("itemSelected");
     const history = useHistory();
     const [openChildren, setOpenChildren] = useState<ChildrenType>(
@@ -75,18 +74,6 @@ const ListRoutes = () => {
                             handleListItemClick(item.id, item.path, Boolean(item.children), item.id)
                         }
                         selected={openChildren.fatherIndex === item.id}
-                        secondaryAction={
-                            item.id === -1 ? (
-                                <IconButton
-                                    edge="end"
-                                    size="small"
-                                    color="error"
-                                    aria-label="comments"
-                                >
-                                    {count}
-                                </IconButton>
-                            ) : null
-                        }
                     >
                         <ListItemIcon>{item.icon}</ListItemIcon>
                         <ListItemText primary={item.name} />
