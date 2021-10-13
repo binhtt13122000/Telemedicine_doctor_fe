@@ -17,7 +17,9 @@ const HospitalManagement: React.FC = () => {
     return (
         <React.Fragment>
             {data?.content?.map((x) => (
-                <Typography key={x.id}>{x.name}</Typography>
+                <Typography variant="h1" key={x.id}>
+                    {x.name}
+                </Typography>
             ))}
             <Button
                 onClick={() =>
