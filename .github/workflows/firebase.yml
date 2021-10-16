@@ -2,9 +2,9 @@ name: Firebase CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
     types: [closed]
 env:
   REACT_APP_API_KEY: ${{ secrets.REACT_APP_API_KEY }}
