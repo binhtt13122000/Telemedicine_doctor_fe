@@ -3,6 +3,7 @@ import { Switch } from "react-router";
 import { PrivateRoute } from "./PrivateRoute";
 import PublicRoute from "./PublicRoute";
 
+import DoctorProfile from "src/containers/DoctorProfile";
 import HospitalManagement from "src/containers/HospitalManagement";
 import Layout from "src/containers/Layout";
 import Login from "src/containers/Login";
@@ -19,6 +20,11 @@ export const privateRoutes = [
         path: "/",
         name: "home",
         component: HospitalManagement,
+    },
+    {
+        path: "/doctor",
+        name: "doctors",
+        component: DoctorProfile,
     },
 ];
 

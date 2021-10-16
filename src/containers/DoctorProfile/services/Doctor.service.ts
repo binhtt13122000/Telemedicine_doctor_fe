@@ -1,27 +1,32 @@
+import { IPagingSupport } from "src/common/types";
+
 import axios from "../../../axios";
+import { Doctor } from "../models/Doctor.model";
 
-import { Doctors } from "src/containers/DoctorDetail/models/Doctor.model";
-
-class DoctorService {
-    get(limit: number, offset: number) {
-        return axios.get(`/doctors?limit=${limit}&page-offset=${offset}`);
+class DoctorService<T> {
+    getAll(limit: number, offset: number) {
+        return axios.get<IPagingSupport<T>>(`/doctors?limit=${limit}&page-offset=${offset}`);
     }
 
     getId(id: number) {
-        return axios.get(`/doctors/${id}`);
+        return axios.get<T>(`/doctors/${id}`);
     }
 
-    create(data: Doctors) {
-        return axios.post("/doctors", data);
+    getDoctorByEmail(email: string) {
+        return axios.get<T>(`/doctors/${email}?search-type=Email`);
     }
 
-    update(data: Doctors) {
-        return axios.put(`/doctors/${data.id}`, data);
+    create(data: Doctor) {
+        return axios.post<T>("/doctors", data);
+    }
+
+    update(data: Doctor) {
+        return axios.put<T>(`/doctors/${data.id}`, data);
     }
 
     delete(id: number) {
-        return axios.delete(`/doctors/${id}`);
+        return axios.delete<{ message: "string" }>(`/doctors/${id}`);
     }
 }
 
-export default new DoctorService();
+export default DoctorService;

@@ -1,4 +1,4 @@
-import { Certification } from "./Certification.model";
+import { Cetification } from "./Cetification.model";
 
 export type CertificationDoctor = {
     id: number;
@@ -6,5 +6,5 @@ export type CertificationDoctor = {
     certificationId: number;
     evidence: string;
     dateOfIssue: string;
-    certification: Certification;
+    certification: Cetification;
 };

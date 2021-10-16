@@ -5,7 +5,6 @@ export type Account = {
     email: string;
     firstName: string;
     lastName: string;
-    ward: string;
     streetAddress: string;
     locality: string;
     city: string;

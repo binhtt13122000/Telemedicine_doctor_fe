@@ -7,3 +7,5 @@ export interface IPagingSupport<T> {
     previousPage: number | null;
     content: T[];
 }
+
+export interface IAccount<T> {}
