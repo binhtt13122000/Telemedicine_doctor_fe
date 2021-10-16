@@ -6,6 +6,7 @@ import PublicRoute from "./PublicRoute";
 import HospitalManagement from "src/containers/HospitalManagement";
 import Layout from "src/containers/Layout";
 import Login from "src/containers/Login";
+import VideoCall from "src/containers/VideoCall";
 
 export const publicRoutes = [
     {
@@ -19,6 +20,11 @@ export const privateRoutes = [
         path: "/",
         name: "home",
         component: HospitalManagement,
+    },
+    {
+        path: "/call/:id",
+        name: "video-call",
+        component: VideoCall,
     },
 ];
 
