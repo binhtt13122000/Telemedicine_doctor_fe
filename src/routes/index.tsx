@@ -21,6 +21,9 @@ export const privateRoutes = [
         name: "home",
         component: HospitalManagement,
     },
+];
+
+export const privateWithNoLayouts = [
     {
         path: "/call/:id",
         name: "video-call",
@@ -35,6 +38,14 @@ const RouteComponent = () => {
                 <PublicRoute
                     key={route.name}
                     exact={true}
+                    path={route.path}
+                    component={route.component}
+                />
+            ))}
+            {privateWithNoLayouts.map((route) => (
+                <PrivateRoute
+                    exact={true}
+                    key={route.name}
                     path={route.path}
                     component={route.component}
                 />

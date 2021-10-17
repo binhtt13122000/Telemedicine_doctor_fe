@@ -3256,6 +3256,17 @@ aggregate-error@^3.0.0:
     clean-stack "^2.0.0"
     indent-string "^4.0.0"
 
+"agora-rtc-react@git://github.com/AgoraIO-Community/agora-rtc-react#v1.1.0":
+  version "1.1.0"
+  resolved "git://github.com/AgoraIO-Community/agora-rtc-react#6733ddd0fd196b0e9556ee1cd75f09dcb81b6e69"
+  dependencies:
+    agora-rtc-sdk-ng "^4.3.0"
+
+agora-rtc-sdk-ng@^4.3.0:
+  version "4.7.2"
+  resolved "https://registry.yarnpkg.com/agora-rtc-sdk-ng/-/agora-rtc-sdk-ng-4.7.2.tgz#d9eb0eafb41b4429f34290034ee8a283f82e4aa5"
+  integrity sha512-zouSIrPL1JILyK1QBQ6ap9zAqvCmlS8HnQTDW61hM8pgl7IuETl+++3RC8uuTpyKe0m4j30y5n3Ghol3ESwB8w==
+
 ajv-errors@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/ajv-errors/-/ajv-errors-1.0.1.tgz#f35986aceb91afadec4102fbd85014950cefa64d"
@@ -9063,6 +9074,11 @@ mkdirp@^1.0.3, mkdirp@^1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/mkdirp/-/mkdirp-1.0.4.tgz#3eb5ed62622756d79a5f0e2a221dfebad75c2f7e"
   integrity sha512-vVqVZQyf3WLx2Shd0qJ9xuvqgAyKPLAiqITEtqW0oIUjzo3PePDd6fW9iFz30ef7Ysp/oiWqbhszeGWW2T6Gzw==
+
+moment@^2.29.1:
+  version "2.29.1"
+  resolved "https://registry.yarnpkg.com/moment/-/moment-2.29.1.tgz#b2be769fa31940be9eeea6469c075e35006fa3d3"
+  integrity sha512-kHmoybcPV8Sqy59DwNDY3Jefr64lK/by/da0ViFcuA4DH0vQg5Q6Ze5VimxkfQNSC+Mls/Kx53s7TjP1RhFEDQ==
 
 move-concurrently@^1.0.1:
   version "1.0.1"
