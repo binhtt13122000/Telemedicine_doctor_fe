@@ -6,6 +6,7 @@ import PublicRoute from "./PublicRoute";
 import HospitalManagement from "src/containers/HospitalManagement";
 import Layout from "src/containers/Layout";
 import Login from "src/containers/Login";
+import VideoCall from "src/containers/VideoCall";
 
 export const publicRoutes = [
     {
@@ -22,6 +23,14 @@ export const privateRoutes = [
     },
 ];
 
+export const privateWithNoLayouts = [
+    {
+        path: "/call/:id",
+        name: "video-call",
+        component: VideoCall,
+    },
+];
+
 const RouteComponent = () => {
     return (
         <Switch>
@@ -29,6 +38,14 @@ const RouteComponent = () => {
                 <PublicRoute
                     key={route.name}
                     exact={true}
+                    path={route.path}
+                    component={route.component}
+                />
+            ))}
+            {privateWithNoLayouts.map((route) => (
+                <PrivateRoute
+                    exact={true}
+                    key={route.name}
                     path={route.path}
                     component={route.component}
                 />
