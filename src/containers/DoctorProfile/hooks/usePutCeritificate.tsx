@@ -3,8 +3,8 @@ import { useMutation, useQueryClient } from "react-query";
 import { Cetification } from "../models/Cetification.model";
 import CertificateService from "../services/Certificate.service";
 
-export enum MajorStateKeysEnum {
-    Majors = "majors",
+export enum CeritificateStateKeysEnum {
+    Ceritifcates = "ceritifcates",
 }
 
 const usePutCeritificate = () => {
@@ -12,7 +12,7 @@ const usePutCeritificate = () => {
     let certificateService = new CertificateService<Cetification>();
     const cache = useQueryClient();
     const result = useMutation<Cetification, Error, Cetification>(
-        [MajorStateKeysEnum.Majors],
+        [CeritificateStateKeysEnum.Ceritifcates],
         async (variable) => {
             const result = await certificateService.update(variable);
             return result.data;

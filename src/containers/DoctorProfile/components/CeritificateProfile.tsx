@@ -34,7 +34,7 @@ function Item(props: BoxProps) {
 }
 
 const CeritificateProfile: React.FC = () => {
-    const initDrugType: Cetification = {
+    const initCetification: Cetification = {
         name: "",
         description: "",
         isActive: true,
@@ -42,7 +42,7 @@ const CeritificateProfile: React.FC = () => {
     const { data, isLoading, isError } = useGetDoctor();
     const { mutate } = usePutCeritificate();
     const [open, setOpen] = useState<boolean>(false);
-    const [ab, setAb] = useState<Cetification>(initDrugType);
+    const [ab, setAb] = useState<Cetification>(initCetification);
     if (isError) {
         return <div> Errord</div>;
     }

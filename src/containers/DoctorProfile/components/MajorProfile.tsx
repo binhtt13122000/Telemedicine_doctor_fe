@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 
 import useGetDoctor from "../hooks/useGetDoctor";
+import usePutMajor from "../hooks/usePutMajor";
 import { Major } from "../models/Major.model";
+import MajorForm from "./MajorForm";
 
 // import MajorForm from "./MajorForm";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
@@ -20,6 +22,7 @@ import { Box, BoxProps } from "@mui/system";
 
 function Item(props: BoxProps) {
     const { sx, ...other } = props;
+    const [major, setMajor] = useState<Major>();
     return (
         <Box
             sx={{
@@ -40,19 +43,32 @@ function Item(props: BoxProps) {
 }
 
 const MajorProfile: React.FC = () => {
+    const initCetification: Major = {
+        name: "",
+        description: "",
+        isActive: true,
+    };
     const { data, isLoading, isError } = useGetDoctor();
+    const { mutate } = usePutMajor();
     const [open, setOpen] = useState<boolean>(false);
+    const [major, setMajor] = useState<Major>(initCetification);
     if (isError) {
-        return <div> Errord</div>;
+        return <div> Error</div>;
     }
     if (isLoading) {
         return <CircularProgress />;
     }
 
-    const handleClose = (type: "SAVE" | "CANCEL", data?: Major, clearErrors?: Function) => {
+    const handleClose = (type: "SAVE" | "CANCEL", dataMajor?: Major, clearErrors?: Function) => {
         if (type === "SAVE") {
             if (data) {
                 if (data.id) {
+                    mutate({
+                        id: dataMajor?.id,
+                        name: dataMajor?.name,
+                        description: dataMajor?.description,
+                        isActive: dataMajor.isActive,
+                    });
                 } else {
                 }
             }
@@ -62,8 +78,13 @@ const MajorProfile: React.FC = () => {
         }
         setOpen(false);
     };
+    const handleOpen = async (maj: Major) => {
+        setOpen(true);
+        setMajor(maj);
+    };
     return (
         <React.Fragment>
+            <MajorForm dataMajor={major} opened={open} handleClose={handleClose} />
             <Card sx={{ height: "100%", borderRadius: 5 }}>
                 <Box sx={{ ml: 2 }}>
                     <Typography variant="h6" component="div">
@@ -112,7 +133,7 @@ const MajorProfile: React.FC = () => {
                                             <IconButton>
                                                 <Icon color="error">delete</Icon>
                                             </IconButton>
-                                            <IconButton>
+                                            <IconButton onClick={() => handleOpen(item?.major)}>
                                                 <Icon>edit</Icon>
                                             </IconButton>
                                         </Typography>

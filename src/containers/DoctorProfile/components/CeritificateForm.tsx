@@ -40,8 +40,8 @@ const CertificationForm: React.FC<ICertificationForm> = (props: ICertificationFo
     } = useForm<Cetification>({});
 
     React.useEffect(() => {
-        setValue("name", dataCeti.name);
         setValue("id", dataCeti.id);
+        setValue("name", dataCeti.name);
         setValue("description", dataCeti.description);
         setValue("isActive", dataCeti.isActive);
         setChecked(dataCeti.isActive);

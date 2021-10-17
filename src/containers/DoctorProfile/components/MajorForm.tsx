@@ -8,16 +8,28 @@ import { Button, Card, Modal, Stack, Switch, TextField, Typography } from "@mui/
 import { Box } from "@mui/system";
 
 export interface IMajorForm {
-    data: Major;
     opened: boolean;
-    handleClose: (type: "SAVE" | "CANCEL", data?: Major, callback?: Function) => void;
+    dataMajor: Major;
+    handleClose: (type: "SAVE" | "CANCEL", dataMajor?: Major, callback?: Function) => void;
 }
 
 const MajorForm: React.FC<IMajorForm> = (props: IMajorForm) => {
-    const { data } = props;
-    const [checked, setChecked] = useState<boolean>(data.isActive);
+    const { dataMajor } = props;
+    const [checked, setChecked] = useState<boolean>(dataMajor.isActive);
 
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {};
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setChecked(event.target.checked);
+        // eslint-disable-next-line no-console
+        console.log(event.target.checked); //true
+        if (event.target.checked === true) {
+            setValue("isActive", true);
+        } else if (event.target.checked === false) {
+            setValue("isActive", false);
+        } else {
+            // eslint-disable-next-line no-console
+            console.log(event.target.checked);
+        }
+    };
 
     const {
         register,
@@ -28,18 +40,18 @@ const MajorForm: React.FC<IMajorForm> = (props: IMajorForm) => {
     } = useForm<Major>({});
 
     React.useEffect(() => {
-        setValue("id", data.id);
-        setValue("name", data.name);
-        setValue("description", data.description);
-        setValue("isActive", data.isActive);
-        setChecked(data.isActive);
-    }, [data, setValue, setChecked]);
+        setValue("id", dataMajor.id);
+        setValue("name", dataMajor.name);
+        setValue("description", dataMajor.description);
+        setValue("isActive", dataMajor.isActive);
+        setChecked(dataMajor.isActive);
+    }, [dataMajor, setValue, setChecked]);
 
-    const submitHandler: SubmitHandler<Major> = (data: Major) => {
+    const submitHandler: SubmitHandler<Major> = (dataMajor: Major) => {
         // eslint-disable-next-line no-console
-        console.log(data);
-        if (data) {
-            props.handleClose("SAVE", data, clearErrors);
+        console.log(dataMajor);
+        if (dataMajor) {
+            props.handleClose("SAVE", dataMajor, clearErrors);
         }
     };
 
