@@ -115,14 +115,12 @@ const CeritificateProfile: React.FC = () => {
                                     <Typography variant="h6" component="h5">
                                         {x?.certification?.name}
                                     </Typography>
-                                    <Typography variant="body2" paragraph>
-                                        {x?.certification?.description}
-                                    </Typography>
+
                                     <Box sx={{ display: "flex", fontWeight: "200" }}>
                                         <Typography variant="body2" paragraph>
-                                            Tạo ngày {moment(x?.dateOfIssue).format("DD/MM/YYYY")}
+                                            Cấp ngày {moment(x?.dateOfIssue).format("DD/MM/YYYY")}
                                         </Typography>
-                                        <Box sx={{}}>
+                                        <Box sx={{ ml: 21 }}>
                                             {x?.isActive ? (
                                                 <IconButton>
                                                     <VerifiedIcon color="success" />

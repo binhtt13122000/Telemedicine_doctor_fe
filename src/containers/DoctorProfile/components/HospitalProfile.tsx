@@ -10,6 +10,8 @@ import {
     CircularProgress,
     Icon,
     IconButton,
+    List,
+    ListItem,
     Tooltip,
     Typography,
 } from "@mui/material";
@@ -55,62 +57,80 @@ const HospitalProfile: React.FC = () => {
                     </Typography>
                 </Box>
                 <Box sx={{ display: "block", gridTemplateColumns: "repeat(3, 1fr)" }}>
-                    {data?.hospitalDoctors?.map((x) => (
-                        <Item key={x?.id}>
-                            <Box sx={{ display: "flex" }}>
-                                <Box sx={{ display: "block" }}>
-                                    <Typography variant="h6" component="h5">
-                                        {x?.hospital?.name}
-                                        {x?.hospital?.name ? (
-                                            <Tooltip title="Còn hoạt động">
-                                                <IconButton>
-                                                    <CheckCircleOutlineIcon color="success" />
-                                                </IconButton>
-                                            </Tooltip>
-                                        ) : (
-                                            <Tooltip title="Không hoạt động">
-                                                <IconButton>
-                                                    <CheckCircleOutlineIcon color="error" />
-                                                </IconButton>
-                                            </Tooltip>
-                                        )}
-                                    </Typography>
-                                    <Typography variant="body2" component="h5">
-                                        Địa chỉ: {x?.hospital?.address}
-                                    </Typography>
-                                    <Typography variant="body2" component="h5">
-                                        Mô tả: {x?.hospital?.description}
-                                    </Typography>
-                                    <Box sx={{ mt: 1 }} />
-                                    <Typography variant="body2" component="h5">
-                                        Tình trạng:{" "}
-                                        {x?.isWorking ? (
-                                            <Chip
-                                                label="Đang công tác"
-                                                variant="outlined"
-                                                color="success"
-                                            />
-                                        ) : (
-                                            <Chip
-                                                label="Nghỉ công tác"
-                                                variant="outlined"
-                                                color="error"
-                                            />
-                                        )}
-                                    </Typography>
+                    <List
+                        sx={{
+                            width: "100%",
+                            maxWidth: 360,
+                            bgcolor: "background.paper",
+                            position: "relative",
+                            overflow: "auto",
+                            maxHeight: 300,
+                            "& ul": { padding: 0 },
+                        }}
+                    >
+                        {data?.hospitalDoctors?.map((item) => (
+                            <ListItem key={`${item}`}>
+                                <Box sx={{ display: "flex", borderRadius: 5, bgcolor: "#fafafa" }}>
+                                    <Box sx={{ display: "block" }}>
+                                        <Typography variant="h6" component="h5">
+                                            {item?.hospital?.name}
+                                            {item?.hospital?.name ? (
+                                                <Tooltip title="Còn hoạt động">
+                                                    <IconButton>
+                                                        <CheckCircleOutlineIcon color="success" />
+                                                    </IconButton>
+                                                </Tooltip>
+                                            ) : (
+                                                <Tooltip title="Không hoạt động">
+                                                    <IconButton>
+                                                        <CheckCircleOutlineIcon color="error" />
+                                                    </IconButton>
+                                                </Tooltip>
+                                            )}
+                                        </Typography>
+                                        <Typography variant="body2" component="h5">
+                                            Địa chỉ: {item?.hospital?.address}
+                                        </Typography>
+                                        <Typography variant="body2" component="h5">
+                                            Mô tả: {item?.hospital?.description}
+                                        </Typography>
+                                        <Box sx={{ mt: 1 }} />
+                                        <Typography variant="body2" component="h5">
+                                            Tình trạng:{" "}
+                                            {item?.isWorking ? (
+                                                <Chip
+                                                    label="Đang công tác"
+                                                    variant="outlined"
+                                                    color="success"
+                                                />
+                                            ) : (
+                                                <Chip
+                                                    label="Nghỉ công tác"
+                                                    variant="outlined"
+                                                    color="error"
+                                                />
+                                            )}
+                                        </Typography>
+                                    </Box>
+                                    <Box sx={{ display: "flex" }}>
+                                        <Typography variant="h6" component="h5">
+                                            <IconButton>
+                                                <Icon color="error">delete</Icon>
+                                            </IconButton>
+                                            <IconButton>
+                                                <Icon>edit</Icon>
+                                            </IconButton>
+                                        </Typography>
+                                    </Box>
                                 </Box>
-                                <Box sx={{ display: "flex", ml: 10 }}>
-                                    <Typography variant="h6" component="h5">
-                                        <Icon color="error">delete</Icon>
-                                        <Icon>edit</Icon>
-                                    </Typography>
-                                </Box>
-                            </Box>
-                        </Item>
-                    ))}
+                            </ListItem>
+                        ))}
+                    </List>
+                    <Box sx={{ mb: 2 }} />
                     <Box sx={{ textAlign: "center" }}>
                         <Button variant="outlined">+ Thêm bệnh viện</Button>
                     </Box>
+                    <Box sx={{ mb: 2 }} />
                 </Box>
             </Card>
         </React.Fragment>

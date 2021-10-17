@@ -5,6 +5,8 @@ import AccountService from "src/containers/Account/services/Account.service";
 
 export enum AccountStateKeysEnum {
     Accounts = "accounts",
+    UpdateAccounts = "updateAccounts",
+    CreateAccounts = "creatAccount",
 }
 
 const useGetAccount = (email: string = "nhanlt16235@gmail.com") => {

@@ -1,27 +1,98 @@
-import React from "react";
+import React, { useState } from "react";
 
 import moment from "moment";
 
 import useGetAccount from "../hooks/useGetAccount";
+import usePutAccount from "../hooks/usePutAccount";
+import { Account } from "../models/Account.model";
 
-import { Avatar, Card, CircularProgress, Icon, Rating, Stack, Typography } from "@mui/material";
+import {
+    Avatar,
+    Card,
+    CircularProgress,
+    Icon,
+    IconButton,
+    Rating,
+    Stack,
+    Typography,
+} from "@mui/material";
 import { Box } from "@mui/system";
 
 export interface IProfile {
     email?: string;
 }
 
-const Profile: React.FC<IProfile> = (props: IProfile) => {
+const Profile: React.FC = () => {
+    const initAccount: Account = {
+        email: "",
+        firstName: "",
+        lastName: "",
+        ward: "",
+        streetAddress: "",
+        locality: "",
+        city: "",
+        postalCode: "",
+        phone: "",
+        avatar: "",
+        dob: "",
+        isMale: true,
+        active: true,
+    };
     const { data, isLoading, isError } = useGetAccount();
     const [value, setValue] = React.useState<number | null>(4);
+    const { mutate } = usePutAccount();
+    const [open, setOpen] = useState<boolean>(false);
+    const [account, setAccount] = useState<Account>(initAccount);
     if (isError) {
         return <div>error</div>;
     }
     if (isLoading) {
         return <CircularProgress />;
     }
+    // const handleOpenModal = (profile?: Account) => {
+    //     setOpen(true);
+    //     setAccount(data);
+    // };
+    const handleClose = (
+        type: "SAVE" | "CANCEL",
+        dataProfile?: Account,
+        clearErrors?: Function
+    ) => {
+        if (type === "SAVE") {
+            if (dataProfile) {
+                if (dataProfile.id) {
+                    mutate({
+                        id: dataProfile?.id,
+                        email: dataProfile.email,
+                        firstName: dataProfile?.firstName,
+                        lastName: dataProfile?.lastName,
+                        ward: dataProfile?.ward,
+                        streetAddress: dataProfile?.streetAddress,
+                        locality: dataProfile?.locality,
+                        city: dataProfile?.city,
+                        postalCode: dataProfile?.postalCode,
+                        phone: dataProfile?.phone,
+                        avatar: dataProfile?.avatar,
+                        dob: dataProfile?.dob,
+                        isMale: dataProfile?.isMale,
+                        active: dataProfile?.active,
+                    });
+                } else {
+                    // postDrug(data);
+                }
+            }
+        }
+        if (clearErrors) {
+            clearErrors();
+        }
+        setOpen(false);
+        if (isLoading) {
+            return <CircularProgress />;
+        }
+    };
     return (
         <React.Fragment>
+            {/* <ProfileForm dataProfile={data} open={open} handleClose={handleClose} /> */}
             <Card sx={{ maxHeight: "100%", width: 450, borderRadius: 5, pl: 5 }}>
                 <Box sx={{ display: "flex" }}>
                     <Typography variant="h6" component="div">
@@ -29,7 +100,9 @@ const Profile: React.FC<IProfile> = (props: IProfile) => {
                     </Typography>
                     <Box sx={{ ml: 29 }}>
                         <Typography variant="h6" component="h5">
-                            <Icon>edit</Icon>
+                            <IconButton>
+                                <Icon>edit</Icon>
+                            </IconButton>
                         </Typography>
                     </Box>
                 </Box>

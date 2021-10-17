@@ -12,6 +12,7 @@ import {
     Icon,
     IconButton,
     List,
+    ListItem,
     Tooltip,
     Typography,
 } from "@mui/material";
@@ -70,54 +71,58 @@ const MajorProfile: React.FC = () => {
                     </Typography>
                 </Box>
                 <Box sx={{ display: "block", gridTemplateColumns: "repeat(3, 1fr)" }}>
-                    <List>
-                        {data?.majorDoctors?.map((x) => (
-                            <>
-                                <Item key={x?.id}>
-                                    <Box sx={{ display: "flex" }}>
-                                        <Box sx={{ display: "block" }}>
-                                            <Typography variant="h6" component="h5">
-                                                {x?.major?.name}
-                                                {x?.major?.name ? (
-                                                    <Tooltip title="Còn hoạt động">
-                                                        <IconButton>
-                                                            <CheckCircleOutlineIcon color="success" />
-                                                        </IconButton>
-                                                    </Tooltip>
-                                                ) : (
-                                                    <Tooltip title="Không hoạt động">
-                                                        <IconButton>
-                                                            <CheckCircleOutlineIcon color="error" />
-                                                        </IconButton>
-                                                    </Tooltip>
-                                                )}
-                                            </Typography>
-                                            <Typography variant="body2" component="h5">
-                                                Mô tả: Chuyên chữa trị các bệnh nội ngoại tiết{" "}
-                                                {x?.major?.description}
-                                            </Typography>
-                                        </Box>
-                                        <Box sx={{ display: "flex", ml: 10 }}>
-                                            <Typography variant="h6" component="h5">
-                                                <IconButton>
-                                                    <Icon color="error">delete</Icon>
-                                                </IconButton>
-                                                <IconButton>
-                                                    {" "}
-                                                    <Icon>edit</Icon>
-                                                </IconButton>
-                                            </Typography>
-                                        </Box>
+                    <List
+                        sx={{
+                            width: "100%",
+                            maxWidth: 360,
+                            bgcolor: "background.paper",
+                            position: "relative",
+                            overflow: "auto",
+                            maxHeight: 300,
+                            "& ul": { padding: 0 },
+                        }}
+                    >
+                        {data?.majorDoctors?.map((item) => (
+                            <ListItem key={`${item}`}>
+                                <Box sx={{ display: "flex", borderRadius: 5, bgcolor: "#fafafa" }}>
+                                    <Box sx={{ display: "block" }}>
+                                        <Typography variant="h6" component="h5">
+                                            {item?.major?.name}
+                                            {item?.major?.name ? (
+                                                <Tooltip title="Còn hoạt động">
+                                                    <IconButton>
+                                                        <CheckCircleOutlineIcon color="success" />
+                                                    </IconButton>
+                                                </Tooltip>
+                                            ) : (
+                                                <Tooltip title="Không hoạt động">
+                                                    <IconButton>
+                                                        <CheckCircleOutlineIcon color="error" />
+                                                    </IconButton>
+                                                </Tooltip>
+                                            )}
+                                        </Typography>
+                                        <Typography variant="body2" component="h5">
+                                            Mô tả: Chuyên chữa trị các bệnh nội ngoại tiết{" "}
+                                            {item?.major?.description}
+                                        </Typography>
                                     </Box>
-
-                                    <Typography variant="h6" component="h5">
-                                        {x?.major?.description}
-                                    </Typography>
-                                </Item>
-                                {/* <MajorForm opened={open} data={x.major} handleClose={handleClose} /> */}
-                            </>
+                                    <Box sx={{ display: "flex", ml: 4 }}>
+                                        <Typography variant="h6" component="div">
+                                            <IconButton>
+                                                <Icon color="error">delete</Icon>
+                                            </IconButton>
+                                            <IconButton>
+                                                <Icon>edit</Icon>
+                                            </IconButton>
+                                        </Typography>
+                                    </Box>
+                                </Box>
+                                {/* <ListItemText primary={item?.major?.name} /> */}
+                            </ListItem>
                         ))}
                     </List>
+                    <Box sx={{ mb: 2 }} />
                     <Box sx={{ textAlign: "center" }}>
                         <Button variant="outlined">+ Thêm chuyên khoa</Button>
                     </Box>

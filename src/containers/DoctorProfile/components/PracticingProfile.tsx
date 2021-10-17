@@ -84,7 +84,9 @@ const PracticingProfile: React.FC = () => {
                     </Box>
                     <Box sx={{ ml: 27 }}>
                         <Typography variant="h6" component="h5">
-                            <Icon>edit</Icon>
+                            <IconButton>
+                                <Icon>edit</Icon>
+                            </IconButton>
                         </Typography>
                     </Box>
                 </Box>
