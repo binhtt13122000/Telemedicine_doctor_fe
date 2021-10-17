@@ -24,6 +24,7 @@ const VideoCallMainScreen: React.FC<VideoCallMainScreenProps> = (
     const { ready, tracks } = useMicrophoneAndCameraTracks();
 
     const [anotherTrackVideo, setAnotherTrackVideo] = useState<boolean>(true);
+    const [anotherTrackAudio, setAnotherTrackAudio] = useState<boolean>(true);
 
     useEffect(() => {
         let init = async (name: string) => {
@@ -65,25 +66,13 @@ const VideoCallMainScreen: React.FC<VideoCallMainScreenProps> = (
 
             client.on("user-info-updated", (uid, msg) => {
                 if (msg === "mute-video") {
-                    // eslint-disable-next-line no-console
-                    console.log("muute");
                     setAnotherTrackVideo(false);
                 } else if (msg === "unmute-video") {
-                    // eslint-disable-next-line no-console
-                    console.log("unmute");
                     setAnotherTrackVideo(true);
-                    // setUsers((prevUsers) => {
-                    //     prevUsers = [...prevUsers].map((x) => {
-                    //         if (x.uid === uid) {
-                    //             return {
-                    //                 ...x,
-                    //                 enable: true,
-                    //             };
-                    //         }
-                    //         return x;
-                    //     });
-                    //     return [...prevUsers];
-                    // });
+                } else if (msg === "mute-audio") {
+                    setAnotherTrackAudio(false);
+                } else if (msg === "unmute-audio") {
+                    setAnotherTrackAudio(true);
                 }
             });
 
@@ -124,6 +113,7 @@ const VideoCallMainScreen: React.FC<VideoCallMainScreenProps> = (
                 users={users}
                 healthCheck={healthCheck}
                 anotherTrackVideo={anotherTrackVideo}
+                anotherTrackAudio={anotherTrackAudio}
             />
         </React.Fragment>
     );

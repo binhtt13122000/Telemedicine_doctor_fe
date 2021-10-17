@@ -4,26 +4,40 @@ import { IMicrophoneAudioTrack, ICameraVideoTrack, IAgoraRTCRemoteUser } from "a
 import moment from "moment";
 import { useHistory } from "react-router";
 
+import CustomizeAutocomplete from "src/components/CustomizeAutocomplete";
+
 import { HealthCheck } from "../../models/VideoCall.model";
 import { useClient } from "../../setting";
 import ListVideoCall from "../ListVideoCall";
+import VideoCallWithLayout2 from "../VideoCallWithLayout2";
+import VideoCallWithLayout3 from "../VideoCallWithLayout3";
 
 import {
+    Add,
+    BrandingWatermark,
+    CalendarViewWeek,
     DashboardOutlined,
     InfoOutlined,
     MicOffOutlined,
+    Splitscreen,
     VideocamOffOutlined,
 } from "@mui/icons-material";
 import CallEndIcon from "@mui/icons-material/CallEnd";
 import MicNoneIcon from "@mui/icons-material/MicNoneRounded";
 import VideocamIcon from "@mui/icons-material/VideocamOutlined";
 import {
+    Button,
     Card,
     CardContent,
+    Divider,
     Fab,
     Grid,
     IconButton,
     Slide,
+    Step,
+    StepContent,
+    StepLabel,
+    Stepper,
     TextField,
     Tooltip,
     Typography,
@@ -39,12 +53,34 @@ export interface VideoCallProps {
     tracks: [IMicrophoneAudioTrack, ICameraVideoTrack] | null;
     healthCheck: HealthCheck;
     anotherTrackVideo: boolean;
+    anotherTrackAudio: boolean;
 }
+
+const steps = [
+    {
+        label: "Ghi nhận và chẩn đoán bệnh",
+    },
+    {
+        label: "Tạo đơn thuốc",
+    },
+];
 export const VideoCall: React.FC<VideoCallProps> = (props: VideoCallProps) => {
     const [checkType, setCheckType] = useState({
         checked: false,
         type: "",
     });
+
+    const [layoutType, setLayoutType] = useState<number>(0);
+
+    const [activeStep, setActiveStep] = React.useState(0);
+
+    const handleNext = () => {
+        setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    };
+
+    const handleBack = () => {
+        setActiveStep((prevActiveStep) => prevActiveStep - 1);
+    };
 
     const history = useHistory();
 
@@ -154,57 +190,172 @@ export const VideoCall: React.FC<VideoCallProps> = (props: VideoCallProps) => {
     const dashboard = () => {
         return (
             <React.Fragment>
-                <Typography variant="h6">Đơn thuốc</Typography>
-                <Grid container>
-                    <Grid item xs={4}>
-                        Ngày hiện tại:
-                    </Grid>
-                    <Grid item xs={8}>
-                        {moment(new Date()).format("DD/MM/YYYY")}
-                    </Grid>
-                </Grid>
-                <Grid container>
-                    <Grid item xs={4}>
-                        Bệnh nhân:
-                    </Grid>
-                    <Grid item xs={8}>
-                        {props.healthCheck?.patient?.name}
-                    </Grid>
-                </Grid>
-                <Grid container>
-                    <Grid item xs={4}>
-                        Chiều cao:
-                    </Grid>
-                    <Grid item xs={8}>
-                        {props.healthCheck?.height / 100 || 0}m
-                    </Grid>
-                </Grid>
-                <Grid container>
-                    <Grid item xs={4}>
-                        Cân nặng:
-                    </Grid>
-                    <Grid item xs={8}>
-                        {props.healthCheck?.weight || 0}kg
-                    </Grid>
-                </Grid>
-                <Typography variant="subtitle1" sx={{ marginTop: 4 }}>
-                    Chẩn đoán:
-                </Typography>
-                <TextField
-                    placeholder="Lời khuyên dành cho bệnh nhân"
-                    fullWidth
-                    multiline
-                    minRows={3}
-                />
-                <Typography variant="subtitle1" sx={{ marginTop: 4 }}>
-                    Lời khuyên của bác sĩ:
-                </Typography>
-                <TextField
-                    placeholder="Lời khuyên dành cho bệnh nhân"
-                    fullWidth
-                    multiline
-                    minRows={3}
-                />
+                <Stepper activeStep={activeStep} orientation="vertical">
+                    {steps.map((step, index) => (
+                        <Step key={step.label}>
+                            <StepLabel>{step.label}</StepLabel>
+                            <StepContent>
+                                {index === 0 && (
+                                    <React.Fragment>
+                                        <Typography variant="h6">Chẩn đoán bệnh</Typography>
+                                        <Grid container>
+                                            <Grid item xs={4}>
+                                                Ngày hiện tại:
+                                            </Grid>
+                                            <Grid item xs={8}>
+                                                {moment(new Date()).format("DD/MM/YYYY")}
+                                            </Grid>
+                                        </Grid>
+                                        <Grid container>
+                                            <Grid item xs={4}>
+                                                Bệnh nhân:
+                                            </Grid>
+                                            <Grid item xs={8}>
+                                                {props.healthCheck?.patient?.name}
+                                            </Grid>
+                                        </Grid>
+                                        <Grid container>
+                                            <Grid item xs={4}>
+                                                Chiều cao:
+                                            </Grid>
+                                            <Grid item xs={8}>
+                                                {props.healthCheck?.height / 100 || 0}m
+                                            </Grid>
+                                        </Grid>
+                                        <Grid container>
+                                            <Grid item xs={4}>
+                                                Cân nặng:
+                                            </Grid>
+                                            <Grid item xs={8}>
+                                                {props.healthCheck?.weight || 0}kg
+                                            </Grid>
+                                        </Grid>
+                                        <Typography variant="subtitle1" sx={{ marginTop: 4 }}>
+                                            Chẩn đoán:
+                                        </Typography>
+                                        <CustomizeAutocomplete
+                                            query="/diseases"
+                                            field="name"
+                                            searchField="name"
+                                            limit={10}
+                                            multiple
+                                            // errors={errors.drugTypeId}
+                                            // errorMessage={"Phân loại thuốc không được trống"}
+                                            // inputRef={drugTypeIdRef}
+                                            // {...drugTypeIdRefProps}
+                                            changeValue={() => {}}
+                                        />
+                                        <Typography variant="subtitle1" sx={{ marginTop: 4 }}>
+                                            Lời khuyên của bác sĩ:
+                                        </Typography>
+                                        <TextField
+                                            placeholder="Lời khuyên dành cho bệnh nhân"
+                                            fullWidth
+                                            multiline
+                                            minRows={3}
+                                        />
+                                    </React.Fragment>
+                                )}
+                                {index === 1 && (
+                                    <React.Fragment>
+                                        <Typography variant="h6">Đơn thuốc</Typography>
+                                        <Button
+                                            sx={{ my: 2 }}
+                                            variant="contained"
+                                            endIcon={<Add />}
+                                        >
+                                            THÊM
+                                        </Button>
+                                        <Divider></Divider>
+                                        <Grid container width="100%" sx={{ mb: 1 }}>
+                                            <Grid item xs={12}>
+                                                <CustomizeAutocomplete
+                                                    query="/drugs"
+                                                    field="name"
+                                                    searchField="name"
+                                                    limit={10}
+                                                    changeValue={() => {}}
+                                                    label="Tên thuốc"
+                                                    size="small"
+                                                />
+                                            </Grid>
+                                        </Grid>
+                                        <Grid container width="100%" spacing={1} sx={{ mb: 1 }}>
+                                            <Grid item xs={6}>
+                                                <TextField
+                                                    size="small"
+                                                    label="Ngày bắt đầu"
+                                                    fullWidth
+                                                />
+                                            </Grid>
+                                            <Grid item xs={6}>
+                                                <TextField
+                                                    size="small"
+                                                    label="Ngày kết thúc"
+                                                    fullWidth
+                                                />
+                                            </Grid>
+                                        </Grid>
+                                        <Grid container width="100%" spacing={1}>
+                                            <Grid item xs={4}>
+                                                <TextField
+                                                    size="small"
+                                                    type="number"
+                                                    label="Sáng"
+                                                    fullWidth
+                                                />
+                                            </Grid>
+                                            <Grid item xs={4}>
+                                                <TextField
+                                                    size="small"
+                                                    type="number"
+                                                    label="Trưa"
+                                                    fullWidth
+                                                />
+                                            </Grid>
+                                            <Grid item xs={4}>
+                                                <TextField
+                                                    size="small"
+                                                    type="number"
+                                                    label="Chiều"
+                                                    fullWidth
+                                                />
+                                            </Grid>
+                                        </Grid>
+                                        <Grid container width="100%" sx={{ my: 1 }}>
+                                            <Grid item xs={12}>
+                                                <TextField
+                                                    size="small"
+                                                    type="number"
+                                                    label="Ghi chú"
+                                                    fullWidth
+                                                    multiline
+                                                    minRows={2}
+                                                />
+                                            </Grid>
+                                        </Grid>
+                                    </React.Fragment>
+                                )}
+                                <Box sx={{ mb: 0, display: "flex" }}>
+                                    <Button
+                                        variant="contained"
+                                        onClick={handleNext}
+                                        sx={{ mt: 1, mr: 1 }}
+                                    >
+                                        {index === steps.length - 1 ? "Hoàn thành" : "Tiếp theo"}
+                                    </Button>
+                                    <Button
+                                        disabled={index === 0}
+                                        onClick={handleBack}
+                                        sx={{ mt: 1, mr: 1 }}
+                                    >
+                                        Trở lại
+                                    </Button>
+                                </Box>
+                            </StepContent>
+                        </Step>
+                    ))}
+                </Stepper>
             </React.Fragment>
         );
     };
@@ -215,12 +366,61 @@ export const VideoCall: React.FC<VideoCallProps> = (props: VideoCallProps) => {
                 flexDirection: "column",
                 minHeight: "100vh",
                 alignItems: "start",
+                backgroundColor: "#202124",
             }}
         >
             <CssBaseline />
             <Box
+                height="50px"
+                sx={{
+                    width: "100%",
+                    backgroundColor: "#202124",
+                    overflow: "hidden",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                }}
+            >
+                <IconButton
+                    sx={{
+                        color: "white",
+                        "&:hover": {
+                            backgroundColor: "#3c4043",
+                            color: "white",
+                        },
+                    }}
+                    onClick={() => setLayoutType(0)}
+                >
+                    <CalendarViewWeek fontSize="medium" />
+                </IconButton>
+                <IconButton
+                    sx={{
+                        color: "white",
+                        "&:hover": {
+                            backgroundColor: "#3c4043",
+                            color: "white",
+                        },
+                    }}
+                    onClick={() => setLayoutType(1)}
+                >
+                    <BrandingWatermark fontSize="medium" />
+                </IconButton>
+                <IconButton
+                    sx={{
+                        color: "white",
+                        "&:hover": {
+                            backgroundColor: "#3c4043",
+                            color: "white",
+                        },
+                    }}
+                    onClick={() => setLayoutType(2)}
+                >
+                    <Splitscreen fontSize="medium" />
+                </IconButton>
+            </Box>
+            <Box
                 display="flex"
-                height="calc(100vh - 80px)"
+                height="calc(100vh - 130px)"
                 width={1}
                 sx={{ backgroundColor: "#202124", overflow: "hidden" }}
             >
@@ -229,13 +429,34 @@ export const VideoCall: React.FC<VideoCallProps> = (props: VideoCallProps) => {
                     width={checkType.checked ? "75%" : "100%"}
                     sx={{ backgroundColor: "#202124" }}
                 >
-                    {props.start && props.tracks && (
+                    {props.ready && props.start && props.tracks && layoutType === 0 && (
                         <ListVideoCall
                             anotherTrackVideo={props.anotherTrackVideo}
                             trackState={trackState}
                             users={props.users}
                             tracks={props.tracks}
                             healthCheck={props.healthCheck}
+                            anotherTrackAudio={props.anotherTrackAudio}
+                        />
+                    )}
+                    {props.ready && props.start && props.tracks && layoutType === 1 && (
+                        <VideoCallWithLayout2
+                            anotherTrackVideo={props.anotherTrackVideo}
+                            trackState={trackState}
+                            users={props.users}
+                            tracks={props.tracks}
+                            healthCheck={props.healthCheck}
+                            anotherTrackAudio={props.anotherTrackAudio}
+                        />
+                    )}
+                    {props.ready && props.start && props.tracks && layoutType === 2 && (
+                        <VideoCallWithLayout3
+                            anotherTrackVideo={props.anotherTrackVideo}
+                            trackState={trackState}
+                            users={props.users}
+                            tracks={props.tracks}
+                            healthCheck={props.healthCheck}
+                            anotherTrackAudio={props.anotherTrackAudio}
                         />
                     )}
                 </Box>
@@ -251,7 +472,7 @@ export const VideoCall: React.FC<VideoCallProps> = (props: VideoCallProps) => {
                         <Card
                             sx={{
                                 width: "100%",
-                                height: "95%",
+                                height: "100%",
                                 margin: 1,
                                 borderRadius: 2,
                             }}
@@ -263,7 +484,7 @@ export const VideoCall: React.FC<VideoCallProps> = (props: VideoCallProps) => {
                     </Box>
                 </Slide>
             </Box>
-            {props.ready && props.tracks && (
+            {props.ready && props.start && props.tracks && (
                 <Box
                     width={1}
                     height={80}
@@ -357,7 +578,7 @@ export const VideoCall: React.FC<VideoCallProps> = (props: VideoCallProps) => {
                                         </Tooltip>
                                     </Grid>
                                     <Grid item>
-                                        <Tooltip title="rời khỏi cuộc gọi">
+                                        <Tooltip title="Rời khỏi cuộc gọi">
                                             <Fab
                                                 variant="extended"
                                                 sx={{

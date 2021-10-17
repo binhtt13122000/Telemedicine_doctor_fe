@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import React from "react";
 
 import {
@@ -13,10 +12,10 @@ import "./index.scss";
 
 import { MicOffOutlined } from "@mui/icons-material";
 import MicNoneIcon from "@mui/icons-material/MicNoneRounded";
-import { Avatar, Box, Grid, GridSize, Typography } from "@mui/material";
+import { Avatar, Box, Typography } from "@mui/material";
 import { deepOrange } from "@mui/material/colors";
 
-export interface ListVideoCallProps {
+export interface VideoCallWithLayout3Props {
     users: IAgoraRTCRemoteUser[];
     tracks: [IMicrophoneAudioTrack, ICameraVideoTrack] | null;
     trackState: {
@@ -27,19 +26,21 @@ export interface ListVideoCallProps {
     anotherTrackAudio: boolean;
     healthCheck: HealthCheck;
 }
-const ListVideoCall: React.FC<ListVideoCallProps> = (props: ListVideoCallProps) => {
+const VideoCallWithLayout3: React.FC<VideoCallWithLayout3Props> = (
+    props: VideoCallWithLayout3Props
+) => {
     const { users, tracks, trackState, anotherTrackVideo, anotherTrackAudio, healthCheck } = props;
 
-    const [gridSpacing, setGridSpacing] = useState<GridSize>(12);
-
-    useEffect(() => {
-        setGridSpacing(Math.max(Math.floor(12 / (users.length + 1)), 4) as GridSize);
-    }, [users, tracks]);
-
     return (
-        <Grid container sx={{ height: "100%" }}>
+        <Box
+            display="flex"
+            flexDirection="column"
+            justifyContent="center"
+            alignItems="center"
+            sx={{ height: "100%" }}
+        >
             {tracks && (
-                <Grid item xs={gridSpacing} sx={{ height: "100%" }}>
+                <Box sx={{ width: "100%", height: "50%" }}>
                     <Box
                         sx={{ height: "100%", width: "100%" }}
                         display="flex"
@@ -49,7 +50,7 @@ const ListVideoCall: React.FC<ListVideoCallProps> = (props: ListVideoCallProps) 
                         <Box
                             sx={{
                                 height: "100%",
-                                width: users?.length > 0 ? "90%" : "80%",
+                                width: "80%",
                                 position: "relative",
                             }}
                         >
@@ -145,13 +146,13 @@ const ListVideoCall: React.FC<ListVideoCallProps> = (props: ListVideoCallProps) 
                             )}
                         </Box>
                     </Box>
-                </Grid>
+                </Box>
             )}
             {users?.length > 0 &&
                 users.map((user) => {
                     if (user.videoTrack) {
                         return (
-                            <Grid item key={user.uid} xs={gridSpacing} sx={{ height: "100%" }}>
+                            <Box key={user.uid} sx={{ width: "100%", height: "50%" }}>
                                 <Box
                                     sx={{ height: "100%", width: "100%" }}
                                     display="flex"
@@ -161,7 +162,7 @@ const ListVideoCall: React.FC<ListVideoCallProps> = (props: ListVideoCallProps) 
                                     <Box
                                         sx={{
                                             height: "100%",
-                                            width: users?.length > 0 ? "90%" : "80%",
+                                            width: "80%",
                                             position: "relative",
                                         }}
                                     >
@@ -250,11 +251,11 @@ const ListVideoCall: React.FC<ListVideoCallProps> = (props: ListVideoCallProps) 
                                         )}
                                     </Box>
                                 </Box>
-                            </Grid>
+                            </Box>
                         );
                     } else
                         return (
-                            <Grid item key={user.uid} xs={gridSpacing} sx={{ height: "100%" }}>
+                            <Box key={user.uid} sx={{ width: "100%", height: "50%" }}>
                                 <Box
                                     sx={{ height: "100%", width: "100%" }}
                                     display="flex"
@@ -264,7 +265,7 @@ const ListVideoCall: React.FC<ListVideoCallProps> = (props: ListVideoCallProps) 
                                     <Box
                                         sx={{
                                             height: "100%",
-                                            width: users?.length > 0 ? "90%" : "80%",
+                                            width: "80%",
                                         }}
                                     >
                                         <Box
@@ -307,11 +308,11 @@ const ListVideoCall: React.FC<ListVideoCallProps> = (props: ListVideoCallProps) 
                                         </Box>
                                     </Box>
                                 </Box>
-                            </Grid>
+                            </Box>
                         );
                 })}
-        </Grid>
+        </Box>
     );
 };
 
-export default ListVideoCall;
+export default VideoCallWithLayout3;
