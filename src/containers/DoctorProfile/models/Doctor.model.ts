@@ -17,6 +17,7 @@ export type Doctor = {
     numberOfConsultants: number;
     rating: number;
     isVerify: boolean;
+    isActive: boolean;
     certificationDoctors: CertificationDoctor[];
     hospitalDoctors: HospitalDoctor[];
     majorDoctors: MajorDoctor[];

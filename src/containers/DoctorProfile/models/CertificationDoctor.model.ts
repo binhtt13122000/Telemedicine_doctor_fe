@@ -5,6 +5,7 @@ export type CertificationDoctor = {
     doctorId: number;
     certificationId: number;
     evidence: string;
+    isActive: boolean;
     dateOfIssue: string;
     certification: Cetification;
 };

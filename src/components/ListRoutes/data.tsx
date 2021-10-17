@@ -32,7 +32,7 @@ export const routes = [
     {
         id: 4,
         name: "Bác sĩ",
-        path: "/doctors",
+        path: "/doctor",
         icon: <LocalHospitalIcon />,
     },
     // {

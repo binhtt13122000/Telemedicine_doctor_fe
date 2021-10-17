@@ -14,7 +14,6 @@ const useGetListDoctor = (limit: number = 5, offset: number = 1) => {
         [ListDoctorStateKeysEnum.Doctors, limit, offset],
         async () => {
             const result = await doctorService.getAll(limit, offset);
-            console.log(result);
             return result.data;
         }
     );

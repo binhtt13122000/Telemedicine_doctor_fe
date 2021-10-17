@@ -3,9 +3,13 @@ import React, { useState } from "react";
 import moment from "moment";
 
 import useGetDoctor from "../hooks/useGetDoctor";
+import usePutCeritificate from "../hooks/usePutCeritificate";
+import { Cetification } from "../models/Cetification.model";
+import CertificationForm from "./CeritificateForm";
 
+import BlockIcon from "@mui/icons-material/Block";
 import VerifiedIcon from "@mui/icons-material/Verified";
-import { Button, Card, CircularProgress, Icon, Typography } from "@mui/material";
+import { Button, Card, CircularProgress, Icon, IconButton, Typography } from "@mui/material";
 import { Box, BoxProps } from "@mui/system";
 
 function Item(props: BoxProps) {
@@ -21,7 +25,7 @@ function Item(props: BoxProps) {
                 textAlign: "left",
                 fontSize: 19,
                 fontWeight: "700",
-                boxShadow: 5,
+                boxShadow: 40,
                 ...sx,
             }}
             {...other}
@@ -30,54 +34,113 @@ function Item(props: BoxProps) {
 }
 
 const CeritificateProfile: React.FC = () => {
+    const initDrugType: Cetification = {
+        name: "",
+        description: "",
+        isActive: true,
+    };
     const { data, isLoading, isError } = useGetDoctor();
-    const [ceti, setSeti] = useState(data?.certificationDoctors);
+    const { mutate } = usePutCeritificate();
+    const [open, setOpen] = useState<boolean>(false);
+    const [ab, setAb] = useState<Cetification>(initDrugType);
     if (isError) {
         return <div> Errord</div>;
     }
     if (isLoading) {
         return <CircularProgress />;
     }
+    const handleClose = (
+        type: "SAVE" | "CANCEL",
+        dataCeti?: Cetification,
+        clearErrors?: Function
+    ) => {
+        if (type === "SAVE") {
+            if (dataCeti) {
+                if (dataCeti.id) {
+                    mutate({
+                        id: dataCeti.id,
+                        name: dataCeti?.name,
+                        description: dataCeti?.description,
+                        isActive: dataCeti?.isActive,
+                    });
+                } else {
+                    // postDrug(data);
+                }
+            }
+        }
+        if (clearErrors) {
+            clearErrors();
+        }
+        setOpen(false);
+        if (isLoading) {
+            return <CircularProgress />;
+        }
+    };
 
+    const handleOpen = async (ceti: Cetification) => {
+        setOpen(true);
+        setAb(ceti);
+    };
     return (
         <React.Fragment>
-            <Card sx={{ height: 400 }}>
+            <Card sx={{ height: 400, borderRadius: 5 }}>
                 <Box sx={{ ml: 2 }}>
                     <Typography variant="h6" component="div">
                         Chứng chỉ
                     </Typography>
                 </Box>
                 <Box sx={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)" }}>
-                    {data?.certificationDoctors?.map((x) => (
-                        <Item key={x?.id}>
-                            <Box sx={{ display: "flex" }}>
-                                <img src={x?.evidence} loading="lazy" width="70%" height="60%" />
-                                <Box sx={{ ml: 10 }}>
+                    {data?.certificationDoctors?.map((x, index) => {
+                        return (
+                            <>
+                                <Item key={index}>
+                                    <Box sx={{ display: "flex" }}>
+                                        <img
+                                            src={x?.evidence}
+                                            loading="lazy"
+                                            width="70%"
+                                            height="60%"
+                                        />
+                                        <Box sx={{ ml: 9 }}>
+                                            <Typography variant="h6" component="h5">
+                                                <IconButton
+                                                    onClick={() => handleOpen(x?.certification)}
+                                                >
+                                                    <Icon>edit</Icon>
+                                                </IconButton>
+                                            </Typography>
+                                        </Box>
+                                    </Box>
+
                                     <Typography variant="h6" component="h5">
-                                        <Icon>edit</Icon>
+                                        {x?.certification?.name}
                                     </Typography>
-                                </Box>
-                            </Box>
-
-                            <Typography variant="h6" component="h5">
-                                {x?.certification?.name}
-                            </Typography>
-                            <Typography variant="body2" paragraph>
-                                {x?.certification?.description}
-                            </Typography>
-                            <Box sx={{ display: "flex" }}>
-                                <Typography variant="body2" paragraph>
-                                    Tạo ngày {moment(x?.dateOfIssue).format("DD/MM/YYYY")}
-                                </Typography>
-                                <Box sx={{ ml: 22 }}>
-                                    <VerifiedIcon color="success" />
-                                </Box>
-                            </Box>
-                        </Item>
-                    ))}
-
+                                    <Typography variant="body2" paragraph>
+                                        {x?.certification?.description}
+                                    </Typography>
+                                    <Box sx={{ display: "flex", fontWeight: "200" }}>
+                                        <Typography variant="body2" paragraph>
+                                            Tạo ngày {moment(x?.dateOfIssue).format("DD/MM/YYYY")}
+                                        </Typography>
+                                        <Box sx={{}}>
+                                            {x?.isActive ? (
+                                                <IconButton>
+                                                    <VerifiedIcon color="success" />
+                                                </IconButton>
+                                            ) : (
+                                                <IconButton>
+                                                    <BlockIcon color="error" />
+                                                </IconButton>
+                                            )}
+                                        </Box>
+                                    </Box>
+                                </Item>
+                            </>
+                        );
+                    })}
+                    <CertificationForm dataCeti={ab} open={open} handleClose={handleClose} />
                     <Box sx={{ mt: 20, textAlign: "center" }}>
-                        <Button variant="outlined">+ New Ceritificate</Button>
+                        <Button variant="outlined">+ Thêm chứng chỉ</Button>
                     </Box>
                 </Box>
             </Card>

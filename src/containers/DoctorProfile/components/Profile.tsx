@@ -4,7 +4,7 @@ import moment from "moment";
 
 import useGetAccount from "../hooks/useGetAccount";
 
-import { Card, CardContent, CircularProgress, Typography } from "@mui/material";
+import { Avatar, Card, CircularProgress, Icon, Rating, Stack, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 
 export interface IProfile {
@@ -13,6 +13,7 @@ export interface IProfile {
 
 const Profile: React.FC<IProfile> = (props: IProfile) => {
     const { data, isLoading, isError } = useGetAccount();
+    const [value, setValue] = React.useState<number | null>(4);
     if (isError) {
         return <div>error</div>;
     }
@@ -21,49 +22,102 @@ const Profile: React.FC<IProfile> = (props: IProfile) => {
     }
     return (
         <React.Fragment>
-            <Card>
-                <CardContent sx={{ height: 400, width: 400 }}>
+            <Card sx={{ maxHeight: "100%", width: 450, borderRadius: 5, pl: 5 }}>
+                <Box sx={{ display: "flex" }}>
+                    <Typography variant="h6" component="div">
+                        Profile doctor
+                    </Typography>
+                    <Box sx={{ ml: 29 }}>
+                        <Typography variant="h6" component="h5">
+                            <Icon>edit</Icon>
+                        </Typography>
+                    </Box>
+                </Box>
+                <Box sx={{ mt: 2 }} />
+                <Box>
                     <Box
                         sx={{
-                            alignItems: "left",
-                            display: "flex",
-                            flexDirection: "column",
+                            ml: 15,
                         }}
                     >
-                        <Typography gutterBottom variant="h5" component="div">
-                            Profile doctor
-                        </Typography>
-                        {/* <Avatar
+                        <Avatar
+                            sx={{ borderRadius: 10, width: 150, height: 150 }}
+                            variant="square"
+                            alt="Remy Sharp"
+                            src="https://taimuihongsg.com/wp-content/uploads/2018/05/Kim-Bun-ThuongE-01.jpg"
+                        />
+                    </Box>
+                    <Box
+                        sx={{
+                            ml: 17,
+                        }}
+                    >
+                        <Rating name="simple-controlled" value={value} />
+                    </Box>
+                </Box>
+                <Box sx={{ mt: 2 }} />
+                <Box
+                    sx={{
+                        alignItems: "left",
+                        display: "flex",
+                        flexDirection: "column",
+                    }}
+                >
+                    {/* <Avatar
                             src={data?.avatar}
                             sx={{
                                 height: 100,
                                 width: 100,
                             }}
                         /> */}
-
-                        <Typography gutterBottom variant="h6" component="div">
-                            Họ tên:{" "}
+                    <Stack direction="row" spacing={1}>
+                        <Typography variant="h6" component="div">
+                            {data?.isMale ? "Bà" : "Ông"}{" "}
                             {`${data?.firstName}
                         ${data?.lastName}`}
                         </Typography>
-                        <Typography gutterBottom variant="h6" component="div">
-                            Email: {""} {data?.email}
+                    </Stack>
+                    <Stack direction="row" spacing={1}>
+                        <Typography variant="h6" component="div">
+                            Email:
                         </Typography>
-                        <Typography gutterBottom variant="h6" component="div">
-                            Số điện thoại: {data?.phone}
+                        <Typography variant="h6" component="div" sx={{ fontWeight: "normal" }}>
+                            {data?.email}
                         </Typography>
-                        <Typography gutterBottom variant="h6" component="div">
-                            Giới tính: {data?.isMale}
+                    </Stack>
+                    <Stack direction="row" spacing={1}>
+                        <Typography variant="h6" component="div">
+                            Số điện thoại:
                         </Typography>
-                        <Typography gutterBottom variant="h6" component="div">
-                            Ngày sinh: {moment(data?.dob).format("DD/MM/YYYY")}
+                        <Typography
+                            gutterBottom
+                            variant="h6"
+                            component="div"
+                            sx={{ fontWeight: "normal" }}
+                        >
+                            {data?.phone}
                         </Typography>
-                        <Typography gutterBottom variant="h6" component="div">
+                    </Stack>
+                    <Stack direction="row" spacing={1}>
+                        <Typography variant="h6" component="div">
+                            Ngày sinh:
+                        </Typography>
+                        <Typography
+                            gutterBottom
+                            variant="h6"
+                            component="div"
+                            sx={{ fontWeight: "normal" }}
+                        >
+                            {moment(data?.dob).format("DD/MM/YYYY")}
+                        </Typography>
+                    </Stack>
+                    <Box sx={{ display: "inline" }}>
+                        <Typography variant="h6" component="div">
                             Địa chỉ:{" "}
                             {`${data?.streetAddress}, ${data?.locality}, ${data?.ward}, ${data?.city} `}
                         </Typography>
                     </Box>
-                </CardContent>
+                </Box>
             </Card>
         </React.Fragment>
     );

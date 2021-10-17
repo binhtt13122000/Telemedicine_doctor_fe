@@ -23,7 +23,7 @@ export const privateRoutes = [
     },
     {
         path: "/doctor",
-        name: "doctors",
+        name: "doctor",
         component: DoctorProfile,
     },
 ];
