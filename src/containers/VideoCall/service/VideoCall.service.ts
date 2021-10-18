@@ -3,7 +3,7 @@ import { HealthCheck } from "../models/VideoCall.model";
 
 class VideoCallService {
     getVideoCallByHealthCheckId(id: string) {
-        return axios.get<HealthCheck>(`/health-checks/${id}`);
+        return axios.get<HealthCheck>(`/health-checks/${id}?mode=CALL`);
     }
 }
 
