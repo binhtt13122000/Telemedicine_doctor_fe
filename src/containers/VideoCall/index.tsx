@@ -64,18 +64,44 @@ const VideoCall: React.FC = () => {
             </Box>
         );
     } else {
-        if (data)
+        if (data && data.token && data.slots && data.slots.length > 0) {
             return (
                 <VideoCallMainScreen
-                    channel={"main"}
-                    token={
-                        "006834dec7fc5144086a2fe803cb3e51fffIACEcanP0CTFI+W/MvanlEVp8EJPFUjV4EBsO4UXFum2z2TNKL8AAAAAEACOYDhkTc5sYQEAAQBMzmxh"
-                    }
+                    channel={data.slots && `SLOT_${data.slots[0].id}`}
+                    token={data.token}
                     appId={"834dec7fc5144086a2fe803cb3e51fff"}
                     healthCheck={data}
                 />
             );
-        return <div>Error</div>;
+        } else {
+            return (
+                <Box
+                    minHeight={600}
+                    display="flex"
+                    flexDirection="column"
+                    justifyContent="center"
+                    alignItems="center"
+                >
+                    <img
+                        alt="sorry"
+                        width={200}
+                        height={200}
+                        src="https://png.pngtree.com/element_our/20190530/ourlarge/pngtree-520-couple-avatar-boy-avatar-little-dinosaur-cartoon-cute-image_1263411.jpg"
+                    />
+                    <Typography variant="h5" align="center" sx={{ marginBottom: 1, marginTop: 1 }}>
+                        Xin lỗi
+                    </Typography>
+                    <Typography variant="subtitle1" align="center" sx={{ marginBottom: 1 }}>
+                        Hiện tại bạn không thể tham gia vào cuộc gọi này!
+                    </Typography>
+                    <Box>
+                        <Button onClick={() => history.goBack()} variant="contained">
+                            Trở lại
+                        </Button>
+                    </Box>
+                </Box>
+            );
+        }
     }
 };
 
