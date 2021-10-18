@@ -5,7 +5,6 @@ import moment from "moment";
 import useGetDoctor from "../hooks/useGetDoctor";
 
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
-import PersonIcon from "@mui/icons-material/Person";
 import {
     Card,
     Chip,
@@ -187,20 +186,21 @@ const PracticingProfile: React.FC = () => {
                                 </Typography>
 
                                 <Typography variant="body2" component="h5">
-                                    <Chip icon={<PersonIcon />} label={data?.numberOfConsultants} />
+                                    {data?.numberOfConsultants}
+                                    {/* <Chip icon={<PersonIcon />} label={data?.numberOfConsultants} /> */}
                                 </Typography>
                             </Stack>
 
                             <Box sx={{ mt: 1 }} />
 
                             <Stack direction="row" spacing={1}>
-                                <Typography
+                                {/* <Typography
                                     variant="body2"
                                     component="div"
                                     sx={{ fontWeight: "bold" }}
                                 >
                                     Tình trạng:
-                                </Typography>
+                                </Typography> */}
 
                                 <Typography variant="body2" component="h5">
                                     {data?.isVerify ? (

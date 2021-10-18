@@ -18,29 +18,7 @@ import {
     Tooltip,
     Typography,
 } from "@mui/material";
-import { Box, BoxProps } from "@mui/system";
-
-function Item(props: BoxProps) {
-    const { sx, ...other } = props;
-    const [major, setMajor] = useState<Major>();
-    return (
-        <Box
-            sx={{
-                bgcolor: "#fafafa",
-                color: "black",
-                p: 1,
-                m: 1,
-                borderRadius: 5,
-                textAlign: "left",
-                fontSize: 19,
-                fontWeight: "700",
-                boxShadow: 5,
-                ...sx,
-            }}
-            {...other}
-        />
-    );
-}
+import { Box } from "@mui/system";
 
 const MajorProfile: React.FC = () => {
     const initCetification: Major = {
@@ -51,6 +29,7 @@ const MajorProfile: React.FC = () => {
     const { data, isLoading, isError } = useGetDoctor();
     const { mutate } = usePutMajor();
     const [open, setOpen] = useState<boolean>(false);
+    // const [loading, setLoading] = useState<boolean>(false);
     const [major, setMajor] = useState<Major>(initCetification);
     if (isError) {
         return <div> Error</div>;
@@ -60,6 +39,7 @@ const MajorProfile: React.FC = () => {
     }
 
     const handleClose = (type: "SAVE" | "CANCEL", dataMajor?: Major, clearErrors?: Function) => {
+        // setLoading(isLoading);
         if (type === "SAVE") {
             if (data) {
                 if (data.id) {
@@ -67,7 +47,7 @@ const MajorProfile: React.FC = () => {
                         id: dataMajor?.id,
                         name: dataMajor?.name,
                         description: dataMajor?.description,
-                        isActive: dataMajor.isActive,
+                        isActive: dataMajor?.isActive,
                     });
                 } else {
                 }
@@ -76,6 +56,7 @@ const MajorProfile: React.FC = () => {
         if (clearErrors) {
             clearErrors();
         }
+
         setOpen(false);
     };
     const handleOpen = async (maj: Major) => {

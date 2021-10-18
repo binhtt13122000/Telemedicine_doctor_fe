@@ -1,21 +1,21 @@
-import React, { useState } from "react";
+import React from "react";
 
 import { SubmitHandler, useForm } from "react-hook-form";
 
-import { Major } from "../models/Major.model";
+import { Hospital } from "../models/Hospital.model";
 
 import { Button, Card, Modal, Stack, Switch, TextField, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 
-export interface IMajorForm {
+export interface IHospitalForm {
+    dataHospital: Hospital;
     opened: boolean;
-    dataMajor: Major;
-    handleClose: (type: "SAVE" | "CANCEL", dataMajor?: Major, callback?: Function) => void;
+    handleClose: (type: "SAVE" | "CANCEL", dataHospital?: Hospital, callback?: Function) => void;
 }
 
-const MajorForm: React.FC<IMajorForm> = (props: IMajorForm) => {
-    const { dataMajor } = props;
-    const [checked, setChecked] = useState<boolean>();
+const HospitalForm: React.FC<IHospitalForm> = (props: IHospitalForm) => {
+    const { dataHospital } = props;
+    const [checked, setChecked] = React.useState<boolean>(true);
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setChecked(event.target.checked);
@@ -30,28 +30,28 @@ const MajorForm: React.FC<IMajorForm> = (props: IMajorForm) => {
             console.log(event.target.checked);
         }
     };
-
     const {
         register,
         handleSubmit,
         formState: { errors },
         setValue,
         clearErrors,
-    } = useForm<Major>({});
+    } = useForm<Hospital>({});
 
     React.useEffect(() => {
-        setValue("id", dataMajor.id);
-        setValue("name", dataMajor.name);
-        setValue("description", dataMajor.description);
-        setValue("isActive", dataMajor.isActive);
-        // setChecked(dataMajor?.isActive);
-    }, [dataMajor, setValue, setChecked]);
-
-    const submitHandler: SubmitHandler<Major> = (dataMajor: Major) => {
+        setValue("id", dataHospital.id);
+        setValue("hospitalCode", dataHospital.hospitalCode);
+        setValue("name", dataHospital.name);
+        setValue("address", dataHospital.address);
+        setValue("description", dataHospital.description);
+        setValue("isActive", dataHospital.isActive);
+        // setChecked(dataHospital.isActive);
+    }, [dataHospital, setValue, setChecked]);
+    const submitHandler: SubmitHandler<Hospital> = (dataHospital: Hospital) => {
         // eslint-disable-next-line no-console
-        console.log(dataMajor);
-        if (dataMajor) {
-            props.handleClose("SAVE", dataMajor, clearErrors);
+        console.log(dataHospital);
+        if (dataHospital) {
+            props.handleClose("SAVE", dataHospital, clearErrors);
         }
     };
 
@@ -73,7 +73,7 @@ const MajorForm: React.FC<IMajorForm> = (props: IMajorForm) => {
             >
                 <Box sx={{ display: "flex", justifyContent: "center", m: 3 }}>
                     <Typography variant="h6" component="h2">
-                        Thông tin Chuyên ngành
+                        Thông tin Bệnh viện
                     </Typography>
                 </Box>
                 <Box
@@ -87,20 +87,38 @@ const MajorForm: React.FC<IMajorForm> = (props: IMajorForm) => {
                     }}
                 >
                     <TextField
-                        id="major-name"
-                        label="Tên chuyên ngành *"
+                        id="hospital-code"
+                        label="Mã bệnh viện *"
                         variant="outlined"
+                        defaultValue={props.dataHospital.hospitalCode}
+                        error={!!errors.hospitalCode}
+                        helperText={errors.hospitalCode && "Mã bệnh viện là bắt buộc"}
+                        {...register("hospitalCode", { required: true })}
+                    />
+                    <TextField
+                        id="hospital-name"
+                        label="Tên bệnh viện *"
+                        variant="outlined"
+                        defaultValue={props.dataHospital.name}
                         error={!!errors.name}
-                        helperText={errors.name && "Tên chuyên ngành là bắt buộc"}
+                        helperText={errors.name && "Tên bệnh viện là bắt buộc"}
                         {...register("name", { required: true })}
                     />
                     <TextField
-                        id="major-description"
-                        label="Thông tin mô tả"
+                        id="hospital-address"
+                        label="Địa chỉ"
                         variant="outlined"
+                        defaultValue={props.dataHospital.address}
+                        {...register("address")}
+                    />
+                    <TextField
+                        id="description"
+                        label="Mô tả"
+                        variant="outlined"
+                        defaultValue={props.dataHospital.description}
+                        {...register("description")}
                         multiline
                         rows={5}
-                        {...register("description")}
                     />
                     <Stack direction="row" spacing={0}>
                         <Typography
@@ -144,4 +162,4 @@ const MajorForm: React.FC<IMajorForm> = (props: IMajorForm) => {
     );
 };
 
-export default MajorForm;
+export default HospitalForm;

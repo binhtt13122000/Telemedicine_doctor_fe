@@ -1,6 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 
 import useGetDoctor from "../hooks/useGetDoctor";
+import usePutHospital from "../hooks/usePutHospital";
+import { Hospital } from "../models/Hospital.model";
+import HospitalForm from "./HospitalForm";
 
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import {
@@ -15,45 +18,68 @@ import {
     Tooltip,
     Typography,
 } from "@mui/material";
-import { Box, BoxProps } from "@mui/system";
-
-function Item(props: BoxProps) {
-    const { sx, ...other } = props;
-    return (
-        <Box
-            sx={{
-                bgcolor: "#fafafa",
-                color: "black",
-                p: 1,
-                m: 1,
-                borderRadius: 5,
-                textAlign: "left",
-                fontSize: 19,
-                fontWeight: "700",
-                boxShadow: 5,
-                ...sx,
-            }}
-            {...other}
-        />
-    );
-}
+import { Box } from "@mui/system";
 
 const HospitalProfile: React.FC = () => {
+    const initHospital: Hospital = {
+        hospitalCode: "",
+        name: "",
+        address: "",
+        description: "",
+        lat: 0,
+        long: 0,
+        isActive: true,
+    };
     const { data, isLoading, isError } = useGetDoctor();
-
+    const { mutate } = usePutHospital();
+    const [open, setOpen] = useState<boolean>(false);
+    const [hospital, setHospital] = useState<Hospital>(initHospital);
     if (isError) {
         return <div> Errord</div>;
     }
     if (isLoading) {
         return <CircularProgress />;
     }
+    const handleClose = (
+        type: "SAVE" | "CANCEL",
+        dataHospital?: Hospital,
+        clearErrors?: Function
+    ) => {
+        if (type === "SAVE") {
+            if (data) {
+                if (data.id) {
+                    mutate({
+                        id: dataHospital?.id,
+                        hospitalCode: dataHospital?.hospitalCode,
+                        name: dataHospital?.name,
+                        address: dataHospital?.address,
+                        lat: dataHospital?.lat,
+                        long: dataHospital?.long,
+                        description: dataHospital?.description,
+                        isActive: dataHospital?.isActive,
+                    });
+                } else {
+                    // postDrug(data);
+                }
+            }
+        }
+        if (clearErrors) {
+            clearErrors();
+        }
+        setOpen(false);
+    };
 
+    const handleOpen = async (hos: Hospital) => {
+        setOpen(true);
+        setHospital(hos);
+    };
     return (
         <React.Fragment>
+            <HospitalForm dataHospital={hospital} opened={open} handleClose={handleClose} />
             <Card sx={{ minHeight: "100%", borderRadius: 5 }}>
                 <Box sx={{ ml: 2 }}>
                     <Typography variant="h6" component="div">
-                        Ngành nghề
+                        Bệnh viện
                     </Typography>
                 </Box>
                 <Box sx={{ display: "block", gridTemplateColumns: "repeat(3, 1fr)" }}>
@@ -117,7 +143,7 @@ const HospitalProfile: React.FC = () => {
                                             <IconButton>
                                                 <Icon color="error">delete</Icon>
                                             </IconButton>
-                                            <IconButton>
+                                            <IconButton onClick={() => handleOpen(item?.hospital)}>
                                                 <Icon>edit</Icon>
                                             </IconButton>
                                         </Typography>

@@ -72,9 +72,6 @@ const CeritificateProfile: React.FC = () => {
             clearErrors();
         }
         setOpen(false);
-        if (isLoading) {
-            return <CircularProgress />;
-        }
     };
 
     const handleOpen = async (ceti: Cetification) => {

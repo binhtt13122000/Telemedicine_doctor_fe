@@ -1,26 +1,15 @@
 import React from "react";
 
-import CeritificateProfile from "./components/CeritificateProfile";
+import CertificateCarousel from "./components/CertificateCarousel";
 import HospitalProfile from "./components/HospitalProfile";
 import MajorProfile from "./components/MajorProfile";
 import PracticingProfile from "./components/PracticingProfile";
 import Profile from "./components/Profile";
 
-import useGetDoctor from "./hooks/useGetListDoctor";
-
-import { CircularProgress, Container, Divider, Grid } from "@mui/material";
+import { Container, Divider, Grid } from "@mui/material";
 import { Box } from "@mui/system";
 
 const DoctorProfile: React.FC = () => {
-    const { data, isLoading, isError } = useGetDoctor();
-
-    if (isError) {
-        return <div>Error </div>;
-    }
-    if (isLoading) {
-        return <CircularProgress />;
-    }
-
     return (
         <React.Fragment>
             <Box
@@ -42,13 +31,14 @@ const DoctorProfile: React.FC = () => {
                     <Box sx={{ mt: 2 }} />
                     <Grid container spacing={4}>
                         <Grid item xs={7}>
-                            <img
+                            {/* <img
                                 alt="Welcome"
                                 width="100%"
                                 height="90%"
                                 loading="lazy"
                                 src="https://riseapps.co/wp-content/uploads/2020/03/7f133df7-c88e-423d-8659-8ae2f762a62b-1024x768-1024x768-min-1024x768.jpg"
-                            />
+                            /> */}
+                            <CertificateCarousel />
                         </Grid>
                         <Grid item xs={5}>
                             <Profile />
@@ -70,11 +60,11 @@ const DoctorProfile: React.FC = () => {
                         </Grid>
                     </Grid>
                     <Box sx={{ mt: 2 }} />
-                    <Grid container spacing={3}>
+                    {/* <Grid container spacing={3}>
                         <Grid item lg={12} md={6} xs={12}>
                             <CeritificateProfile />
                         </Grid>
-                    </Grid>
+                    </Grid> */}
                 </Container>
             </Box>
         </React.Fragment>

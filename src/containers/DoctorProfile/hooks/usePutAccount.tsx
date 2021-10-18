@@ -15,13 +15,13 @@ const usePutAccount = () => {
             return result.data;
         },
         {
-            // onSuccess: () => {
-            //     cache.invalidateQueries(DoctorStateKeysEnum.Doctors);
-            // },
-            // onError: () => {
-            //     // eslint-disable-next-line no-console
-            //     console.log("error");
-            // },
+            onSuccess: () => {
+                cache.invalidateQueries(AccountStateKeysEnum.Accounts);
+            },
+            onError: () => {
+                // eslint-disable-next-line no-console
+                console.log("error");
+            },
         }
     );
     return result;

@@ -93,7 +93,7 @@ const Profile: React.FC = () => {
     return (
         <React.Fragment>
             {/* <ProfileForm dataProfile={data} open={open} handleClose={handleClose} /> */}
-            <Card sx={{ maxHeight: "100%", width: 450, borderRadius: 5, pl: 5 }}>
+            <Card sx={{ minHeight: "100%", width: 450, borderRadius: 5, pl: 5 }}>
                 <Box sx={{ display: "flex" }}>
                     <Typography variant="h6" component="div">
                         Profile doctor

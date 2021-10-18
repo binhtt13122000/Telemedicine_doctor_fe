@@ -2,5 +2,5 @@ export type Major = {
     id?: number;
     name?: string;
     description?: string;
-    isActive?: boolean;
+    isActive: boolean;
 };

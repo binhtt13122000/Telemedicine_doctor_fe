@@ -18,13 +18,13 @@ const usePutCeritificate = () => {
             return result.data;
         },
         {
-            // onSuccess: () => {
-            //     cache.invalidateQueries(DoctorStateKeysEnum.Doctors);
-            // },
-            // onError: () => {
-            //     // eslint-disable-next-line no-console
-            //     console.log("error");
-            // },
+            onSuccess: () => {
+                cache.invalidateQueries(CeritificateStateKeysEnum.Ceritifcates);
+            },
+            onError: () => {
+                // eslint-disable-next-line no-console
+                console.log("error");
+            },
         }
     );
     return result;
