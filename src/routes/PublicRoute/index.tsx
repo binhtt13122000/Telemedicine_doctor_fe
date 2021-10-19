@@ -8,6 +8,10 @@ const PublicRoute: React.FC<RouteProps> = (props: RouteProps) => {
         return <Route {...props} />;
     }
 
+    if (typeof user === "string") {
+        return <Redirect to="/account-form" />;
+    }
+
     return <Redirect to="/" />;
 };
 export default PublicRoute;

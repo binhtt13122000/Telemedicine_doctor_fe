@@ -1,3 +1,4 @@
+import { useHistory } from "react-router";
 import axios from "src/axios";
 import { API_ROOT_URL } from "src/configurations";
 import { auth } from "src/configurations/firebase";
@@ -18,6 +19,8 @@ export const facebookProvider = new FacebookAuthProvider();
 
 const useAuth = () => {
     const showSnackBar = useSnackbar();
+    const history = useHistory();
+
     const login = async (provider: AuthProvider) => {
         try {
             let response = await signInWithPopup(auth, provider);
@@ -27,22 +30,27 @@ const useAuth = () => {
                     `${API_ROOT_URL}/login`,
                     {
                         tokenId: tokenId,
-                        loginType: 2,
+                        loginType: 1,
                     }
                 );
                 if (responseLogin.status === 200) {
-                    LocalStorageUtil.setItem("user", responseLogin?.data?.account);
-                    LocalStorageUtil.setItem("token", responseLogin?.data.accessToken);
-                    LocalStorageUtil.setItem(
-                        "id_app",
-                        responseLogin?.data.account.id
-                            ? responseLogin?.data.account.id.toString()
-                            : "0"
-                    );
-                    window.location.reload();
+                    if (responseLogin.data.account) {
+                        LocalStorageUtil.setItem("user", responseLogin?.data?.account);
+                        LocalStorageUtil.setItem("token", responseLogin?.data.accessToken);
+                        LocalStorageUtil.setItem(
+                            "id_app",
+                            responseLogin?.data.account.id
+                                ? responseLogin?.data.account.id.toString()
+                                : "0"
+                        );
+                        window.location.reload();
+                    } else {
+                        LocalStorageUtil.setItem("user", Object.values(responseLogin.data)[0]);
+                        history.push("/account-form");
+                    }
                 }
             }
-        } catch (exception: any) {
+        } catch (exception) {
             // eslint-disable-next-line no-console
             console.log(exception);
             showSnackBar({

@@ -3,6 +3,7 @@ import { Switch } from "react-router";
 import { PrivateRoute } from "./PrivateRoute";
 import PublicRoute from "./PublicRoute";
 
+import AccountForm from "src/containers/AccountForm";
 import Dashboard from "src/containers/Dashboard";
 import Layout from "src/containers/Layout";
 import Login from "src/containers/Login";
@@ -13,6 +14,11 @@ export const publicRoutes = [
         path: "/login",
         name: "login",
         component: Login,
+    },
+    {
+        path: "/account-form",
+        name: "account-form",
+        component: AccountForm,
     },
 ];
 export const privateRoutes = [
