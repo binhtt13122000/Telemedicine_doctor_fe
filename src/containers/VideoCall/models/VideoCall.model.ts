@@ -36,7 +36,7 @@ export type Slots = {
     startTime: string;
     endTime: string;
     isActive: boolean;
-    doctor: Doctors;
+    doctor: Doctor;
 };
 
 export type SymptomHealthChecks = {
@@ -56,7 +56,7 @@ export type Symptom = {
     isActive: boolean;
 };
 
-export type Doctors = {
+export type Doctor = {
     id?: string;
     email: string;
     practisingCertificate: string;
