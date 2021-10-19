@@ -1,6 +1,7 @@
 import { useQuery } from "react-query";
 
-import { Account } from "src/common/models/Account.model";
+import { Account } from "../models/Account.model";
+
 import AccountService from "src/containers/Account/services/Account.service";
 
 export enum AccountStateKeysEnum {

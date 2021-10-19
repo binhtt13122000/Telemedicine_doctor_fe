@@ -1,12 +1,32 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 import { SubmitHandler, useForm } from "react-hook-form";
 
 import { Account } from "../models/Account.model";
+import AddressService from "../services/Address.service";
 
-import { Button, Card, Modal, Stack, TextField, Typography } from "@mui/material";
+import { Autocomplete, Button, Card, Grid, Modal, TextField, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 
+interface Area {
+    name: string;
+    code: number;
+    codename: string;
+    division_type: string;
+}
+interface Province extends Area {
+    phone_code: number;
+    districts: District[];
+}
+
+interface District extends Area {
+    province_code: number;
+    wards: Ward[];
+}
+
+interface Ward extends Area {
+    district_code: number;
+}
 export interface IProfileForm {
     dataProfile: Account;
     open: boolean;
@@ -16,8 +36,11 @@ export interface IProfileForm {
 const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
     const { dataProfile } = props;
     const [checked, setChecked] = useState<boolean>(dataProfile.active);
-
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {};
+    const [provinces, setProvinces] = useState<Province[]>([]);
+    const [districts, setDistricts] = useState<District[]>([]);
+    const [wards, setWards] = useState<Ward[]>([]);
+    const [disableDistrict, setDisableDistrict] = useState<boolean>(true);
+    const [disableWard, setDisableWard] = useState<boolean>(true);
 
     const {
         register,
@@ -40,7 +63,6 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
         setValue("dob", dataProfile.dob);
         setValue("isMale", dataProfile.isMale);
         setValue("active", dataProfile.active);
-        setValue("registerTime", dataProfile.registerTime);
         setChecked(dataProfile.active);
     }, [dataProfile, setValue, setChecked]);
 
@@ -51,6 +73,65 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
             props.handleClose("SAVE", dataProfile, clearErrors);
         }
     };
+    const onChangeProvince = (newProvince: Province | null) => {
+        if (newProvince) {
+            setValue("city", newProvince.name);
+            fetchDistricts(newProvince.code);
+            setDisableDistrict(false);
+        } else {
+            setDistricts([]);
+            setValue("ward", "");
+            setDisableDistrict(true);
+            setValue("locality", "");
+            setDisableWard(true);
+        }
+    };
+
+    const onChangeDistrict = (newDistrict: District | null) => {
+        if (newDistrict) {
+            setValue("locality", newDistrict.name);
+            fetchWards(newDistrict.code);
+            setDisableWard(false);
+        } else {
+            setWards([]);
+            setValue("locality", "");
+            setDisableWard(true);
+        }
+    };
+
+    const fetchProvinces = useCallback(async () => {
+        try {
+            const service = new AddressService<Province[]>();
+            const response = await service.getProvinces();
+            if (response.status === 200) {
+                setProvinces(response.data);
+            }
+        } catch (_) {}
+    }, []);
+
+    const fetchDistricts = async (provinceCode: number) => {
+        try {
+            const service = new AddressService<Province>();
+            const response = await service.getDistricts(provinceCode);
+            if (response.status === 200) {
+                setDistricts(response.data.districts);
+            }
+        } catch (_) {}
+    };
+
+    const fetchWards = async (districtCode: number) => {
+        try {
+            const service = new AddressService<District>();
+            const response = await service.getWards(districtCode);
+            if (response.status === 200) {
+                setWards(response.data.wards);
+            }
+        } catch (_) {}
+    };
+
+    useEffect(() => {
+        fetchProvinces();
+    }, [fetchProvinces]);
 
     return (
         <Modal open={props.open}>
@@ -60,8 +141,7 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
                     top: "50%",
                     left: "50%",
                     transform: "translate(-50%, -50%)",
-                    width: "50%",
-                    minWidth: 275,
+                    width: "40%",
                     mx: "auto",
                     p: 1,
                     m: 2,
@@ -83,78 +163,158 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
                         },
                     }}
                 >
-                    <Stack direction="row" spacing={1}>
-                        <TextField
-                            id="firstName"
-                            label="Tên*"
-                            variant="outlined"
-                            error={!!errors.firstName}
-                            helperText={errors.firstName && "Tên là bắt buộc"}
-                            {...register("firstName", { required: true })}
-                        />
-                        <TextField
-                            id="lastName"
-                            label="Họ*"
-                            variant="outlined"
-                            error={!!errors.lastName}
-                            helperText={errors.lastName && "Họ là bắt buộc"}
-                            {...register("lastName", { required: true })}
-                        />
-                    </Stack>
-                    <Stack direction="row" spacing={1}>
-                        <TextField
-                            id="postalCode"
-                            label="Mã bưu điện*"
-                            variant="outlined"
-                            error={!!errors.postalCode}
-                            helperText={errors.postalCode && "Mã bưu điện là bắt buộc"}
-                            {...register("postalCode", { required: true })}
-                        />
-                        <TextField
-                            id="locality"
-                            label="Họ*"
-                            variant="outlined"
-                            error={!!errors.locality}
-                            helperText={errors.locality && "Địa phương là bắt buộc"}
-                            {...register("locality", { required: true })}
-                        />
-                    </Stack>
-                    <Stack direction="row" spacing={1}>
-                        <TextField
-                            id="streetAddress"
-                            label="Địa chỉ đường phố*"
-                            variant="outlined"
-                            error={!!errors.streetAddress}
-                            helperText={errors.streetAddress && "Địa chỉ đường phố là bắt buộc"}
-                            {...register("streetAddress", { required: true })}
-                        />
-                        <TextField
-                            id="city"
-                            label="Thành phố*"
-                            variant="outlined"
-                            error={!!errors.city}
-                            helperText={errors.city && "Thành phố là bắt buộc"}
-                            {...register("city", { required: true })}
-                        />
-                    </Stack>
-                    <Stack direction="row" spacing={1}>
-                        <TextField
-                            id="phone"
-                            label="Số điện thoại*"
-                            variant="outlined"
-                            error={!!errors.phone}
-                            helperText={errors.phone && "Số điện thoại đường phố là bắt buộc"}
-                            {...register("phone", { required: true })}
-                        />
-                        <TextField
-                            id="dob"
-                            label="Ngày sinh*"
-                            variant="outlined"
-                            error={!!errors.dob}
-                            helperText={errors.dob && "Ngày sinh là bắt buộc"}
-                            {...register("dob", { required: true })}
-                        />
-                    </Stack>
+                    <Grid container columnSpacing={1}>
+                        <Grid item xs={3}>
+                            <TextField
+                                id="firstName"
+                                label="Tên*"
+                                variant="outlined"
+                                error={!!errors.firstName}
+                                helperText={errors.firstName && "Tên là bắt buộc"}
+                                {...register("firstName", { required: true })}
+                            />
+                        </Grid>
+                        <Grid item xs={4}>
+                            <TextField
+                                id="lastName"
+                                label="Họ*"
+                                variant="outlined"
+                                error={!!errors.lastName}
+                                helperText={errors.lastName && "Họ là bắt buộc"}
+                                {...register("lastName", { required: true })}
+                            />
+                        </Grid>
+                        <Grid item xs={4}>
+                            <TextField
+                                id="dob"
+                                label="Ngày sinh*"
+                                variant="outlined"
+                                error={!!errors.dob}
+                                helperText={errors.dob && "Ngày sinh là bắt buộc"}
+                                {...register("dob", { required: true })}
+                            />
+                        </Grid>
+                    </Grid>
+                    <Grid container columnSpacing={1}>
+                        <Grid item xs={4}>
+                            <TextField
+                                id="email"
+                                label="Email*"
+                                variant="outlined"
+                                error={!!errors.email}
+                                helperText={errors.email && "Email là bắt buộc"}
+                                {...register("email", { required: true })}
+                            />
+                        </Grid>
+                        <Grid item xs={4}>
+                            <TextField
+                                id="phone"
+                                label="Số điện thoại*"
+                                variant="outlined"
+                                error={!!errors.phone}
+                                helperText={errors.phone && "Số điện thoại đường phố là bắt buộc"}
+                                {...register("phone", { required: true })}
+                            />
+                        </Grid>
+                        <Grid item xs={3}>
+                            <TextField
+                                id="isMale"
+                                label="Giới tính*"
+                                variant="outlined"
+                                error={!!errors.isMale}
+                                helperText={errors.isMale && "Giới tính là bắt buộc"}
+                                {...register("isMale", { required: true })}
+                            />
+                        </Grid>
+                    </Grid>
+                    <Grid container spacing={1}>
+                        <Grid item xs={5}>
+                            <TextField
+                                id="streetAddress"
+                                label="Địa chỉ đường phố*"
+                                variant="outlined"
+                                error={!!errors.streetAddress}
+                                helperText={errors.streetAddress && "Địa chỉ đường phố là bắt buộc"}
+                                {...register("streetAddress", { required: true })}
+                            />
+                        </Grid>
+                        <Grid item xs={7}>
+                            <TextField
+                                id="postalCode"
+                                label="Mã bưu điện*"
+                                variant="outlined"
+                                disabled
+                                error={!!errors.postalCode}
+                                helperText={errors.postalCode && "Mã bưu điện là bắt buộc"}
+                                {...register("postalCode", { required: true })}
+                            />
+                        </Grid>
+                    </Grid>
+                    <Grid container columnSpacing={1}>
+                        <Grid item xs={3}>
+                            <Autocomplete
+                                options={provinces}
+                                getOptionLabel={(province: Province) => province.name}
+                                isOptionEqualToValue={(option, value) => option.name === value.name}
+                                onChange={(_, newProvince) => onChangeProvince(newProvince)}
+                                renderInput={(params) => (
+                                    <TextField
+                                        {...params}
+                                        id="city"
+                                        variant="outlined"
+                                        placeholder="Tỉnh/Thành phố"
+                                        error={!!errors.city}
+                                        helperText={errors.city && "Vui lòng chọn Tỉnh/Thành phố"}
+                                        {...register("city", { required: true })}
+                                    />
+                                )}
+                            />
+                        </Grid>
+                        <Grid item xs={4}>
+                            <Autocomplete
+                                disabled={disableDistrict}
+                                options={districts}
+                                getOptionLabel={(district: District) => district.name}
+                                isOptionEqualToValue={(option, value) => option.name === value.name}
+                                onChange={(_, newDistrict) => onChangeDistrict(newDistrict)}
+                                renderInput={(params) => (
+                                    <TextField
+                                        {...params}
+                                        id="ward"
+                                        variant="outlined"
+                                        placeholder="Quận/Huyện"
+                                        error={!!errors.ward}
+                                        helperText={errors.ward && "Vui lòng chọn Quận/Huyện"}
+                                        {...register("ward", { required: true })}
+                                    />
+                                )}
+                            />
+                        </Grid>
+                        <Grid item xs={4}>
+                            <Autocomplete
+                                disabled={disableWard}
+                                options={wards}
+                                getOptionLabel={(ward: Ward) => ward.name}
+                                isOptionEqualToValue={(option, value) => option.name === value.name}
+                                onChange={(_, newWard) => {
+                                    if (newWard) {
+                                        setValue("locality", newWard.name);
+                                    }
+                                }}
+                                renderInput={(params) => (
+                                    <TextField
+                                        {...params}
+                                        id="locality"
+                                        variant="outlined"
+                                        placeholder="Phường/Xã"
+                                        error={!!errors.locality}
+                                        helperText={errors.locality && "Vui lòng chọn Phường/Xã"}
+                                        {...register("locality", { required: true })}
+                                    />
+                                )}
+                            />
+                        </Grid>
+                    </Grid>
                     {/* <Stack direction="row" spacing={0}>
                         <Typography
                             sx={{

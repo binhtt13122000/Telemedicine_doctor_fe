@@ -111,9 +111,9 @@ const MajorProfile: React.FC = () => {
                                     </Box>
                                     <Box sx={{ display: "flex", ml: 4 }}>
                                         <Typography variant="h6" component="div">
-                                            <IconButton>
+                                            {/* <IconButton>
                                                 <Icon color="error">delete</Icon>
-                                            </IconButton>
+                                            </IconButton> */}
                                             <IconButton onClick={() => handleOpen(item?.major)}>
                                                 <Icon>edit</Icon>
                                             </IconButton>

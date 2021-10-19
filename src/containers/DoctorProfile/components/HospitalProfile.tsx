@@ -46,8 +46,8 @@ const HospitalProfile: React.FC = () => {
         clearErrors?: Function
     ) => {
         if (type === "SAVE") {
-            if (data) {
-                if (data.id) {
+            if (dataHospital) {
+                if (dataHospital.id) {
                     mutate({
                         id: dataHospital?.id,
                         hospitalCode: dataHospital?.hospitalCode,
@@ -59,7 +59,7 @@ const HospitalProfile: React.FC = () => {
                         isActive: dataHospital?.isActive,
                     });
                 } else {
-                    // postDrug(data);
+                    // useGetPostDoctor
                 }
             }
         }
@@ -72,6 +72,9 @@ const HospitalProfile: React.FC = () => {
     const handleOpen = async (hos: Hospital) => {
         setOpen(true);
         setHospital(hos);
+    };
+    const handleCreate = () => {
+        setOpen(true);
     };
     return (
         <React.Fragment>
@@ -140,9 +143,9 @@ const HospitalProfile: React.FC = () => {
                                     </Box>
                                     <Box sx={{ display: "flex" }}>
                                         <Typography variant="h6" component="h5">
-                                            <IconButton>
+                                            {/* <IconButton>
                                                 <Icon color="error">delete</Icon>
-                                            </IconButton>
+                                            </IconButton> */}
                                             <IconButton onClick={() => handleOpen(item?.hospital)}>
                                                 <Icon>edit</Icon>
                                             </IconButton>
@@ -154,7 +157,9 @@ const HospitalProfile: React.FC = () => {
                     </List>
                     <Box sx={{ mb: 2 }} />
                     <Box sx={{ textAlign: "center" }}>
-                        <Button variant="outlined">+ Thêm bệnh viện</Button>
+                        <Button variant="outlined" onClick={() => handleCreate()}>
+                            + Thêm bệnh viện
+                        </Button>
                     </Box>
                     <Box sx={{ mb: 2 }} />
                 </Box>

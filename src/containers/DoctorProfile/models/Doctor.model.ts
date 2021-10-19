@@ -4,7 +4,7 @@ import { MajorDoctor } from "./MajorDoctor.model";
 import { Slot } from "./Slot.model";
 
 export type Doctor = {
-    id: number;
+    id?: number;
     email: string;
     name: string;
     avatar: string;
@@ -22,4 +22,21 @@ export type Doctor = {
     hospitalDoctors: HospitalDoctor[];
     majorDoctors: MajorDoctor[];
     slots: Slot[];
+};
+
+export type DoctorPraticing = {
+    id?: number;
+    email: string;
+    name: string;
+    avatar: string;
+    practisingCertificate: string;
+    certificateCode: string;
+    placeOfCertificate: string;
+    dateOfCertificate: string;
+    scopeOfPractice: string;
+    description: string;
+    numberOfConsultants: number;
+    rating: number;
+    isVerify: boolean;
+    isActive: boolean;
 };

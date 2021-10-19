@@ -5,6 +5,7 @@ import moment from "moment";
 import useGetAccount from "../hooks/useGetAccount";
 import usePutAccount from "../hooks/usePutAccount";
 import { Account } from "../models/Account.model";
+import ProfileForm from "./ProfileForm";
 
 import {
     Avatar,
@@ -24,6 +25,7 @@ export interface IProfile {
 
 const Profile: React.FC = () => {
     const initAccount: Account = {
+        id: 1,
         email: "",
         firstName: "",
         lastName: "",
@@ -49,10 +51,10 @@ const Profile: React.FC = () => {
     if (isLoading) {
         return <CircularProgress />;
     }
-    // const handleOpenModal = (profile?: Account) => {
-    //     setOpen(true);
-    //     setAccount(data);
-    // };
+    const handleOpenModal = () => {
+        setOpen(true);
+        data && setAccount(data);
+    };
     const handleClose = (
         type: "SAVE" | "CANCEL",
         dataProfile?: Account,
@@ -63,7 +65,7 @@ const Profile: React.FC = () => {
                 if (dataProfile.id) {
                     mutate({
                         id: dataProfile?.id,
-                        email: dataProfile.email,
+                        email: dataProfile?.email,
                         firstName: dataProfile?.firstName,
                         lastName: dataProfile?.lastName,
                         ward: dataProfile?.ward,
@@ -90,9 +92,10 @@ const Profile: React.FC = () => {
             return <CircularProgress />;
         }
     };
+
     return (
         <React.Fragment>
-            {/* <ProfileForm dataProfile={data} open={open} handleClose={handleClose} /> */}
+            {data && <ProfileForm dataProfile={account} open={open} handleClose={handleClose} />}
             <Card sx={{ minHeight: "100%", width: 450, borderRadius: 5, pl: 5 }}>
                 <Box sx={{ display: "flex" }}>
                     <Typography variant="h6" component="div">
@@ -100,7 +103,7 @@ const Profile: React.FC = () => {
                     </Typography>
                     <Box sx={{ ml: 29 }}>
                         <Typography variant="h6" component="h5">
-                            <IconButton>
+                            <IconButton onClick={() => handleOpenModal()}>
                                 <Icon>edit</Icon>
                             </IconButton>
                         </Typography>

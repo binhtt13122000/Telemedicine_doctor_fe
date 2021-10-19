@@ -78,6 +78,10 @@ const CeritificateProfile: React.FC = () => {
         setOpen(true);
         setAb(ceti);
     };
+    const handleCreate = () => {
+        setOpen(true);
+    };
+
     return (
         <React.Fragment>
             <Card sx={{ height: 400, borderRadius: 5 }}>
@@ -135,7 +139,9 @@ const CeritificateProfile: React.FC = () => {
                     })}
                     <CertificationForm dataCeti={ab} open={open} handleClose={handleClose} />
                     <Box sx={{ mt: 20, textAlign: "center" }}>
-                        <Button variant="outlined">+ Thêm chứng chỉ</Button>
+                        <Button variant="outlined" onClick={() => handleCreate()}>
+                            + Thêm chứng chỉ
+                        </Button>
                     </Box>
                 </Box>
             </Card>
