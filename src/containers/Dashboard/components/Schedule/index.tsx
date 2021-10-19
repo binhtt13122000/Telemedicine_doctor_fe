@@ -314,7 +314,7 @@ const SlotManagement: React.FC = () => {
                         )}
                     </DialogActions>
                 </Dialog>
-                <Box height={10} />
+                <Box height={5} />
                 <Paper>
                     <Scheduler data={dataView} height={450}>
                         <ViewState defaultCurrentDate={currentDate} />
