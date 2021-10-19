@@ -17,7 +17,7 @@ const HospitalManagement: React.FC = () => {
     return (
         <React.Fragment>
             {data?.content?.map((x) => (
-                <Typography variant="h3" key={x.id}>
+                <Typography variant="h4" key={x.id}>
                     {x.name}
                 </Typography>
             ))}

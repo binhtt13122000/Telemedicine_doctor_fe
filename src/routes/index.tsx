@@ -6,8 +6,10 @@ import PublicRoute from "./PublicRoute";
 import AccountForm from "src/containers/AccountForm";
 import DoctorForm from "src/containers/DoctorForm";
 import HospitalManagement from "src/containers/HospitalManagement";
+import Dashboard from "src/containers/Dashboard";
 import Layout from "src/containers/Layout";
 import Login from "src/containers/Login";
+import VideoCall from "src/containers/VideoCall";
 
 export const publicRoutes = [
     {
@@ -25,7 +27,15 @@ export const privateRoutes = [
     {
         path: "/",
         name: "home",
-        component: HospitalManagement,
+        component: Dashboard,
+    },
+];
+
+export const privateWithNoLayouts = [
+    {
+        path: "/call/:id",
+        name: "video-call",
+        component: VideoCall,
     },
     {
         path: "/form2",
@@ -41,6 +51,14 @@ const RouteComponent = () => {
                 <PublicRoute
                     key={route.name}
                     exact={true}
+                    path={route.path}
+                    component={route.component}
+                />
+            ))}
+            {privateWithNoLayouts.map((route) => (
+                <PrivateRoute
+                    exact={true}
+                    key={route.name}
                     path={route.path}
                     component={route.component}
                 />
