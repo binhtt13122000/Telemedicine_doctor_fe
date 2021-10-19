@@ -1,3 +1,4 @@
+import { useHistory } from "react-router";
 import axios from "src/axios";
 import { API_ROOT_URL } from "src/configurations";
 import { auth } from "src/configurations/firebase";
@@ -18,6 +19,7 @@ export const facebookProvider = new FacebookAuthProvider();
 
 const useAuth = () => {
     const showSnackBar = useSnackbar();
+    const history = useHistory();
     const login = async (provider: AuthProvider) => {
         try {
             let response = await signInWithPopup(auth, provider);
@@ -42,7 +44,6 @@ const useAuth = () => {
                         );
                         window.location.reload();
                     } else {
-                        console.log(responseLogin.data);
                         LocalStorageUtil.setItem("user", Object.values(responseLogin.data)[0]);
                         history.push("/form1");
                     }
