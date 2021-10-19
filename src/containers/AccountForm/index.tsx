@@ -180,11 +180,16 @@ const AccountForm: React.FC = () => {
 
     useEffect(() => {
         fetchProvinces();
-    });
+    }, [fetchProvinces]);
 
     return (
         <Card
             sx={{
+                position: "absolute" as "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                width: "80%",
                 p: 1,
                 m: 2,
                 borderRadius: 1,

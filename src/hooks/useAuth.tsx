@@ -29,16 +29,22 @@ const useAuth = () => {
                     `${API_ROOT_URL}/login`,
                     {
                         tokenId: tokenId,
-                        loginType: 2,
+                        loginType: 1,
                     }
                 );
                 if (responseLogin.status === 200) {
-                    LocalStorageUtil.setItem("user", responseLogin?.data?.account);
-                    LocalStorageUtil.setItem("token", responseLogin?.data.accessToken);
-                    history.push("/");
+                    if (responseLogin.data.account) {
+                        LocalStorageUtil.setItem("user", responseLogin?.data?.account);
+                        LocalStorageUtil.setItem("token", responseLogin?.data.accessToken);
+                        history.push("/");
+                    } else {
+                        console.log(responseLogin.data);
+                        LocalStorageUtil.setItem("user", Object.values(responseLogin.data)[0]);
+                        history.push("/form1");
+                    }
                 }
             }
-        } catch (exception: any) {
+        } catch (exception) {
             // eslint-disable-next-line no-console
             console.log(exception);
             showSnackBar({
