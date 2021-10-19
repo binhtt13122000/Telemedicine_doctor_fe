@@ -80,6 +80,9 @@ const CertificateCarousel: React.FC = () => {
     if (isLoading) {
         return <CircularProgress />;
     }
+    const handleCreate = () => {
+        setOpen(true);
+    };
     return (
         <React.Fragment>
             <CertificationForm dataCeti={ab} open={open} handleClose={handleClose} />
@@ -101,6 +104,11 @@ const CertificateCarousel: React.FC = () => {
                     <Typography variant="h6" component="div">
                         Chứng chỉ
                     </Typography>
+                    <Box sx={{ ml: "30rem" }}>
+                        <IconButton onClick={() => handleCreate()}>
+                            <Icon>add_circle</Icon>
+                        </IconButton>
+                    </Box>
                 </Paper>
                 <AutoPlaySwipeableViews
                     axis={theme.direction === "rtl" ? "x-reverse" : "x"}

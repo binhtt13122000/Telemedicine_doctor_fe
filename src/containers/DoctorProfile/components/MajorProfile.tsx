@@ -63,6 +63,10 @@ const MajorProfile: React.FC = () => {
         setOpen(true);
         setMajor(maj);
     };
+    const handleCreate = () => {
+        setOpen(true);
+        setMajor(initCetification);
+    };
     return (
         <React.Fragment>
             <MajorForm dataMajor={major} opened={open} handleClose={handleClose} />
@@ -126,7 +130,9 @@ const MajorProfile: React.FC = () => {
                     </List>
                     <Box sx={{ mb: 2 }} />
                     <Box sx={{ textAlign: "center" }}>
-                        <Button variant="outlined">+ Thêm chuyên khoa</Button>
+                        <Button variant="outlined" onClick={() => handleCreate()}>
+                            + Thêm chuyên khoa
+                        </Button>
                     </Box>
                 </Box>
             </Card>

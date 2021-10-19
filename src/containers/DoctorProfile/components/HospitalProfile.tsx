@@ -75,6 +75,7 @@ const HospitalProfile: React.FC = () => {
     };
     const handleCreate = () => {
         setOpen(true);
+        setHospital(initHospital);
     };
     return (
         <React.Fragment>
