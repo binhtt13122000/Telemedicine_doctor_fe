@@ -1,9 +1,13 @@
 import { Switch } from "react-router";
 
+import WaitingScreen from "src/containers/DoctorForm/components/WaitingScreen";
+
 import { PrivateRoute } from "./PrivateRoute";
 import PublicRoute from "./PublicRoute";
 
+import AccountForm from "src/containers/AccountForm";
 import Dashboard from "src/containers/Dashboard";
+import DoctorForm from "src/containers/DoctorForm";
 import Layout from "src/containers/Layout";
 import Login from "src/containers/Login";
 import VideoCall from "src/containers/VideoCall";
@@ -13,6 +17,21 @@ export const publicRoutes = [
         path: "/login",
         name: "login",
         component: Login,
+    },
+    {
+        path: "/account-form",
+        name: "account-form",
+        component: AccountForm,
+    },
+    {
+        path: "/doctor-form",
+        name: "doctor-form",
+        component: DoctorForm,
+    },
+    {
+        path: "/waiting-screen",
+        name: "waiting-screen",
+        component: WaitingScreen,
     },
 ];
 export const privateRoutes = [
