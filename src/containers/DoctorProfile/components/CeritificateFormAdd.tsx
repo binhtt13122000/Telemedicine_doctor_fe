@@ -3,7 +3,7 @@ import * as React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 
 import logo from "../../../assets/logo.png";
-import { CetificationAdd } from "../models/Cetification.model";
+import { CetificationAdd } from "../models/Doctor.model";
 
 import { PhotoCamera } from "@mui/icons-material";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
@@ -45,6 +45,7 @@ const CertificationFormAdd: React.FC<ICertificationForm> = (props: ICertificatio
     } = useForm<CetificationAdd>({});
 
     React.useEffect(() => {
+        // setValue("email", dataHospital.email);
         setValue("certificationId", dataCetificationAdd.certificationId);
         setValue("evidence", dataCetificationAdd.evidence);
         setValue("dateOfIssue", dataCetificationAdd.dateOfIssue);
@@ -62,26 +63,33 @@ const CertificationFormAdd: React.FC<ICertificationForm> = (props: ICertificatio
             props.handleClose("SAVE", dataCetificationAdd, clearErrors);
         }
     };
-
-    const { ref: certificationIdRef, ...certificationIdRefProps } = register("certificationId", {
-        // validate: (value) => !!value.length,
-        min: {
-            value: 1,
-            message: "Mã dịch bệnh không được để trống",
-        },
-    });
+    const { ref: certificationDoctorsRef, ...certificationDoctorsProps } = register(
+        "certificationId",
+        {
+            min: {
+                value: 1,
+                message: "Mã dịch bệnh không được để trống",
+            },
+        }
+    );
     const uploadedFile = (event?: React.ChangeEvent<HTMLInputElement>) => {
         setImgLink(URL.createObjectURL(event?.target.files![0]));
         setFile(event?.target.files![0] as Blob);
     };
     // const changeValueCertificateDoctors = (values: number[]) => {
     //     const res = values.map((id) => {
-    //         const obj = { certificationId: id };
+    //         const obj = { certificationDoctors: id };
     //         return obj;
     //     });
-    //     setValue("certificationId", res);
-    //     clearErrors("certificationId");
+    //     setValue("certificationDoctors", res);
+    //     clearErrors("certificationDoctors");
     // };
+
+    const changeValue = (value: number) => {
+        setValue("certificationId", value);
+        clearErrors("certificationId");
+    };
+
     return (
         <Modal
             open={props.open}
@@ -125,6 +133,23 @@ const CertificationFormAdd: React.FC<ICertificationForm> = (props: ICertificatio
                             helperText={errors.certificationId && "Mã chứng chỉ là bắt buộc"}
                             {...register("certificationId", { required: true })}
                         />
+                        {/* <Grid container columnSpacing={1}>
+                            <Grid item xs={8}> */}
+                        {/* <MultipleAutocomplete
+                            id="majors-selection"
+                            query="/certifications"
+                            field="name"
+                            searchField="name"
+                            limit={10}
+                            errors={Boolean(errors?.certificationId)}
+                            errorMessage={"Vui lòng chọn chuyên ngành"}
+                            inputRef={certificationDoctorsRef}
+                            {...certificationDoctorsProps}
+                            changeValue={changeValueCertificateDoctors}
+                            width="80%"
+                        /> */}
+                        {/* </Grid>
+                        </Grid> */}
                         <LocalizationProvider dateAdapter={AdapterDateFns}>
                             <DesktopDatePicker
                                 inputFormat="dd/MM/yyyy"

@@ -4,8 +4,9 @@ import moment from "moment";
 
 import useGetDoctor from "../hooks/useGetDoctor";
 import usePutCeritificate from "../hooks/usePutCeritificate";
-import { Cetification, CetificationAdd } from "../models/Cetification.model";
-import CertificateService from "../services/Certificate.service";
+import { Cetification } from "../models/Cetification.model";
+import { CetificationAdd, Doctor } from "../models/Doctor.model";
+import DoctorService from "../services/Doctor.service";
 import CertificationForm from "./CeritificateForm";
 import CertificationFormAdd from "./CeritificateFormAdd";
 
@@ -50,6 +51,7 @@ const CeritificateProfile: React.FC = () => {
     const { data, isLoading, isError } = useGetDoctor();
     const { mutate } = usePutCeritificate();
     const [open, setOpen] = useState<boolean>(false);
+    const [openAdd, setOpenAdd] = useState<boolean>(false);
     const [ab, setAb] = useState<Cetification>(initCetification);
     const [cetificationAdd, setCeficationAdd] = useState<CetificationAdd>(initCetificationAdd);
     if (isError) {
@@ -83,13 +85,18 @@ const CeritificateProfile: React.FC = () => {
         setOpen(false);
     };
 
-    const createCetificate = async (data: CetificationAdd) => {
+    const createCetificate = async (dataCeti: CetificationAdd, id: number) => {
         try {
             let formData = new FormData();
-            formData.append("CertificationId", JSON.stringify(data.certificationId));
-            formData.append("Evidence", data.evidence);
-            formData.append("DateOfIssue ", data.dateOfIssue);
-            const service = new CertificateService<CetificationAdd>();
+            formData.append("CertificationId", JSON.stringify(dataCeti.certificationId));
+            formData.append("Evidence", dataCeti.evidence);
+            formData.append("DateOfIssue ", dataCeti.dateOfIssue);
+            const service = new DoctorService<Doctor>();
+            const response = await service.createFormData(id, formData);
+            if (response.status === 201) {
+                // eslint-disable-next-line no-console
+                console.log(response.data);
+            }
         } catch (error) {
             console.log(error);
         }
@@ -103,30 +110,33 @@ const CeritificateProfile: React.FC = () => {
         if (type === "SAVE") {
             if (dataCetificationAdd) {
                 console.log("aloooo");
-                createCetificate(dataCetificationAdd);
+                data?.id && createCetificate(dataCetificationAdd, data?.id);
             }
         }
         if (clearErrors) {
             clearErrors();
         }
-        setOpen(false);
+        setOpenAdd(false);
     };
     const handleOpen = async (ceti: Cetification) => {
         setOpen(true);
         setAb(ceti);
     };
     const handleCreate = () => {
-        setOpen(true);
+        setOpenAdd(true);
     };
 
     return (
         <React.Fragment>
             <CertificationForm dataCeti={ab} open={open} handleClose={handleClose} />
-            <CertificationFormAdd
-                dataCetificationAdd={cetificationAdd}
-                open={open}
-                handleClose={handleCloseFormAdd}
-            />
+            {data && (
+                <CertificationFormAdd
+                    dataCetificationAdd={cetificationAdd}
+                    open={openAdd}
+                    handleClose={handleCloseFormAdd}
+                />
+            )}
+
             <Card sx={{ height: 400, borderRadius: 5 }}>
                 <Box sx={{ ml: 2 }}>
                     <Typography variant="h6" component="div">

@@ -32,13 +32,13 @@ const DoctorProfile: React.FC = () => {
                     <Box sx={{ mt: 2 }} />
                     <Grid container spacing={4}>
                         <Grid item xs={7}>
-                            {/* <img
+                            <img
                                 alt="Welcome"
                                 width="100%"
                                 height="90%"
                                 loading="lazy"
                                 src="https://riseapps.co/wp-content/uploads/2020/03/7f133df7-c88e-423d-8659-8ae2f762a62b-1024x768-1024x768-min-1024x768.jpg"
-                            /> */}
+                            />
                             {/* <CertificateCarousel /> */}
                         </Grid>
                         <Grid item xs={5}>

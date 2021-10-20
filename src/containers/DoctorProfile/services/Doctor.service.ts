@@ -30,6 +30,12 @@ class DoctorService<T> {
         });
     }
 
+    createFormData(id: number, data: FormData) {
+        return axios.post<T>(`/doctors/${id}/certifications`, data, {
+            headers: { "Content-Type": "multipart/form-data" },
+        });
+    }
+
     delete(id: number) {
         return axios.delete<{ message: "string" }>(`/doctors/${id}`);
     }

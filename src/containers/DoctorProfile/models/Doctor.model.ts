@@ -38,7 +38,7 @@ export type DoctorFromAdd = {
     rating: number;
     isVerify: boolean;
     isActive: boolean;
-    certificationDoctors: CertificationDoctor[];
+    certificationDoctors: { certificationId: number; evidence: string; dateOfIssue: string }[];
     hospitalDoctors: { hospitalId: number }[];
     majorDoctors: { majorId: number }[];
 };
@@ -58,4 +58,10 @@ export type DoctorPraticing = {
     rating: number;
     isVerify: boolean;
     isActive: boolean;
+};
+
+export type CetificationAdd = {
+    certificationId?: number;
+    evidence: string;
+    dateOfIssue: string;
 };
