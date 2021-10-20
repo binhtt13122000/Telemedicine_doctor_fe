@@ -30,7 +30,7 @@ const useAuth = () => {
                     `${API_ROOT_URL}/login`,
                     {
                         tokenId: tokenId,
-                        loginType: 1,
+                        loginType: 2,
                     }
                 );
                 if (responseLogin.status === 200) {

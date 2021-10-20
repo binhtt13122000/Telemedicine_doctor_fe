@@ -1,5 +1,7 @@
 import { Switch } from "react-router";
 
+import WaitingScreen from "src/containers/DoctorForm/components/WaitingScreen";
+
 import { PrivateRoute } from "./PrivateRoute";
 import PublicRoute from "./PublicRoute";
 
@@ -25,6 +27,11 @@ export const publicRoutes = [
         path: "/doctor-form",
         name: "doctor-form",
         component: DoctorForm,
+    },
+    {
+        path: "/waiting-screen",
+        name: "waiting-screen",
+        component: WaitingScreen,
     },
 ];
 export const privateRoutes = [

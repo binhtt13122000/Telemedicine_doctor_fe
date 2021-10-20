@@ -89,12 +89,7 @@ const DoctorForm: React.FC = () => {
             const response = await service.create(formData);
             if (response.status === 201) {
                 console.log(response.data);
-                showSnackBar({
-                    children: "Cập nhật thông tin thành công. Vui lòng đăng nhập lại.",
-                    variant: "filled",
-                    severity: "success",
-                });
-                history.push("/login");
+                history.push("/waiting-screen");
             }
         } catch (e) {
             console.log(e);
