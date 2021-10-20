@@ -65,7 +65,8 @@ export type Doctor = {
     dateOfCertificate: string;
     scopeOfPractice: string;
     description: string;
-    numberOfConsultants: string;
+    numberOfConsultants: number;
+    numberOfCancels: number;
     rating: number;
     isVerify: string;
     certificationDoctors: Cetification[];

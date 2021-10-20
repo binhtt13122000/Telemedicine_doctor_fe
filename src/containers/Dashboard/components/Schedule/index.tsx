@@ -74,7 +74,7 @@ const SlotManagement: React.FC = () => {
                             listCreatedSlot.filter((x) => {
                                 return (
                                     x.assignedDate === moment(startDate).format("YYYY-MM-DD") &&
-                                    x.startTime === moment(startDate).format("h:mm:ss")
+                                    x.startTime === moment(startDate).format("H:mm:ss")
                                 );
                             }).length > 0
                         }
@@ -143,7 +143,11 @@ const SlotManagement: React.FC = () => {
     };
 
     if (isLoading) {
-        return <CircularProgress />;
+        return (
+            <Box height={450} display="flex" alignItems="center" justifyContent="center">
+                <CircularProgress />
+            </Box>
+        );
     }
     if (data) {
         const dataView =
