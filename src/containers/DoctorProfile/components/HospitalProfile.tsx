@@ -111,16 +111,16 @@ const HospitalProfile: React.FC = () => {
     ) => {
         if (type === "SAVE") {
             if (dataHospital) {
-                const res = {
-                    ...dataHospital,
-                    id: data?.id,
-                    email: data?.email,
-                    certificateCode: data?.certificateCode,
-                    placeOfCertificate: data?.placeOfCertificate,
-                    dateOfCertificate: data?.dateOfCertificate,
-                    scopeOfPractice: data?.scopeOfPractice,
-                    isActive: data?.isActive,
-                };
+                // const res = {
+                //     ...dataHospital,
+                //     id: data?.id,
+                //     email: data?.email,
+                //     certificateCode: data?.certificateCode,
+                //     placeOfCertificate: data?.placeOfCertificate,
+                //     dateOfCertificate: data?.dateOfCertificate,
+                //     scopeOfPractice: data?.scopeOfPractice,
+                //     isActive: data?.isActive,
+                // };
                 createHospital(dataHospital);
             }
         }

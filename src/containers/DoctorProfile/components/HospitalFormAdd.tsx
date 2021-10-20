@@ -59,12 +59,6 @@ const HospitalFormAdd: React.FC<IHospitalForm> = (props: IHospitalForm) => {
     const { ref: hospitalDoctorsRef, ...hospitalDoctorsProps } = register("hospitalDoctors", {
         validate: (value) => !!value.length,
     });
-    const { ref: idRef, ...idRefProps } = register("id", {
-        min: {
-            value: 1,
-            message: "Mã bệnh viện không được để trống",
-        },
-    });
 
     const changeValue = (value: number) => {
         setValue("id", value);

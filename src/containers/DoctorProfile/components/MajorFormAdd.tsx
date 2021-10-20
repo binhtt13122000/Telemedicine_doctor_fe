@@ -2,17 +2,20 @@ import React from "react";
 
 import { SubmitHandler, useForm } from "react-hook-form";
 
-import CustomizeAutocomplete from "src/components/CustomizeAutocomplete";
+import { DoctorFromAdd } from "../models/Doctor.model";
+import MultipleAutocomplete from "./MultipleAutocomplete";
 
-import { Doctor } from "../models/Doctor.model";
-
-import { Button, Card, Modal, Typography } from "@mui/material";
+import { Button, Card, Grid, Modal, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 
 export interface IMajorForm {
     opened: boolean;
-    dataMajorAdd: Doctor;
-    handleClose: (type: "SAVE" | "CANCEL", dataMajorAdd?: Doctor, callback?: Function) => void;
+    dataMajorAdd: DoctorFromAdd;
+    handleClose: (
+        type: "SAVE" | "CANCEL",
+        dataMajorAdd?: DoctorFromAdd,
+        callback?: Function
+    ) => void;
 }
 
 const MajorFormAdd: React.FC<IMajorForm> = (props: IMajorForm) => {
@@ -28,7 +31,7 @@ const MajorFormAdd: React.FC<IMajorForm> = (props: IMajorForm) => {
         formState: { errors },
         setValue,
         clearErrors,
-    } = useForm<Doctor>({});
+    } = useForm<DoctorFromAdd>({});
 
     React.useEffect(() => {
         // setValue("id", dataMajorAdd.id);
@@ -49,23 +52,33 @@ const MajorFormAdd: React.FC<IMajorForm> = (props: IMajorForm) => {
         // setValue("hospitalDoctors", dataMajorAdd.hospitalDoctors);
         // setValue("majorDoctors", dataMajorAdd.majorDoctors);
         setValue("id", dataMajorAdd.id);
-        setValue("name", dataMajorAdd.name);
-        setValue("description", dataMajorAdd.description);
+        // setValue("email", dataHospital.email);
+        setValue("certificateCode", dataMajorAdd.certificateCode);
+        setValue("placeOfCertificate", dataMajorAdd.placeOfCertificate);
+        setValue("dateOfCertificate", dataMajorAdd.dateOfCertificate);
+        setValue("scopeOfPractice", dataMajorAdd.scopeOfPractice);
         setValue("isActive", dataMajorAdd.isActive);
     }, [dataMajorAdd, setValue]);
 
-    const submitHandler: SubmitHandler<Doctor> = (dataMajorAdd: Doctor) => {
+    const submitHandler: SubmitHandler<DoctorFromAdd> = (dataMajorAdd: DoctorFromAdd) => {
         // eslint-disable-next-line no-console
         console.log(dataMajorAdd);
         if (dataMajorAdd) {
             props.handleClose("SAVE", dataMajorAdd, clearErrors);
         }
     };
-    const { ref: idRef, ...idRefProps } = register("id", {
-        min: {
-            value: 1,
-            message: "Mã chuyên ngành không được để trống",
-        },
+
+    const changeValueMajorDoctors = (values: number[]) => {
+        const res = values.map((id) => {
+            const obj = { majorId: id };
+            return obj;
+        });
+        setValue("majorDoctors", res);
+        clearErrors("majorDoctors");
+    };
+
+    const { ref: majorDoctorsRef, ...majorDoctorsProps } = register("majorDoctors", {
+        validate: (value) => !!value.length,
     });
     return (
         <Modal open={props.opened}>
@@ -98,19 +111,26 @@ const MajorFormAdd: React.FC<IMajorForm> = (props: IMajorForm) => {
                         },
                     }}
                 >
-                    <CustomizeAutocomplete
-                        query="/majors"
-                        field="groupName"
-                        label="Chuyên ngành"
-                        searchField="group-name"
-                        limit={10}
-                        errors={errors.id}
-                        errorMessage={"Nhóm ngành nghề là bắt buộc"}
-                        inputRef={idRef}
-                        {...idRefProps}
-                        changeValue={changeValue}
-                    />
-
+                    <Grid container columnSpacing={1}>
+                        <Grid item xs={3}>
+                            <Typography variant="h6">Chuyên ngành:</Typography>
+                        </Grid>
+                        <Grid item xs={8}>
+                            <MultipleAutocomplete
+                                id="majors-selection"
+                                query="/majors"
+                                field="name"
+                                searchField="name"
+                                limit={10}
+                                errors={Boolean(errors?.majorDoctors)}
+                                errorMessage={"Vui lòng chọn chuyên ngành"}
+                                inputRef={majorDoctorsRef}
+                                {...majorDoctorsProps}
+                                changeValue={changeValueMajorDoctors}
+                                width="80%"
+                            />
+                        </Grid>
+                    </Grid>
                     <Box
                         sx={{
                             justifyContent: "center",
