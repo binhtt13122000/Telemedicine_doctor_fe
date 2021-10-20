@@ -1,6 +1,7 @@
 {
     "name": "telemedicine_doctor_fe",
     "version": "0.1.0",
+    "license": "MIT",
     "private": true,
     "dependencies": {
         "@devexpress/dx-react-core": "^2.7.6",
