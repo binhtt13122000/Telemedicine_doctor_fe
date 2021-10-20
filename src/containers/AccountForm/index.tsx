@@ -1,6 +1,9 @@
 import React, { useCallback, useEffect, useState } from "react";
 
 import { SubmitHandler, useForm } from "react-hook-form";
+import { useHistory } from "react-router";
+
+import useSnackbar from "src/components/Snackbar/useSnackbar";
 
 import { Account } from "./models/Account.model";
 import AccountService from "./services/Account.service";
@@ -61,6 +64,8 @@ const AccountForm: React.FC = () => {
     const [wards, setWards] = useState<Ward[]>([]);
     const [disableDistrict, setDisableDistrict] = useState<boolean>(true);
     const [disableWard, setDisableWard] = useState<boolean>(true);
+    const history = useHistory();
+    const showSnackBar = useSnackbar();
 
     const handleChange = (newValue: Date | null) => {
         setDate(newValue);
@@ -70,6 +75,7 @@ const AccountForm: React.FC = () => {
         register,
         handleSubmit,
         setValue,
+        clearErrors,
         formState: { errors },
     } = useForm<Account>();
 
@@ -92,10 +98,16 @@ const AccountForm: React.FC = () => {
             const service = new AccountService<Account>();
             const response = await service.create(formData);
             if (response.status === 201) {
-                console.log(response.data);
+                // console.log(response.data);
+                history.push("/doctor-form");
             }
-        } catch (e) {
-            console.log(e);
+        } catch (_) {
+            // console.log(e);
+            showSnackBar({
+                children: "Có lỗi xảy ra. Vui lòng cập nhật đầy đủ thông tin trước khi lưu",
+                variant: "filled",
+                severity: "error",
+            });
         }
     };
 
@@ -107,7 +119,6 @@ const AccountForm: React.FC = () => {
         }
         const res: Account = { ...data, postalCode: "0", roleId: 1 };
         createAccount(res);
-        // console.log(res);
     };
 
     const uploadedFile = (event?: React.ChangeEvent<HTMLInputElement>) => {
@@ -118,6 +129,7 @@ const AccountForm: React.FC = () => {
     const onChangeProvince = (newProvince: Province | null) => {
         if (newProvince) {
             setValue("city", newProvince.name);
+            clearErrors("city");
             fetchDistricts(newProvince.code);
             setDisableDistrict(false);
         } else {
@@ -131,7 +143,8 @@ const AccountForm: React.FC = () => {
 
     const onChangeDistrict = (newDistrict: District | null) => {
         if (newDistrict) {
-            setValue("locality", newDistrict.name);
+            setValue("ward", newDistrict.name);
+            clearErrors("ward");
             fetchWards(newDistrict.code);
             setDisableWard(false);
         } else {
@@ -197,7 +210,6 @@ const AccountForm: React.FC = () => {
             <Box
                 component="form"
                 encType="multipart/form-data"
-                name="accountForm"
                 onSubmit={handleSubmit(onSubmit)}
                 sx={{
                     "& > :not(style)": {
@@ -406,6 +418,7 @@ const AccountForm: React.FC = () => {
                             onChange={(_, newWard) => {
                                 if (newWard) {
                                     setValue("locality", newWard.name);
+                                    clearErrors("locality");
                                 }
                             }}
                             renderInput={(params) => (
@@ -431,7 +444,14 @@ const AccountForm: React.FC = () => {
                         "& > :not(style)": { m: 1 },
                     }}
                 >
-                    <Button variant="outlined">Hủy bỏ</Button>
+                    <Button
+                        variant="outlined"
+                        onClick={() => {
+                            history.push("/login");
+                        }}
+                    >
+                        Hủy bỏ
+                    </Button>
                     <Button variant="contained" type="submit">
                         Lưu
                     </Button>
