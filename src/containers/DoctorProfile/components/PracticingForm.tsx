@@ -1,32 +1,44 @@
-import React from "react";
+import React, { useState } from "react";
 
 import { SubmitHandler, useForm } from "react-hook-form";
 
-import { DoctorPraticing } from "../models/Doctor.model";
+import { Doctor } from "../models/Doctor.model";
 
-import { Button, Card, Modal, Stack, TextField, Typography } from "@mui/material";
+import { Button, Card, Modal, Stack, Switch, TextField, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 
 export interface IPracticingForm {
-    dataPracticing: DoctorPraticing;
+    dataPracticing: Doctor;
     open: boolean;
-    handleClose: (
-        type: "SAVE" | "CANCEL",
-        dataPracticing?: DoctorPraticing,
-        callback?: Function
-    ) => void;
+    handleClose: (type: "SAVE" | "CANCEL", dataPracticing?: Doctor, callback?: Function) => void;
 }
 
 const PracticingForm: React.FC<IPracticingForm> = (props: IPracticingForm) => {
     const { dataPracticing } = props;
+    const [checked, setChecked] = useState<boolean>(dataPracticing.isActive);
 
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setChecked(event.target.checked);
+        // eslint-disable-next-line no-console
+        console.log(event.target.checked); //true
+        if (event.target.checked === true) {
+            setValue("isActive", true);
+            clearErrors("id");
+        } else if (event.target.checked === false) {
+            setValue("isActive", false);
+            clearErrors("id");
+        } else {
+            // eslint-disable-next-line no-console
+            console.log(event.target.checked);
+        }
+    };
     const {
         register,
         handleSubmit,
         formState: { errors },
         setValue,
         clearErrors,
-    } = useForm<DoctorPraticing>({});
+    } = useForm<Doctor>({});
 
     React.useEffect(() => {
         setValue("id", dataPracticing.id);
@@ -43,13 +55,13 @@ const PracticingForm: React.FC<IPracticingForm> = (props: IPracticingForm) => {
         setValue("rating", dataPracticing.rating);
         setValue("isVerify", dataPracticing.isVerify);
         setValue("isActive", dataPracticing.isActive);
-        // setValue("certificationDoctors", dataPracticing.certificationDoctors);
-        // setValue("hospitalDoctors", dataPracticing.hospitalDoctors);
-        // setValue("majorDoctors", dataPracticing.majorDoctors);
-        // setValue("slots", dataPracticing.slots);
+        setValue("certificationDoctors", dataPracticing.certificationDoctors);
+        setValue("hospitalDoctors", dataPracticing.hospitalDoctors);
+        setValue("majorDoctors", dataPracticing.majorDoctors);
+        setChecked(dataPracticing.isActive);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [dataPracticing]);
-    const submitHandler: SubmitHandler<DoctorPraticing> = (dataPracticing: DoctorPraticing) => {
+    }, [dataPracticing, setChecked]);
+    const submitHandler: SubmitHandler<Doctor> = (dataPracticing: Doctor) => {
         // eslint-disable-next-line no-console
         console.log(dataPracticing);
         if (dataPracticing) {
@@ -90,92 +102,77 @@ const PracticingForm: React.FC<IPracticingForm> = (props: IPracticingForm) => {
                 >
                     <Stack direction="row" spacing={2}>
                         <TextField
-                            id="name"
-                            label="Tên*"
-                            variant="outlined"
-                            error={!!errors.name}
-                            helperText={errors.name && "Tên là bắt buộc"}
-                            {...register("name", { required: true })}
-                        />
-                        <TextField
-                            id="avatar"
-                            label="Họ*"
-                            variant="outlined"
-                            error={!!errors.avatar}
-                            helperText={errors.avatar && "Hình ảnh là bắt buộc"}
-                            {...register("avatar", { required: true })}
-                        />
-                        <TextField
                             id="practisingCertificate"
-                            label="Ngày sinh*"
+                            label="Chứng chỉ*"
                             variant="outlined"
                             error={!!errors.practisingCertificate}
-                            helperText={errors.practisingCertificate && "Chứng ch là bắt buộc"}
+                            helperText={errors.practisingCertificate && "Chứng chỉ là bắt buộc"}
                             {...register("practisingCertificate", { required: true })}
                         />
-                    </Stack>
-                    <Stack direction="row" spacing={1}>
+                        <TextField
+                            id="certificateCode"
+                            label="Mã chứng chỉ*"
+                            variant="outlined"
+                            error={!!errors.certificateCode}
+                            helperText={errors.certificateCode && "Mã chứng chỉ là bắt buộc"}
+                            {...register("certificateCode", { required: true })}
+                        />
                         <TextField
                             id="placeOfCertificate"
-                            label="Mã bưu điện*"
+                            label="Nơi cấp chứng chỉ*"
                             variant="outlined"
-                            disabled
                             error={!!errors.placeOfCertificate}
-                            helperText={errors.placeOfCertificate && "Mã bưu điện là bắt buộc"}
+                            helperText={
+                                errors.placeOfCertificate && "Nơi cấp chứng chỉ là bắt buộc"
+                            }
                             {...register("placeOfCertificate", { required: true })}
                         />
+                    </Stack>
+                    <Stack direction="row" spacing={2}>
                         <TextField
                             id="dateOfCertificate"
-                            label="Địa phương*"
+                            label="Ngày cấp chứng chỉ*"
                             variant="outlined"
                             error={!!errors.dateOfCertificate}
-                            helperText={errors.dateOfCertificate && "Địa phương là bắt buộc"}
+                            helperText={
+                                errors.dateOfCertificate && "Ngày cấp chứng chỉ là bắt buộc"
+                            }
                             {...register("dateOfCertificate", { required: true })}
                         />
-                    </Stack>
-                    <Stack direction="row" spacing={1}>
                         <TextField
                             id="scopeOfPractice"
-                            label="Địa chỉ đường phố*"
+                            label="Phạm vi*"
                             variant="outlined"
                             error={!!errors.scopeOfPractice}
-                            helperText={errors.scopeOfPractice && "Địa chỉ đường phố là bắt buộc"}
+                            helperText={errors.scopeOfPractice && "Phạm vi là bắt buộc"}
                             {...register("scopeOfPractice", { required: true })}
                         />
                         <TextField
-                            id="numberOfConsultants"
-                            label="Thành phố*"
+                            id="description"
+                            label="Mô tả*"
                             variant="outlined"
-                            error={!!errors.numberOfConsultants}
-                            helperText={errors.numberOfConsultants && "Thành phố là bắt buộc"}
-                            {...register("numberOfConsultants", { required: true })}
-                        />
-                        <TextField
-                            id="rating"
-                            label="Số điện thoại*"
-                            variant="outlined"
-                            error={!!errors.rating}
-                            helperText={errors.rating && "Số điện thoại đường phố là bắt buộc"}
-                            {...register("rating", { required: true })}
+                            error={!!errors.description}
+                            helperText={errors.description && "Mô tả là bắt buộc"}
+                            {...register("description", { required: true })}
                         />
                     </Stack>
-                    {/* <Stack direction="row" spacing={0}>
-                    <Typography
-                        sx={{
-                            // mx: "auto",
-                            p: 1,
-                            //
-                            // "& > :not(style)": { m: 1 },
-                        }}
-                    >
-                        Trạng thái:
-                    </Typography>
-                    <Switch
-                        checked={checked}
-                        onChange={handleChange}
-                        inputProps={{ "aria-label": "controlled" }}
-                    />
-                </Stack> */}
+                    <Stack direction="row" spacing={0}>
+                        <Typography
+                            sx={{
+                                // mx: "auto",
+                                p: 1,
+                                //
+                                // "& > :not(style)": { m: 1 },
+                            }}
+                        >
+                            Trạng thái: {}
+                        </Typography>
+                        <Switch
+                            checked={checked}
+                            onChange={handleChange}
+                            inputProps={{ "aria-label": "controlled" }}
+                        />
+                    </Stack>
                     <Box
                         sx={{
                             justifyContent: "center",

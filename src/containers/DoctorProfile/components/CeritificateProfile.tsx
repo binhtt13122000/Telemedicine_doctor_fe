@@ -94,7 +94,7 @@ const CeritificateProfile: React.FC = () => {
                     {data?.certificationDoctors?.map((x, index) => {
                         return (
                             <>
-                                <Item key={index}>
+                                <Item key={x?.id}>
                                     <Box sx={{ display: "flex" }}>
                                         <img
                                             src={x?.evidence}

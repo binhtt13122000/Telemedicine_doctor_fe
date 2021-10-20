@@ -55,6 +55,7 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
         setValue("email", dataProfile.email);
         setValue("firstName", dataProfile.firstName);
         setValue("lastName", dataProfile.lastName);
+        setValue("ward", dataProfile.ward);
         setValue("streetAddress", dataProfile.streetAddress);
         setValue("locality", dataProfile.locality);
         setValue("city", dataProfile.city);
@@ -68,12 +69,16 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
 
     const submitHandler: SubmitHandler<Account> = (dataProfile: Account) => {
         // eslint-disable-next-line no-console
-        console.log(dataProfile);
+        // console.log(dataProfile);
         if (dataProfile) {
             props.handleClose("SAVE", dataProfile, clearErrors);
         }
     };
     const onChangeProvince = (newProvince: Province | null) => {
+        // if (dataProfile.city) {
+        //     setValue("city", dataProfile.city);
+        //     console.log("City 1", dataProfile.city);
+        // }
         if (newProvince) {
             setValue("city", newProvince.name);
             fetchDistricts(newProvince.code);
@@ -104,6 +109,7 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
             const service = new AddressService<Province[]>();
             const response = await service.getProvinces();
             if (response.status === 200) {
+                console.log("Province", response.data);
                 setProvinces(response.data);
             }
         } catch (_) {}
@@ -128,6 +134,13 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
             }
         } catch (_) {}
     };
+
+    const { ref: city, ...cityProps } = register("city", {
+        min: {
+            value: 1,
+            message: "Mã dịch bệnh không được để trống",
+        },
+    });
 
     useEffect(() => {
         fetchProvinces();
@@ -169,8 +182,8 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
                                 id="firstName"
                                 label="Tên*"
                                 variant="outlined"
-                                error={!!errors.firstName}
-                                helperText={errors.firstName && "Tên là bắt buộc"}
+                                // error={!!errors.firstName}
+                                // helperText={errors.firstName && "Tên là bắt buộc"}
                                 {...register("firstName", { required: true })}
                             />
                         </Grid>
@@ -179,8 +192,8 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
                                 id="lastName"
                                 label="Họ*"
                                 variant="outlined"
-                                error={!!errors.lastName}
-                                helperText={errors.lastName && "Họ là bắt buộc"}
+                                // error={!!errors.lastName}
+                                // helperText={errors.lastName && "Họ là bắt buộc"}
                                 {...register("lastName", { required: true })}
                             />
                         </Grid>
@@ -189,8 +202,8 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
                                 id="dob"
                                 label="Ngày sinh*"
                                 variant="outlined"
-                                error={!!errors.dob}
-                                helperText={errors.dob && "Ngày sinh là bắt buộc"}
+                                // error={!!errors.dob}
+                                // helperText={errors.dob && "Ngày sinh là bắt buộc"}
                                 {...register("dob", { required: true })}
                             />
                         </Grid>
@@ -201,8 +214,8 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
                                 id="email"
                                 label="Email*"
                                 variant="outlined"
-                                error={!!errors.email}
-                                helperText={errors.email && "Email là bắt buộc"}
+                                // error={!!errors.email}
+                                // helperText={errors.email && "Email là bắt buộc"}
                                 {...register("email", { required: true })}
                             />
                         </Grid>
@@ -211,8 +224,8 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
                                 id="phone"
                                 label="Số điện thoại*"
                                 variant="outlined"
-                                error={!!errors.phone}
-                                helperText={errors.phone && "Số điện thoại đường phố là bắt buộc"}
+                                // error={!!errors.phone}
+                                // helperText={errors.phone && "Số điện thoại đường phố là bắt buộc"}
                                 {...register("phone", { required: true })}
                             />
                         </Grid>
@@ -220,9 +233,10 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
                             <TextField
                                 id="isMale"
                                 label="Giới tính*"
+                                disabled
                                 variant="outlined"
-                                error={!!errors.isMale}
-                                helperText={errors.isMale && "Giới tính là bắt buộc"}
+                                // error={!!errors.isMale}
+                                // helperText={errors.isMale && "Giới tính là bắt buộc"}
                                 {...register("isMale", { required: true })}
                             />
                         </Grid>
@@ -233,8 +247,8 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
                                 id="streetAddress"
                                 label="Địa chỉ đường phố*"
                                 variant="outlined"
-                                error={!!errors.streetAddress}
-                                helperText={errors.streetAddress && "Địa chỉ đường phố là bắt buộc"}
+                                // error={!!errors.streetAddress}
+                                // helperText={errors.streetAddress && "Địa chỉ đường phố là bắt buộc"}
                                 {...register("streetAddress", { required: true })}
                             />
                         </Grid>
@@ -244,8 +258,8 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
                                 label="Mã bưu điện*"
                                 variant="outlined"
                                 disabled
-                                error={!!errors.postalCode}
-                                helperText={errors.postalCode && "Mã bưu điện là bắt buộc"}
+                                // error={!!errors.postalCode}
+                                // helperText={errors.postalCode && "Mã bưu điện là bắt buộc"}
                                 {...register("postalCode", { required: true })}
                             />
                         </Grid>
@@ -265,6 +279,8 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
                                         placeholder="Tỉnh/Thành phố"
                                         error={!!errors.city}
                                         helperText={errors.city && "Vui lòng chọn Tỉnh/Thành phố"}
+                                        // inputRef={city}
+                                        // {...cityProps}
                                         {...register("city", { required: true })}
                                     />
                                 )}
@@ -283,8 +299,8 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
                                         id="ward"
                                         variant="outlined"
                                         placeholder="Quận/Huyện"
-                                        error={!!errors.ward}
-                                        helperText={errors.ward && "Vui lòng chọn Quận/Huyện"}
+                                        // error={!!errors.ward}
+                                        // helperText={errors.ward && "Vui lòng chọn Quận/Huyện"}
                                         {...register("ward", { required: true })}
                                     />
                                 )}
@@ -307,8 +323,8 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
                                         id="locality"
                                         variant="outlined"
                                         placeholder="Phường/Xã"
-                                        error={!!errors.locality}
-                                        helperText={errors.locality && "Vui lòng chọn Phường/Xã"}
+                                        // error={!!errors.locality}
+                                        // helperText={errors.locality && "Vui lòng chọn Phường/Xã"}
                                         {...register("locality", { required: true })}
                                     />
                                 )}

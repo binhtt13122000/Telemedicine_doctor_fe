@@ -21,7 +21,7 @@ class DoctorService<T> {
     }
 
     update(data: Doctor) {
-        return axios.put<T>(`/doctors/${data.id}`, data);
+        return axios.put<T>(`/doctors`, data);
     }
 
     delete(id: number) {

@@ -1,7 +1,6 @@
 import { CertificationDoctor } from "./CertificationDoctor.model";
 import { HospitalDoctor } from "./HospitalDoctor.model";
 import { MajorDoctor } from "./MajorDoctor.model";
-import { Slot } from "./Slot.model";
 
 export type Doctor = {
     id?: number;
@@ -21,7 +20,6 @@ export type Doctor = {
     certificationDoctors: CertificationDoctor[];
     hospitalDoctors: HospitalDoctor[];
     majorDoctors: MajorDoctor[];
-    slots: Slot[];
 };
 
 export type DoctorPraticing = {

@@ -6,6 +6,7 @@ import DoctorService from "../services/Doctor.service";
 export enum DoctorStateKeysEnum {
     Doctors = "doctors",
     CreateMajor = "createMajor",
+    UpdatePracticing = "updatePracticing",
 }
 
 const useGetDoctor = (email: string = "nhanlt16235@gmail.com") => {

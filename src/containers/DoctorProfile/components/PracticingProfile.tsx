@@ -3,6 +3,9 @@ import React, { useState } from "react";
 import moment from "moment";
 
 import useGetDoctor from "../hooks/useGetDoctor";
+import usePutDoctor from "../hooks/usePutDoctor";
+import { Doctor, DoctorPraticing } from "../models/Doctor.model";
+import PracticingForm from "./PracticingForm";
 
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import {
@@ -44,7 +47,25 @@ function Item(props: BoxProps) {
 
 const PracticingProfile: React.FC = () => {
     const { data, isLoading, isError } = useGetDoctor();
+    const { mutate } = usePutDoctor();
+    const [openModal, setOpenModal] = useState<boolean>(false);
     const [open, setOpen] = useState(false);
+    const [doctorPracticing, setDoctorPracticing] = useState<DoctorPraticing>();
+    // const dataPra: DoctorPraticing = {
+    //     id: data?.id,
+    //     email: data?.email,
+    //     name: data?.name,
+    //     practisingCertificate: data?.practisingCertificate,
+    //     certificateCode: data?.certificateCode,
+    //     placeOfCertificate: data?.placeOfCertificate,
+    //     dateOfCertificate: data?.dateOfCertificate,
+    //     scopeOfPractice: data?.scopeOfPractice,
+    //     description: data?.description,
+    //     numberOfConsultants: data?.numberOfConsultants,
+    //     rating: data?.rating,
+    //     isVerify: data?.isVerify,
+    //     isActive: data?.isActive,
+    // };
     if (isError) {
         return <div> Errord</div>;
     }
@@ -55,12 +76,55 @@ const PracticingProfile: React.FC = () => {
     const handleClickOpen = () => {
         setOpen(true);
     };
-
-    const handleClose = () => {
+    const handleClickCloseView = () => {
         setOpen(false);
+    };
+    const handleOpenModal = () => {
+        setOpenModal(true);
+        data && setDoctorPracticing(data);
+    };
+    const handleClose = (
+        type: "SAVE" | "CANCEL",
+        dataPracticing?: Doctor,
+        clearErrors?: Function
+    ) => {
+        if (type === "SAVE") {
+            if (dataPracticing) {
+                if (dataPracticing.id) {
+                    mutate({
+                        id: dataPracticing.id,
+                        email: dataPracticing.email,
+                        name: dataPracticing.name,
+                        avatar: dataPracticing.avatar,
+                        practisingCertificate: dataPracticing.practisingCertificate,
+                        certificateCode: dataPracticing.certificateCode,
+                        placeOfCertificate: dataPracticing.placeOfCertificate,
+                        dateOfCertificate: dataPracticing.dateOfCertificate,
+                        scopeOfPractice: dataPracticing.scopeOfPractice,
+                        description: dataPracticing.description,
+                        numberOfConsultants: dataPracticing.numberOfConsultants,
+                        rating: dataPracticing.rating,
+                        isVerify: dataPracticing.isVerify,
+                        isActive: dataPracticing.isActive,
+                        certificationDoctors: dataPracticing.certificationDoctors,
+                        hospitalDoctors: dataPracticing.hospitalDoctors,
+                        majorDoctors: dataPracticing.majorDoctors,
+                    });
+                } else {
+                    // postDrug(data);
+                }
+            }
+        }
+        if (clearErrors) {
+            clearErrors();
+        }
+        setOpenModal(false);
     };
     return (
         <React.Fragment>
+            {data && doctorPracticing && (
+                <PracticingForm dataPracticing={data} open={openModal} handleClose={handleClose} />
+            )}
             <Card sx={{ minHeight: "100%", borderRadius: 5 }}>
                 <Box sx={{ ml: 2, display: "flex" }}>
                     <Box>
@@ -83,7 +147,7 @@ const PracticingProfile: React.FC = () => {
                     </Box>
                     <Box sx={{ ml: 27 }}>
                         <Typography variant="h6" component="h5">
-                            <IconButton>
+                            <IconButton onClick={() => handleOpenModal()}>
                                 <Icon>edit</Icon>
                             </IconButton>
                         </Typography>
@@ -113,7 +177,7 @@ const PracticingProfile: React.FC = () => {
                                         </Link>
                                     </Typography>
                                 </Stack>
-                                <Dialog open={open} onClose={handleClose}>
+                                <Dialog open={open} onClose={handleClickCloseView}>
                                     <DialogTitle>Chứng chỉ</DialogTitle>
                                     <DialogContent>
                                         <img
@@ -174,6 +238,19 @@ const PracticingProfile: React.FC = () => {
 
                                 <Typography variant="body2" component="h5">
                                     {data?.scopeOfPractice}
+                                </Typography>
+                            </Stack>
+                            <Stack direction="row" spacing={1}>
+                                <Typography
+                                    variant="body2"
+                                    component="div"
+                                    sx={{ fontWeight: "bold" }}
+                                >
+                                    Mô tả
+                                </Typography>
+
+                                <Typography variant="body2" component="h5">
+                                    {data?.description}
                                 </Typography>
                             </Stack>
                             <Stack direction="row" spacing={1}>

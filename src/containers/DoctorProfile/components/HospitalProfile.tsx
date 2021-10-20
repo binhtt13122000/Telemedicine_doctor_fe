@@ -99,7 +99,7 @@ const HospitalProfile: React.FC = () => {
                         }}
                     >
                         {data?.hospitalDoctors?.map((item) => (
-                            <ListItem key={`${item}`}>
+                            <ListItem key={item?.id}>
                                 <Box sx={{ display: "flex", borderRadius: 5, bgcolor: "#fafafa" }}>
                                     <Box sx={{ display: "block" }}>
                                         <Typography variant="h6" component="h5">

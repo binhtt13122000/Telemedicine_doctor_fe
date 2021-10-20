@@ -9,14 +9,14 @@ const usePutDoctor = () => {
     let doctorService = new DoctorService<Doctor>();
     const cache = useQueryClient();
     const result = useMutation<Doctor, Error, Doctor>(
-        [DoctorStateKeysEnum.CreateMajor],
+        [DoctorStateKeysEnum.UpdatePracticing],
         async (variable) => {
             const result = await doctorService.update(variable);
             return result.data;
         },
         {
             onSuccess: () => {
-                cache.invalidateQueries(DoctorStateKeysEnum.Doctors);
+                cache.invalidateQueries(DoctorStateKeysEnum.UpdatePracticing);
             },
             onError: () => {
                 // eslint-disable-next-line no-console
