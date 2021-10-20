@@ -14,6 +14,7 @@ export type Doctor = {
     scopeOfPractice: string;
     description: string;
     numberOfConsultants: number;
+    numberOfCancels: number;
     rating: number;
     isVerify: boolean;
     isActive: boolean;

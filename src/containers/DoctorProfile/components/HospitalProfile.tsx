@@ -4,6 +4,7 @@ import useGetDoctor from "../hooks/useGetDoctor";
 import usePutHospital from "../hooks/usePutHospital";
 import { Hospital } from "../models/Hospital.model";
 import HospitalForm from "./HospitalForm";
+import HospitalFormAdd from "./HospitalFormAdd";
 
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import {
@@ -77,8 +78,10 @@ const HospitalProfile: React.FC = () => {
         setOpen(true);
         setHospital(initHospital);
     };
+
     return (
         <React.Fragment>
+            <HospitalFormAdd dataHospital={hospital} opened={open} handleClose={handleClose} />
             <HospitalForm dataHospital={hospital} opened={open} handleClose={handleClose} />
             <Card sx={{ minHeight: "100%", borderRadius: 5 }}>
                 <Box sx={{ ml: 2 }}>
@@ -124,6 +127,7 @@ const HospitalProfile: React.FC = () => {
                                         <Typography variant="body2" component="h5">
                                             Mô tả: {item?.hospital?.description}
                                         </Typography>
+
                                         <Box sx={{ mt: 1 }} />
                                         <Typography variant="body2" component="h5">
                                             Tình trạng:{" "}

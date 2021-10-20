@@ -2,19 +2,21 @@ import React from "react";
 
 import { SubmitHandler, useForm } from "react-hook-form";
 
-import { Major } from "../models/Major.model";
+import CustomizeAutocomplete from "src/components/CustomizeAutocomplete";
 
-import { Button, Card, Modal, TextField, Typography } from "@mui/material";
+import { Hospital } from "../models/Hospital.model";
+
+import { Button, Card, Modal, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 
-export interface IMajorForm {
+export interface IHospitalForm {
+    dataHospital: Hospital;
     opened: boolean;
-    dataMajor: Major;
-    handleClose: (type: "SAVE" | "CANCEL", dataMajor?: Major, callback?: Function) => void;
+    handleClose: (type: "SAVE" | "CANCEL", dataHospital?: Hospital, callback?: Function) => void;
 }
 
-const MajorForm: React.FC<IMajorForm> = (props: IMajorForm) => {
-    const { dataMajor } = props;
+const HospitalFormAdd: React.FC<IHospitalForm> = (props: IHospitalForm) => {
+    const { dataHospital } = props;
 
     const {
         register,
@@ -22,23 +24,35 @@ const MajorForm: React.FC<IMajorForm> = (props: IMajorForm) => {
         formState: { errors },
         setValue,
         clearErrors,
-    } = useForm<Major>({});
+    } = useForm<Hospital>({});
 
     React.useEffect(() => {
-        setValue("id", dataMajor.id);
-        setValue("name", dataMajor.name);
-        setValue("description", dataMajor.description);
-        setValue("isActive", dataMajor.isActive);
-    }, [dataMajor, setValue]);
-
-    const submitHandler: SubmitHandler<Major> = (dataMajor: Major) => {
+        setValue("id", dataHospital.id);
+        setValue("hospitalCode", dataHospital.hospitalCode);
+        setValue("name", dataHospital.name);
+        setValue("address", dataHospital.address);
+        setValue("description", dataHospital.description);
+        setValue("isActive", dataHospital.isActive);
+    }, [dataHospital, setValue]);
+    const submitHandler: SubmitHandler<Hospital> = (dataHospital: Hospital) => {
         // eslint-disable-next-line no-console
-        console.log(dataMajor);
-        if (dataMajor) {
-            props.handleClose("SAVE", dataMajor, clearErrors);
+        console.log(dataHospital);
+        if (dataHospital) {
+            props.handleClose("SAVE", dataHospital, clearErrors);
         }
     };
 
+    const { ref: idRef, ...idRefProps } = register("id", {
+        min: {
+            value: 1,
+            message: "Mã bệnh viện không được để trống",
+        },
+    });
+
+    const changeValue = (value: number) => {
+        setValue("id", value);
+        clearErrors("id");
+    };
     return (
         <Modal open={props.opened}>
             <Card
@@ -57,7 +71,7 @@ const MajorForm: React.FC<IMajorForm> = (props: IMajorForm) => {
             >
                 <Box sx={{ display: "flex", justifyContent: "center", m: 3 }}>
                     <Typography variant="h6" component="h2">
-                        Thông tin Chuyên ngành
+                        Thông tin Bệnh viện
                     </Typography>
                 </Box>
                 <Box
@@ -70,21 +84,17 @@ const MajorForm: React.FC<IMajorForm> = (props: IMajorForm) => {
                         },
                     }}
                 >
-                    <TextField
-                        id="major-name"
-                        label="Tên chuyên ngành *"
-                        variant="outlined"
-                        error={!!errors.name}
-                        helperText={errors.name && "Tên chuyên ngành là bắt buộc"}
-                        {...register("name", { required: true })}
-                    />
-                    <TextField
-                        id="major-description"
-                        label="Thông tin mô tả"
-                        variant="outlined"
-                        multiline
-                        rows={5}
-                        {...register("description")}
+                    <CustomizeAutocomplete
+                        query="/hospitals"
+                        field="groupName"
+                        label="Chuyên ngành"
+                        searchField="group-name"
+                        limit={10}
+                        errors={errors.id}
+                        errorMessage={"Nhóm ngành nghề là bắt buộc"}
+                        inputRef={idRef}
+                        {...idRefProps}
+                        changeValue={changeValue}
                     />
 
                     <Box
@@ -112,4 +122,4 @@ const MajorForm: React.FC<IMajorForm> = (props: IMajorForm) => {
     );
 };
 
-export default MajorForm;
+export default HospitalFormAdd;

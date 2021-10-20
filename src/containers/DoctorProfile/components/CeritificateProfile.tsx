@@ -4,8 +4,10 @@ import moment from "moment";
 
 import useGetDoctor from "../hooks/useGetDoctor";
 import usePutCeritificate from "../hooks/usePutCeritificate";
-import { Cetification } from "../models/Cetification.model";
+import { Cetification, CetificationAdd } from "../models/Cetification.model";
+import CertificateService from "../services/Certificate.service";
 import CertificationForm from "./CeritificateForm";
+import CertificationFormAdd from "./CeritificateFormAdd";
 
 import BlockIcon from "@mui/icons-material/Block";
 import VerifiedIcon from "@mui/icons-material/Verified";
@@ -39,10 +41,17 @@ const CeritificateProfile: React.FC = () => {
         description: "",
         isActive: true,
     };
+
+    const initCetificationAdd: CetificationAdd = {
+        certificationId: 0,
+        evidence: "",
+        dateOfIssue: "2021-10-20T15:58:02.973Z",
+    };
     const { data, isLoading, isError } = useGetDoctor();
     const { mutate } = usePutCeritificate();
     const [open, setOpen] = useState<boolean>(false);
     const [ab, setAb] = useState<Cetification>(initCetification);
+    const [cetificationAdd, setCeficationAdd] = useState<CetificationAdd>(initCetificationAdd);
     if (isError) {
         return <div> Errord</div>;
     }
@@ -74,6 +83,33 @@ const CeritificateProfile: React.FC = () => {
         setOpen(false);
     };
 
+    const createCetificate = async (data: CetificationAdd) => {
+        try {
+            let formData = new FormData();
+            formData.append("CertificationId", JSON.stringify(data.certificationId));
+            formData.append("Evidence", data.evidence);
+            formData.append("DateOfIssue ", data.dateOfIssue);
+            const service = new CertificateService<CetificationAdd>();
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const handleCloseFormAdd = (
+        type: "SAVE" | "CANCEL",
+        dataCetificationAdd?: CetificationAdd,
+        clearErrors?: Function
+    ) => {
+        if (type === "SAVE") {
+            if (dataCetificationAdd) {
+                createCetificate(dataCetificationAdd);
+            }
+        }
+        if (clearErrors) {
+            clearErrors();
+        }
+        setOpen(false);
+    };
     const handleOpen = async (ceti: Cetification) => {
         setOpen(true);
         setAb(ceti);
@@ -84,6 +120,12 @@ const CeritificateProfile: React.FC = () => {
 
     return (
         <React.Fragment>
+            <CertificationForm dataCeti={ab} open={open} handleClose={handleClose} />
+            <CertificationFormAdd
+                dataCetificationAdd={cetificationAdd}
+                open={open}
+                handleClose={handleCloseFormAdd}
+            />
             <Card sx={{ height: 400, borderRadius: 5 }}>
                 <Box sx={{ ml: 2 }}>
                     <Typography variant="h6" component="div">
@@ -137,7 +179,7 @@ const CeritificateProfile: React.FC = () => {
                             </>
                         );
                     })}
-                    <CertificationForm dataCeti={ab} open={open} handleClose={handleClose} />
+
                     <Box sx={{ mt: 20, textAlign: "center" }}>
                         <Button variant="outlined" onClick={() => handleCreate()}>
                             + Thêm chứng chỉ

@@ -103,6 +103,7 @@ const PracticingProfile: React.FC = () => {
                         scopeOfPractice: dataPracticing.scopeOfPractice,
                         description: dataPracticing.description,
                         numberOfConsultants: dataPracticing.numberOfConsultants,
+                        numberOfCancels: dataPracticing.numberOfCancels,
                         rating: dataPracticing.rating,
                         isVerify: dataPracticing.isVerify,
                         isActive: dataPracticing.isActive,
@@ -246,7 +247,7 @@ const PracticingProfile: React.FC = () => {
                                     component="div"
                                     sx={{ fontWeight: "bold" }}
                                 >
-                                    Mô tả
+                                    Mo ta
                                 </Typography>
 
                                 <Typography variant="body2" component="h5">

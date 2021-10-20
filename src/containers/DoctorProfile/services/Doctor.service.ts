@@ -24,6 +24,12 @@ class DoctorService<T> {
         return axios.put<T>(`/doctors`, data);
     }
 
+    updateFormData(data: FormData) {
+        return axios.put<T>("/doctors", data, {
+            headers: { "Content-Type": "multipart/form-data" },
+        });
+    }
+
     delete(id: number) {
         return axios.delete<{ message: "string" }>(`/doctors/${id}`);
     }

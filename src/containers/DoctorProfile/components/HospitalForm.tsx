@@ -2,6 +2,8 @@ import React from "react";
 
 import { SubmitHandler, useForm } from "react-hook-form";
 
+import CustomizeAutocomplete from "src/components/CustomizeAutocomplete";
+
 import { Hospital } from "../models/Hospital.model";
 
 import { Button, Card, Modal, Stack, Switch, TextField, Typography } from "@mui/material";
@@ -55,6 +57,17 @@ const HospitalForm: React.FC<IHospitalForm> = (props: IHospitalForm) => {
         }
     };
 
+    const { ref: idRef, ...idRefProps } = register("id", {
+        min: {
+            value: 1,
+            message: "Mã chuyên ngành không được để trống",
+        },
+    });
+
+    const changeValue = (value: number) => {
+        setValue("id", value);
+        clearErrors("id");
+    };
     return (
         <Modal open={props.opened}>
             <Card
@@ -111,6 +124,18 @@ const HospitalForm: React.FC<IHospitalForm> = (props: IHospitalForm) => {
                         defaultValue={props.dataHospital.address}
                         {...register("address")}
                     />
+                    <CustomizeAutocomplete
+                        query="/hospitals"
+                        field="groupName"
+                        label="Chuyên ngành"
+                        searchField="group-name"
+                        limit={10}
+                        errors={errors.id}
+                        errorMessage={"Nhóm ngành nghề là bắt buộc"}
+                        inputRef={idRef}
+                        {...idRefProps}
+                        changeValue={changeValue}
+                    />
                     <TextField
                         id="description"
                         label="Mô tả"
@@ -137,6 +162,7 @@ const HospitalForm: React.FC<IHospitalForm> = (props: IHospitalForm) => {
                             inputProps={{ "aria-label": "controlled" }}
                         />
                     </Stack>
+
                     <Box
                         sx={{
                             justifyContent: "center",

@@ -4,3 +4,9 @@ export type Cetification = {
     description: string;
     isActive: boolean;
 };
+
+export type CetificationAdd = {
+    certificationId?: number;
+    evidence: string;
+    dateOfIssue: string;
+};
