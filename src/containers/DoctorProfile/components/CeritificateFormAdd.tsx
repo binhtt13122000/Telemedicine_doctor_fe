@@ -2,9 +2,23 @@ import * as React from "react";
 
 import { SubmitHandler, useForm } from "react-hook-form";
 
+import logo from "../../../assets/logo.png";
 import { CetificationAdd } from "../models/Cetification.model";
 
-import { Card, Modal, TextField, Typography } from "@mui/material";
+import { PhotoCamera } from "@mui/icons-material";
+import AdapterDateFns from "@mui/lab/AdapterDateFns";
+import DesktopDatePicker from "@mui/lab/DesktopDatePicker";
+import LocalizationProvider from "@mui/lab/LocalizationProvider";
+import {
+    Card,
+    Grid,
+    IconButton,
+    Input,
+    Modal,
+    TextField,
+    TextFieldProps,
+    Typography,
+} from "@mui/material";
 import Button from "@mui/material/Button";
 import { Box } from "@mui/system";
 
@@ -19,7 +33,9 @@ export interface ICertificationForm {
 }
 const CertificationFormAdd: React.FC<ICertificationForm> = (props: ICertificationForm) => {
     const { dataCetificationAdd } = props;
-
+    const [date, setDate] = React.useState<Date | null>(new Date("2000-01-01T21:11:54"));
+    const [imgLink, setImgLink] = React.useState<string>(logo);
+    const [file, setFile] = React.useState<string | Blob>("");
     const {
         register,
         handleSubmit,
@@ -34,6 +50,10 @@ const CertificationFormAdd: React.FC<ICertificationForm> = (props: ICertificatio
         setValue("dateOfIssue", dataCetificationAdd.dateOfIssue);
     }, [dataCetificationAdd, setValue]);
 
+    const handleChange = (newDate: Date | null) => {
+        setDate(newDate);
+    };
+
     const submitHandler: SubmitHandler<CetificationAdd> = (
         dataCetificationAdd: CetificationAdd
     ) => {
@@ -42,6 +62,26 @@ const CertificationFormAdd: React.FC<ICertificationForm> = (props: ICertificatio
             props.handleClose("SAVE", dataCetificationAdd, clearErrors);
         }
     };
+
+    const { ref: certificationIdRef, ...certificationIdRefProps } = register("certificationId", {
+        // validate: (value) => !!value.length,
+        min: {
+            value: 1,
+            message: "Mã dịch bệnh không được để trống",
+        },
+    });
+    const uploadedFile = (event?: React.ChangeEvent<HTMLInputElement>) => {
+        setImgLink(URL.createObjectURL(event?.target.files![0]));
+        setFile(event?.target.files![0] as Blob);
+    };
+    // const changeValueCertificateDoctors = (values: number[]) => {
+    //     const res = values.map((id) => {
+    //         const obj = { certificationId: id };
+    //         return obj;
+    //     });
+    //     setValue("certificationId", res);
+    //     clearErrors("certificationId");
+    // };
     return (
         <Modal
             open={props.open}
@@ -85,23 +125,54 @@ const CertificationFormAdd: React.FC<ICertificationForm> = (props: ICertificatio
                             helperText={errors.certificationId && "Mã chứng chỉ là bắt buộc"}
                             {...register("certificationId", { required: true })}
                         />
-                        <TextField
-                            id="evidence"
-                            label="Tên chứng chỉ *"
-                            variant="outlined"
-                            error={!!errors.evidence}
-                            helperText={errors.evidence && "Bằng chứng là bắt buộc"}
-                            {...register("evidence", { required: true })}
-                        />
-                        <TextField
-                            id="dateOfIssue"
-                            label="Tên chứng chỉ *"
-                            variant="outlined"
-                            defaultValue="2000-08-08T00:00:00"
-                            error={!!errors.dateOfIssue}
-                            helperText={errors.dateOfIssue && "Mã chứng chỉ là bắt buộc"}
-                            {...register("dateOfIssue", { required: true })}
-                        />
+                        <LocalizationProvider dateAdapter={AdapterDateFns}>
+                            <DesktopDatePicker
+                                inputFormat="dd/MM/yyyy"
+                                value={date}
+                                onChange={handleChange}
+                                renderInput={(params: JSX.IntrinsicAttributes & TextFieldProps) => (
+                                    <TextField
+                                        {...params}
+                                        error={!!errors.dateOfIssue}
+                                        helperText={errors.dateOfIssue && "Vui lòng nhập ngày cấp"}
+                                        {...register("dateOfIssue", { required: true })}
+                                        sx={{ width: "90%" }}
+                                    />
+                                )}
+                            />
+                        </LocalizationProvider>
+                        <Grid item xs={4}>
+                            <img src={imgLink} alt="Certificate Image" width="100" height="100" />
+                            <label htmlFor="icon-button-file">
+                                <Input
+                                    // accept="/*"
+                                    id="icon-button-file"
+                                    type="file"
+                                    {...register("evidence")}
+                                    onChange={() => uploadedFile}
+                                />
+                                <IconButton
+                                    color="primary"
+                                    aria-label="upload picture"
+                                    component="span"
+                                >
+                                    <PhotoCamera />
+                                </IconButton>
+                            </label>
+                        </Grid>
+                        {/* <CustomAutocomplete
+                            id="certification-selection"
+                            query="/certifications"
+                            field="name"
+                            searchField="name"
+                            limit={10}
+                            errors={Boolean(errors?.certificationId)}
+                            errorMessage={"Vui lòng chọn nơi công tác"}
+                            inputRef={certificationIdRef}
+                            {...certificationIdRefProps}
+                            changeValue={changeValueCertificateDoctors}
+                            width="80%"
+                        /> */}
 
                         <Box
                             sx={{

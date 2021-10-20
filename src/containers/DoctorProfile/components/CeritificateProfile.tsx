@@ -102,6 +102,7 @@ const CeritificateProfile: React.FC = () => {
     ) => {
         if (type === "SAVE") {
             if (dataCetificationAdd) {
+                console.log("aloooo");
                 createCetificate(dataCetificationAdd);
             }
         }

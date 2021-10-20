@@ -2,7 +2,9 @@ import React, { useState } from "react";
 
 import useGetDoctor from "../hooks/useGetDoctor";
 import usePutHospital from "../hooks/usePutHospital";
+import { Doctor, DoctorFromAdd } from "../models/Doctor.model";
 import { Hospital } from "../models/Hospital.model";
+import DoctorService from "../services/Doctor.service";
 import HospitalForm from "./HospitalForm";
 import HospitalFormAdd from "./HospitalFormAdd";
 
@@ -34,6 +36,7 @@ const HospitalProfile: React.FC = () => {
     const { data, isLoading, isError } = useGetDoctor();
     const { mutate } = usePutHospital();
     const [open, setOpen] = useState<boolean>(false);
+    const [openAdd, setOpenAdd] = useState<boolean>(false);
     const [hospital, setHospital] = useState<Hospital>(initHospital);
     if (isError) {
         return <div> Errord</div>;
@@ -69,19 +72,81 @@ const HospitalProfile: React.FC = () => {
         }
         setOpen(false);
     };
-
+    const createHospital = async (data: DoctorFromAdd) => {
+        try {
+            let formData = new FormData();
+            formData.append("Id", JSON.stringify(data?.id));
+            formData.append("Email", data.email);
+            formData.append("Name", data.name);
+            formData.append("Avatar", data.avatar);
+            formData.append("PractisingCertificate", data.practisingCertificate);
+            formData.append("CertificateCode", data.certificateCode);
+            formData.append("PlaceOfCertificate", data.placeOfCertificate);
+            formData.append("DateOfCertificate", data.dateOfCertificate);
+            formData.append("ScopeOfPractice", data.scopeOfPractice);
+            formData.append("description", data.description);
+            formData.append("NumberOfConsultants", JSON.stringify(data.numberOfConsultants));
+            formData.append("NumberOfCancels", JSON.stringify(data.numberOfCancels));
+            formData.append("Rating", JSON.stringify(data.rating));
+            formData.append("IsVerify", JSON.stringify(data.isVerify));
+            formData.append("IsActive", JSON.stringify(data.isActive));
+            formData.append("CertificationDoctors", JSON.stringify(data.certificationDoctors));
+            formData.append("HospitalDoctors", JSON.stringify(data.hospitalDoctors));
+            formData.append("MajorDoctors", JSON.stringify(data.majorDoctors));
+            const service = new DoctorService<Doctor>();
+            const response = await service.updateFormData(formData);
+            if (response.status === 201) {
+                // eslint-disable-next-line no-console
+                console.log(response.data);
+            }
+        } catch (e) {
+            // eslint-disable-next-line no-console
+            console.log(e);
+        }
+    };
+    const handleCloseHospitalAdd = (
+        type: "SAVE" | "CANCEL",
+        dataHospital?: DoctorFromAdd,
+        clearErrors?: Function
+    ) => {
+        if (type === "SAVE") {
+            if (dataHospital) {
+                const res = {
+                    ...dataHospital,
+                    id: data?.id,
+                    email: data?.email,
+                    certificateCode: data?.certificateCode,
+                    placeOfCertificate: data?.placeOfCertificate,
+                    dateOfCertificate: data?.dateOfCertificate,
+                    scopeOfPractice: data?.scopeOfPractice,
+                    isActive: data?.isActive,
+                };
+                createHospital(dataHospital);
+            }
+        }
+        if (clearErrors) {
+            clearErrors();
+        }
+        setOpenAdd(false);
+    };
     const handleOpen = async (hos: Hospital) => {
         setOpen(true);
         setHospital(hos);
     };
     const handleCreate = () => {
-        setOpen(true);
-        setHospital(initHospital);
+        setOpenAdd(true);
     };
 
     return (
         <React.Fragment>
-            <HospitalFormAdd dataHospital={hospital} opened={open} handleClose={handleClose} />
+            {data && (
+                <HospitalFormAdd
+                    dataHospital={data}
+                    opened={openAdd}
+                    handleClose={handleCloseHospitalAdd}
+                />
+            )}
+
             <HospitalForm dataHospital={hospital} opened={open} handleClose={handleClose} />
             <Card sx={{ minHeight: "100%", borderRadius: 5 }}>
                 <Box sx={{ ml: 2 }}>

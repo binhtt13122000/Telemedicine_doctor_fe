@@ -1,39 +1,41 @@
 import { useCallback, useEffect, useState } from "react";
 
-import { FieldError } from "react-hook-form";
+// import { FieldError } from "react-hook-form";
 import axios from "src/axios";
 import { IPagingSupport } from "src/common/types";
 
 import { Autocomplete, TextField } from "@mui/material";
 
-export interface ICustomizeAuto<T> {
+export interface IMultipleAutocomplete<T> {
+    id: string;
     query: string;
     limit: number;
     field: keyof T;
     searchField: string;
-    label: string;
-    errors?: FieldError;
+    errors?: boolean;
     inputRef: React.Ref<HTMLInputElement>;
-    errorMessage: string;
-    changeValue: (newValue: number) => void;
+    width: string;
+    errorMessage?: string;
+    changeValue: (newValues: number[]) => void;
 }
 
-const CustomizeAutocomplete = <T extends Record<string, string>>(props: ICustomizeAuto<T>) => {
+const MultipleAutocomplete = <T extends Record<string, string>>(
+    props: IMultipleAutocomplete<T>
+) => {
     const { query, limit, field, searchField, errors, inputRef, errorMessage, changeValue } = props;
-    const [search, setSearch] = useState("");
+    const [searchValue, setSearchValue] = useState("");
     const [loading, setLoading] = useState<boolean>(false);
     const [data, setData] = useState<T[]>([]);
 
     const callbackLoadData = useCallback(
-        async (query: string, limit: number, search: string) => {
+        async (query: string, limit: number, searchValue: string) => {
             setLoading(true);
             try {
                 const response = await axios.get<IPagingSupport<T>>(
-                    `${query}?${searchField}=${search}&page-offset=1&limit=${limit}`
+                    `${query}?${searchField}=${searchValue}&page-offset=1&limit=${limit}`
                 );
                 if (response.status === 200) {
-                    console.log("ce", response.data?.content);
-                    setData(response.data?.content);
+                    setData(response?.data?.content);
                 }
             } catch (error) {
                 // eslint-disable-next-line no-console
@@ -46,38 +48,40 @@ const CustomizeAutocomplete = <T extends Record<string, string>>(props: ICustomi
     );
 
     useEffect(() => {
-        callbackLoadData(query, limit, search);
-    }, [callbackLoadData, query, limit, search]);
+        callbackLoadData(query, limit, searchValue);
+    }, [callbackLoadData, query, limit, searchValue]);
 
-    const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setSearch(e.target.value);
+    const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchValue(event.target.value);
     };
 
     return (
         <Autocomplete
-            id="select-customize"
+            multiple
+            id={props.id}
             options={data}
-            // sx={{ width: 300 }}
             getOptionLabel={(option) => option[field]}
             loading={loading}
-            onChange={(_, newValue) => {
-                if (newValue) {
-                    changeValue(Number(newValue["id"]));
+            onChange={(_, newValues) => {
+                if (newValues) {
+                    changeValue(newValues.map((item) => Number(item["id"])));
                 }
             }}
             renderInput={(params) => (
                 <TextField
                     {...params}
+                    // multiline
+                    // rows={2}
                     value={data}
-                    label={props.label}
                     onChange={onChange}
                     inputRef={inputRef}
                     helperText={errors && errorMessage}
                     error={!!errors}
+                    sx={{ width: props.width }}
                 />
             )}
         />
     );
 };
 
-export default CustomizeAutocomplete;
+export default MultipleAutocomplete;

@@ -22,6 +22,26 @@ export type Doctor = {
     hospitalDoctors: HospitalDoctor[];
     majorDoctors: MajorDoctor[];
 };
+export type DoctorFromAdd = {
+    id?: number;
+    email: string;
+    name: string;
+    avatar: string;
+    practisingCertificate: string;
+    certificateCode: string;
+    placeOfCertificate: string;
+    dateOfCertificate: string;
+    scopeOfPractice: string;
+    description: string;
+    numberOfConsultants: number;
+    numberOfCancels: number;
+    rating: number;
+    isVerify: boolean;
+    isActive: boolean;
+    certificationDoctors: CertificationDoctor[];
+    hospitalDoctors: { hospitalId: number }[];
+    majorDoctors: { majorId: number }[];
+};
 
 export type DoctorPraticing = {
     id?: number;

@@ -2,8 +2,6 @@ import React from "react";
 
 import { SubmitHandler, useForm } from "react-hook-form";
 
-import CustomizeAutocomplete from "src/components/CustomizeAutocomplete";
-
 import { Hospital } from "../models/Hospital.model";
 
 import { Button, Card, Modal, Stack, Switch, TextField, Typography } from "@mui/material";
@@ -124,7 +122,7 @@ const HospitalForm: React.FC<IHospitalForm> = (props: IHospitalForm) => {
                         defaultValue={props.dataHospital.address}
                         {...register("address")}
                     />
-                    <CustomizeAutocomplete
+                    {/* <CustomizeAutocomplete
                         query="/hospitals"
                         field="groupName"
                         label="Chuyên ngành"
@@ -135,7 +133,7 @@ const HospitalForm: React.FC<IHospitalForm> = (props: IHospitalForm) => {
                         inputRef={idRef}
                         {...idRefProps}
                         changeValue={changeValue}
-                    />
+                    /> */}
                     <TextField
                         id="description"
                         label="Mô tả"

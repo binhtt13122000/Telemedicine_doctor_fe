@@ -2,17 +2,21 @@ import React from "react";
 
 import { SubmitHandler, useForm } from "react-hook-form";
 
-import CustomizeAutocomplete from "src/components/CustomizeAutocomplete";
+import { DoctorFromAdd } from "../models/Doctor.model";
+import MultipleAutocomplete from "./MultipleAutocomplete";
 
-import { Hospital } from "../models/Hospital.model";
-
-import { Button, Card, Modal, Typography } from "@mui/material";
+// import { Hospital } from "../models/Hospital.model";
+import { Button, Card, Grid, Modal, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 
 export interface IHospitalForm {
-    dataHospital: Hospital;
+    dataHospital: DoctorFromAdd;
     opened: boolean;
-    handleClose: (type: "SAVE" | "CANCEL", dataHospital?: Hospital, callback?: Function) => void;
+    handleClose: (
+        type: "SAVE" | "CANCEL",
+        dataHospital?: DoctorFromAdd,
+        callback?: Function
+    ) => void;
 }
 
 const HospitalFormAdd: React.FC<IHospitalForm> = (props: IHospitalForm) => {
@@ -24,17 +28,19 @@ const HospitalFormAdd: React.FC<IHospitalForm> = (props: IHospitalForm) => {
         formState: { errors },
         setValue,
         clearErrors,
-    } = useForm<Hospital>({});
+    } = useForm<DoctorFromAdd>({});
 
     React.useEffect(() => {
         setValue("id", dataHospital.id);
-        setValue("hospitalCode", dataHospital.hospitalCode);
-        setValue("name", dataHospital.name);
-        setValue("address", dataHospital.address);
-        setValue("description", dataHospital.description);
+        // setValue("email", dataHospital.email);
+        setValue("certificateCode", dataHospital.certificateCode);
+        setValue("placeOfCertificate", dataHospital.placeOfCertificate);
+        setValue("dateOfCertificate", dataHospital.dateOfCertificate);
+        setValue("scopeOfPractice", dataHospital.scopeOfPractice);
         setValue("isActive", dataHospital.isActive);
     }, [dataHospital, setValue]);
-    const submitHandler: SubmitHandler<Hospital> = (dataHospital: Hospital) => {
+
+    const submitHandler: SubmitHandler<DoctorFromAdd> = (dataHospital: DoctorFromAdd) => {
         // eslint-disable-next-line no-console
         console.log(dataHospital);
         if (dataHospital) {
@@ -42,6 +48,17 @@ const HospitalFormAdd: React.FC<IHospitalForm> = (props: IHospitalForm) => {
         }
     };
 
+    const changeValueHospitalDoctors = (values: number[]) => {
+        const res = values.map((id) => {
+            const obj = { hospitalId: id };
+            return obj;
+        });
+        setValue("hospitalDoctors", res);
+        clearErrors("hospitalDoctors");
+    };
+    const { ref: hospitalDoctorsRef, ...hospitalDoctorsProps } = register("hospitalDoctors", {
+        validate: (value) => !!value.length,
+    });
     const { ref: idRef, ...idRefProps } = register("id", {
         min: {
             value: 1,
@@ -84,7 +101,15 @@ const HospitalFormAdd: React.FC<IHospitalForm> = (props: IHospitalForm) => {
                         },
                     }}
                 >
-                    <CustomizeAutocomplete
+                    {/* <TextField
+                        id="hospital-code"
+                        label="Mã bệnh viện *"
+                        variant="outlined"
+                        error={!!errors.id}
+                        helperText={errors.id && "Mã bệnh viện là bắt buộc"}
+                        {...register("id", { required: true })}
+                    /> */}
+                    {/* <CustomizeAutocomplete
                         query="/hospitals"
                         field="groupName"
                         label="Chuyên ngành"
@@ -95,8 +120,27 @@ const HospitalFormAdd: React.FC<IHospitalForm> = (props: IHospitalForm) => {
                         inputRef={idRef}
                         {...idRefProps}
                         changeValue={changeValue}
-                    />
-
+                    /> */}
+                    <Grid container columnSpacing={1}>
+                        <Grid item xs={3}>
+                            <Typography variant="h6">Nơi công tác:</Typography>
+                        </Grid>
+                        <Grid item xs={8}>
+                            <MultipleAutocomplete
+                                id="hospitals-selection"
+                                query="/hospitals"
+                                field="name"
+                                searchField="name"
+                                limit={10}
+                                errors={Boolean(errors?.hospitalDoctors)}
+                                errorMessage={"Vui lòng chọn nơi công tác"}
+                                inputRef={hospitalDoctorsRef}
+                                {...hospitalDoctorsProps}
+                                changeValue={changeValueHospitalDoctors}
+                                width="80%"
+                            />
+                        </Grid>
+                    </Grid>
                     <Box
                         sx={{
                             justifyContent: "center",
