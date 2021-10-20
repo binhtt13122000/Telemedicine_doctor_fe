@@ -22,9 +22,7 @@ jobs:
                   persist-credentials: false
 
             - name: Install root dependencies
-              run: |
-                npm config set package-lock false
-                yarn install
+              run: yarn
 
             - name: Cache node_modules
               uses: actions/cache@v2
