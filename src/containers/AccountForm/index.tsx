@@ -185,7 +185,7 @@ const AccountForm: React.FC = () => {
     };
 
     useEffect(() => {
-        setValue("email", LocalStorageUtil.getUser());
+        setValue("email", LocalStorageUtil.getItem("email"));
         fetchProvinces();
     }, [fetchProvinces, setValue]);
 

@@ -30,7 +30,7 @@ const useAuth = () => {
                     `${API_ROOT_URL}/login`,
                     {
                         tokenId: tokenId,
-                        loginType: 2,
+                        loginType: 1,
                     }
                 );
                 if (responseLogin.status === 200) {
@@ -45,18 +45,29 @@ const useAuth = () => {
                         );
                         window.location.reload();
                     } else {
-                        LocalStorageUtil.setItem("user", Object.values(responseLogin.data)[0]);
-                        history.push("/account-form");
+                        if (Object.values(responseLogin.data)[0] === "The account is not verify!") {
+                            history.push("/waiting-screen");
+                        } else {
+                            LocalStorageUtil.setItem("email", Object.values(responseLogin.data)[0]);
+                            history.push("/account-form");
+                        }
                     }
                 }
             }
         } catch (exception) {
             // eslint-disable-next-line no-console
             console.log(exception);
-            showSnackBar({
-                severity: "error",
-                children: "Đăng nhập thất bại",
-            });
+            if ((exception as any).response.data.message === "LoginType is incorrect!")
+                showSnackBar({
+                    severity: "error",
+                    children: "Tài khoản này đã được đăng nhập với một vai trò khác",
+                });
+            else {
+                showSnackBar({
+                    severity: "error",
+                    children: "Tài khoản này đã bị khóa",
+                });
+            }
         }
     };
 
