@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useHistory } from "react-router";
@@ -27,6 +27,7 @@ const DoctorForm: React.FC = () => {
     const showSnackBar = useSnackbar();
     const history = useHistory();
     const [date, setDate] = useState<Date | null>(new Date("2000-01-01T21:11:54"));
+    const [maxDate, setMaxDate] = useState<Date>(new Date());
     const [imgLink, setImgLink] = useState<string>(defaultImg);
     const [file, setFile] = useState<string | Blob>("");
 
@@ -92,7 +93,7 @@ const DoctorForm: React.FC = () => {
             }
         } catch (e) {
             showSnackBar({
-                children: "Có lỗi xảy ra. Vui lòng cập nhật đầy đủ thông tin trước khi lưu",
+                children: "Vui lòng tải lên ảnh chứng chỉ",
                 variant: "filled",
                 severity: "error",
             });
@@ -103,6 +104,12 @@ const DoctorForm: React.FC = () => {
         const res = { ...data, email: LocalStorageUtil.getItem("email") };
         createDoctor(res);
     };
+
+    useEffect(() => {
+        let date = new Date();
+        date.setDate(date.getDate() - 1);
+        setMaxDate(new Date(date.getFullYear(), date.getMonth(), date.getDate()));
+    }, []);
 
     return (
         <Card
@@ -245,6 +252,7 @@ const DoctorForm: React.FC = () => {
                             <DesktopDatePicker
                                 inputFormat="dd/MM/yyyy"
                                 value={date}
+                                maxDate={maxDate}
                                 onChange={handleChange}
                                 renderInput={(params) => (
                                     <TextField
