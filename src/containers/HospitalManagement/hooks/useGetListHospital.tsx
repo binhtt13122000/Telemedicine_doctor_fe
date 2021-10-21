@@ -7,6 +7,7 @@ import HospitalService from "../services/Hospital.service";
 export enum ServerStateKeysEnum {
     Hospitals = "hospitals",
     CreateHospital = "createHospital",
+    UpdateHospital = "updateHospital",
 }
 const useGetListHospital = (limit: number = 5, offset: number = 1) => {
     let hospitalService = new HospitalService<Hospital>();

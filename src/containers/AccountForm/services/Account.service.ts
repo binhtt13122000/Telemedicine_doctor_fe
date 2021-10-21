@@ -22,6 +22,9 @@ class AccountService<T> {
         return axios.put<T>("/accounts", data);
     }
 
+    getAccountByEmail(email: string) {
+        return axios.get<T>(`/accounts/${email}?search-type=Email`);
+    }
     changeStatus(id: number) {
         return axios.put<T>(`/accounts/${id}`);
     }
