@@ -14,12 +14,12 @@ export const routes = [
     {
         id: 1,
         name: "Bảng điều khiển",
-        path: "/dash-boards",
+        path: "/",
         icon: <DashboardIcon />,
     },
     {
         id: 2,
-        name: "Lịch sử tư vấn",
+        name: "Lịch sử cuộc hẹn",
         path: "/health-checks",
         icon: <HistoryIcon />,
     },
@@ -31,7 +31,7 @@ export const routes = [
     },
     {
         id: 4,
-        name: "Bác sĩ",
+        name: "Thông tin cá nhân",
         path: "/doctors",
         icon: <LocalHospitalIcon />,
     },
