@@ -88,11 +88,9 @@ const DoctorForm: React.FC = () => {
             const service = new DoctorService<Doctor>();
             const response = await service.create(formData);
             if (response.status === 201) {
-                console.log(response.data);
                 history.push("/waiting-screen");
             }
         } catch (e) {
-            console.log(e);
             showSnackBar({
                 children: "Có lỗi xảy ra. Vui lòng cập nhật đầy đủ thông tin trước khi lưu",
                 variant: "filled",
@@ -102,8 +100,7 @@ const DoctorForm: React.FC = () => {
     };
 
     const onSubmit: SubmitHandler<Doctor> = (data: Doctor) => {
-        const res = { ...data, email: LocalStorageUtil.getUser() };
-        console.log(res);
+        const res = { ...data, email: LocalStorageUtil.getItem("email") };
         createDoctor(res);
     };
 
