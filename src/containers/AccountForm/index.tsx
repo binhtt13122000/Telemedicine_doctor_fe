@@ -57,6 +57,7 @@ const Input = styled("input")({
 
 const AccountForm: React.FC = () => {
     const [date, setDate] = useState<Date | null>(new Date("1990-01-01T21:11:54"));
+    const [maxDate, setMaxDate] = useState<Date>(new Date());
     const [imgLink, setImgLink] = useState<string>();
     const [file, setFile] = useState<string | Blob>("");
     const [provinces, setProvinces] = useState<Province[]>([]);
@@ -104,7 +105,7 @@ const AccountForm: React.FC = () => {
         } catch (_) {
             // console.log(e);
             showSnackBar({
-                children: "Có lỗi xảy ra. Vui lòng cập nhật đầy đủ thông tin trước khi lưu",
+                children: "Vui lòng chọn ảnh đại diện",
                 variant: "filled",
                 severity: "error",
             });
@@ -183,6 +184,12 @@ const AccountForm: React.FC = () => {
             }
         } catch (_) {}
     };
+
+    useEffect(() => {
+        let date = new Date();
+        date.setDate(date.getDate() - 1);
+        setMaxDate(new Date(date.getFullYear(), date.getMonth(), date.getDate()));
+    }, []);
 
     useEffect(() => {
         setValue("email", LocalStorageUtil.getItem("email"));
@@ -311,6 +318,7 @@ const AccountForm: React.FC = () => {
                             <DesktopDatePicker
                                 inputFormat="dd/MM/yyyy"
                                 value={date}
+                                maxDate={maxDate}
                                 onChange={handleChange}
                                 renderInput={(params) => (
                                     <TextField
