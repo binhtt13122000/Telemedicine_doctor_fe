@@ -4,7 +4,7 @@ import NextHealthCheck from "./components/NextHeathCheck";
 import SlotManagement from "./components/Schedule";
 import { Rating } from "@material-ui/lab";
 
-import useGetDoctorById from "./hooks/useGetDoctorById";
+import useGetDoctorByEmail from "./hooks/useGetDoctorByEmail";
 
 import {
     Box,
@@ -21,7 +21,7 @@ import LocalStorageUtil from "src/utils/LocalStorageUtil";
 
 const Dashboard: React.FC = () => {
     const user = LocalStorageUtil.getItem("user") as Account;
-    const { data, isLoading } = useGetDoctorById(`${user.id || 0}`);
+    const { data, isLoading } = useGetDoctorByEmail(`${user.email || ""}`);
     return (
         <React.Fragment>
             <Grid container sx={{ width: "100%" }}>

@@ -26,17 +26,19 @@ const useAuth = () => {
             let response = await signInWithPopup(auth, provider);
             if (response) {
                 let tokenId = await response.user.getIdToken();
-                let responseLogin = await axios.post<{ account: Account; accessToken: string }>(
-                    `${API_ROOT_URL}/login`,
-                    {
-                        tokenId: tokenId,
-                        loginType: 1,
-                    }
-                );
+                let responseLogin = await axios.post<{
+                    account: Account;
+                    accessToken: string;
+                    refenrenceId: string;
+                }>(`${API_ROOT_URL}/login`, {
+                    tokenId: tokenId,
+                    loginType: 1,
+                });
                 if (responseLogin.status === 200) {
                     if (responseLogin.data.account) {
                         LocalStorageUtil.setItem("user", responseLogin?.data?.account);
                         LocalStorageUtil.setItem("token", responseLogin?.data.accessToken);
+                        LocalStorageUtil.setItem("refenrenceId", responseLogin?.data.refenrenceId);
                         LocalStorageUtil.setItem(
                             "id_app",
                             responseLogin?.data.account.id

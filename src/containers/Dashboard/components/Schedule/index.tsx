@@ -29,14 +29,13 @@ import {
     TextField,
 } from "@mui/material";
 import { grey } from "@mui/material/colors";
-import { Account } from "src/common/models/Account.model";
 import LocalStorageUtil from "src/utils/LocalStorageUtil";
 
 const currentDate = new Date().toDateString();
 
 const SlotManagement: React.FC = () => {
-    const user = LocalStorageUtil.getItem("user") as Account;
-    const { isLoading, data } = useGetSlotByDoctorId(`${user.id || 0}`);
+    const refenrenceId = LocalStorageUtil.getItem("refenrenceId") as string;
+    const { isLoading, data } = useGetSlotByDoctorId(`${refenrenceId || 0}`);
     const { mutate, isSuccess } = useSaveSlots();
 
     const [open, setOpen] = React.useState(false);
@@ -81,7 +80,7 @@ const SlotManagement: React.FC = () => {
                         onChange={(e, checked: boolean) => {
                             if (checked) {
                                 const slot: SlotCM = {
-                                    doctorId: user.id || 0,
+                                    doctorId: Number(refenrenceId) || 0,
                                     assignedDate: moment(startDate).format("YYYY-MM-DD"),
                                     startTime: moment(startDate).format("H:mm:ss"),
                                     endTime: moment(endDate).format("H:mm:ss"),

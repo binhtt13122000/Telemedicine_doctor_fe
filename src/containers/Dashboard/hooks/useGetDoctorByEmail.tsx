@@ -7,13 +7,13 @@ import { Doctor } from "src/containers/VideoCall/models/VideoCall.model";
 export enum ServerStateKeysEnum {
     NearestHealthCheck = "NearestHealthCheck",
 }
-const useGetDoctorById = (id: string) => {
+const useGetDoctorByEmail = (email: string) => {
     let doctorService = new DoctorService();
-    const result = useQuery<Doctor, Error>(["doctor", id], async () => {
-        const result = await doctorService.getDoctorById(id);
+    const result = useQuery<Doctor, Error>(["doctor", email], async () => {
+        const result = await doctorService.getDoctorByEmail(email);
         return result.data;
     });
     return result;
 };
 
-export default useGetDoctorById;
+export default useGetDoctorByEmail;

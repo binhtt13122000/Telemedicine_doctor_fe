@@ -21,9 +21,40 @@ import LocalStorageUtil from "src/utils/LocalStorageUtil";
 
 const NextHealthCheck: React.FC = () => {
     const user = LocalStorageUtil.getItem("user") as Account;
-    const { data, isLoading } = useGetNearestHealthCheck(`${user.id || 0}`, "NEAREST");
+    const refenrenceId = LocalStorageUtil.getItem("refenrenceId") as string;
+    const { data, isLoading, isError } = useGetNearestHealthCheck(
+        `${refenrenceId || 0}`,
+        "NEAREST"
+    );
     return (
         <Card sx={{ width: "100%", minHeight: "100px" }}>
+            {isError && (
+                <React.Fragment>
+                    <CardHeader
+                        title={
+                            <Typography variant="h6">
+                                Xin chào {user.firstName} {user.lastName}. Chúc bạn một ngày làm
+                                việc hiệu quả!
+                            </Typography>
+                        }
+                    />
+                    <CardContent>
+                        <Box
+                            sx={{
+                                width: "100%",
+                                height: "100%",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                            }}
+                        >
+                            <Typography variant="subtitle2">
+                                Sắp tới bạn không có lịch hẹn nào!
+                            </Typography>
+                        </Box>
+                    </CardContent>
+                </React.Fragment>
+            )}
             {isLoading ? (
                 <Box
                     sx={{
