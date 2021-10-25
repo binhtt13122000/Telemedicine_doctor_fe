@@ -2,11 +2,10 @@ import React, { useState, useEffect } from "react";
 
 import { useHistory } from "react-router";
 
-import RoutesCollapse from "./components/RoutesCollapse";
-
+// import RoutesCollapse from "./components/RoutesCollapse";
 import { routes } from "./data";
 
-import { ExpandLess, ExpandMore } from "@mui/icons-material";
+// import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import { ListItemIcon, ListItem, Divider, Toolbar, ListItemText } from "@mui/material";
 
 export type ChildrenType = {
@@ -71,28 +70,31 @@ const ListRoutes = () => {
                         button
                         key={item.name}
                         onClick={() =>
-                            handleListItemClick(item.id, item.path, Boolean(item.children), item.id)
+                            // handleListItemClick(item.id, item.path, Boolean(item.children), item.id)
+                            handleListItemClick(item.id, item.path, Boolean(), item.id)
                         }
                         selected={openChildren.fatherIndex === item.id}
                     >
-                        <ListItemIcon>{item.icon}</ListItemIcon>
+                        <ListItemIcon>
+                            <img src={item.icon} width="30px" height="auto" alt="icon" />
+                        </ListItemIcon>
                         <ListItemText primary={item.name} />
-                        {item?.children ? (
+                        {/* {item?.children ? (
                             openChildren.fatherIndex == item.id && openChildren.isOpen ? (
                                 <ExpandLess />
                             ) : (
                                 <ExpandMore />
                             )
-                        ) : null}
+                        ) : null} */}
                     </ListItem>
-                    {item?.children ? (
+                    {/* {item?.children ? (
                         <RoutesCollapse
                             item={item?.children}
                             fatherId={item?.id}
                             handleListItemClick={handleListItemClick}
                             openChildren={openChildren}
                         />
-                    ) : null}
+                    ) : null} */}
                 </React.Fragment>
             ))}
             {/* <List>
