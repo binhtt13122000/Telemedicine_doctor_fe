@@ -1,13 +1,15 @@
 import React from "react";
 
+import logo from "../../assets/app-logo.png";
+
 import { AccountCircle } from "@mui/icons-material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { Menu, MenuItem } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
 import IconButton from "@mui/material/IconButton";
 import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
 import { useTheme } from "@mui/material/styles";
+import { Box } from "@mui/system";
 import LocalStorageUtil from "src/utils/LocalStorageUtil";
 
 interface IAppBarWithDrawer {
@@ -50,9 +52,9 @@ const AppBarWithDrawer: React.FC<IAppBarWithDrawer> = (props: IAppBarWithDrawer)
                 >
                     <MenuIcon />
                 </IconButton>
-                <Typography sx={{ flexGrow: 1 }} variant="h6" noWrap component="div">
-                    TeleMedicine App Doctor
-                </Typography>
+                <Box sx={{ flexGrow: 1 }}>
+                    <img src={logo} alt="telemedicine-logo" width="198" height="47" />
+                </Box>
                 <IconButton
                     size="large"
                     aria-label="account of current user"
