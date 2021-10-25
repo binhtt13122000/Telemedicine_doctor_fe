@@ -18,6 +18,7 @@ import {
     Typography,
 } from "@mui/material";
 import { Box } from "@mui/system";
+import LocalStorageUtil from "src/utils/LocalStorageUtil";
 
 export interface IProfile {
     email?: string;
@@ -40,7 +41,8 @@ const Profile: React.FC = () => {
         isMale: true,
         active: true,
     };
-    const { data, isLoading, isError } = useGetAccount();
+    const user = LocalStorageUtil.getItem("user") as Account;
+    const { data, isLoading, isError } = useGetAccount(user.email);
     const [value, setValue] = React.useState<number | null>(4);
     const { mutate } = usePutAccount();
     const [open, setOpen] = useState<boolean>(false);
