@@ -8,7 +8,6 @@ import { Cetification } from "../models/Cetification.model";
 import { CetificationAdd, Doctor } from "../models/Doctor.model";
 import DoctorService from "../services/Doctor.service";
 import CertificationForm from "./CeritificateForm";
-import CertificationFormAdd from "./CeritificateFormAdd";
 
 import BlockIcon from "@mui/icons-material/Block";
 import VerifiedIcon from "@mui/icons-material/Verified";
@@ -82,6 +81,7 @@ const CeritificateProfile: React.FC = () => {
         if (clearErrors) {
             clearErrors();
         }
+        refreshPage();
         setOpen(false);
     };
 
@@ -116,7 +116,12 @@ const CeritificateProfile: React.FC = () => {
         if (clearErrors) {
             clearErrors();
         }
+        refreshPage();
         setOpenAdd(false);
+    };
+
+    const refreshPage = () => {
+        window.location.reload();
     };
     const handleOpen = async (ceti: Cetification) => {
         setOpen(true);
@@ -129,18 +134,21 @@ const CeritificateProfile: React.FC = () => {
     return (
         <React.Fragment>
             <CertificationForm dataCeti={ab} open={open} handleClose={handleClose} />
-            {data && (
+            {/* {data && (
                 <CertificationFormAdd
                     dataCetificationAdd={cetificationAdd}
                     open={openAdd}
                     handleClose={handleCloseFormAdd}
                 />
-            )}
+            )} */}
 
             <Card sx={{ height: 400, borderRadius: 5 }}>
                 <Box sx={{ ml: 2 }}>
                     <Typography variant="h6" component="div">
                         Chứng chỉ
+                        <Button variant="outlined" onClick={() => handleCreate()}>
+                            + Thêm chứng chỉ
+                        </Button>
                     </Typography>
                 </Box>
                 <Box sx={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)" }}>

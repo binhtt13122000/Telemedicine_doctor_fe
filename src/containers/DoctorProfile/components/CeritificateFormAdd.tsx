@@ -2,6 +2,8 @@ import * as React from "react";
 
 import { SubmitHandler, useForm } from "react-hook-form";
 
+import CustomizeAutocomplete from "src/components/CustomizeAutocomplete";
+
 import logo from "../../../assets/logo.png";
 import { CetificationAdd } from "../models/Doctor.model";
 
@@ -13,13 +15,13 @@ import {
     Card,
     Grid,
     IconButton,
-    Input,
     Modal,
     TextField,
     TextFieldProps,
     Typography,
 } from "@mui/material";
 import Button from "@mui/material/Button";
+import { styled } from "@mui/material/styles";
 import { Box } from "@mui/system";
 
 export interface ICertificationForm {
@@ -28,14 +30,19 @@ export interface ICertificationForm {
     handleClose: (
         type: "SAVE" | "CANCEL",
         dataCetificationAdd?: CetificationAdd,
+        file?: Blob,
         callback?: Function
     ) => void;
 }
+
+const Input = styled("input")({
+    display: "none",
+});
 const CertificationFormAdd: React.FC<ICertificationForm> = (props: ICertificationForm) => {
     const { dataCetificationAdd } = props;
     const [date, setDate] = React.useState<Date | null>(new Date("2000-01-01T21:11:54"));
     const [imgLink, setImgLink] = React.useState<string>(logo);
-    const [file, setFile] = React.useState<string | Blob>("");
+    const [file, setFile] = React.useState<Blob>();
     const {
         register,
         handleSubmit,
@@ -58,36 +65,27 @@ const CertificationFormAdd: React.FC<ICertificationForm> = (props: ICertificatio
     const submitHandler: SubmitHandler<CetificationAdd> = (
         dataCetificationAdd: CetificationAdd
     ) => {
-        // reset();
-        if (dataCetificationAdd) {
-            props.handleClose("SAVE", dataCetificationAdd, clearErrors);
+        if (dataCetificationAdd && file) {
+            props.handleClose("SAVE", dataCetificationAdd, file, clearErrors);
         }
     };
-    const { ref: certificationDoctorsRef, ...certificationDoctorsProps } = register(
-        "certificationId",
-        {
-            min: {
-                value: 1,
-                message: "Mã dịch bệnh không được để trống",
-            },
-        }
-    );
+
     const uploadedFile = (event?: React.ChangeEvent<HTMLInputElement>) => {
         setImgLink(URL.createObjectURL(event?.target.files![0]));
         setFile(event?.target.files![0] as Blob);
     };
-    // const changeValueCertificateDoctors = (values: number[]) => {
-    //     const res = values.map((id) => {
-    //         const obj = { certificationDoctors: id };
-    //         return obj;
-    //     });
-    //     setValue("certificationDoctors", res);
-    //     clearErrors("certificationDoctors");
-    // };
 
-    const changeValue = (value: number) => {
-        setValue("certificationId", value);
-        clearErrors("certificationId");
+    const { ref: certificationIdRef, ...certificationIdRefProps } = register("certificationId", {
+        min: {
+            value: 1,
+            message: "Mã dịch bệnh không được để trống",
+        },
+    });
+    const changeValue = (value: number | number[]) => {
+        if (!Array.isArray(value)) {
+            setValue("certificationId", value);
+            clearErrors("certificationId");
+        }
     };
 
     return (
@@ -125,31 +123,19 @@ const CertificationFormAdd: React.FC<ICertificationForm> = (props: ICertificatio
                             },
                         }}
                     >
-                        <TextField
-                            id="certificationId"
-                            label="Tên chứng chỉ *"
-                            variant="outlined"
-                            error={!!errors.certificationId}
-                            helperText={errors.certificationId && "Mã chứng chỉ là bắt buộc"}
-                            {...register("certificationId", { required: true })}
-                        />
-                        {/* <Grid container columnSpacing={1}>
-                            <Grid item xs={8}> */}
-                        {/* <MultipleAutocomplete
-                            id="majors-selection"
+                        <CustomizeAutocomplete
                             query="/certifications"
                             field="name"
+                            label="Nhóm chứng chỉ"
                             searchField="name"
                             limit={10}
-                            errors={Boolean(errors?.certificationId)}
-                            errorMessage={"Vui lòng chọn chuyên ngành"}
-                            inputRef={certificationDoctorsRef}
-                            {...certificationDoctorsProps}
-                            changeValue={changeValueCertificateDoctors}
-                            width="80%"
-                        /> */}
-                        {/* </Grid>
-                        </Grid> */}
+                            errors={errors.certificationId}
+                            errorMessage={"Nhóm bệnh dịch là bắt buộc"}
+                            inputRef={certificationIdRef}
+                            {...certificationIdRefProps}
+                            changeValue={changeValue}
+                        />
+
                         <LocalizationProvider dateAdapter={AdapterDateFns}>
                             <DesktopDatePicker
                                 inputFormat="dd/MM/yyyy"
@@ -167,14 +153,13 @@ const CertificationFormAdd: React.FC<ICertificationForm> = (props: ICertificatio
                             />
                         </LocalizationProvider>
                         <Grid item xs={4}>
-                            <img src={imgLink} alt="Certificate Image" width="100" height="100" />
                             <label htmlFor="icon-button-file">
                                 <Input
-                                    // accept="/*"
+                                    accept="/*"
                                     id="icon-button-file"
                                     type="file"
                                     {...register("evidence")}
-                                    onChange={() => uploadedFile}
+                                    onChange={uploadedFile}
                                 />
                                 <IconButton
                                     color="primary"
@@ -184,20 +169,8 @@ const CertificationFormAdd: React.FC<ICertificationForm> = (props: ICertificatio
                                     <PhotoCamera />
                                 </IconButton>
                             </label>
+                            <img src={imgLink} alt="Certificate Image" width="100" height="100" />
                         </Grid>
-                        {/* <CustomAutocomplete
-                            id="certification-selection"
-                            query="/certifications"
-                            field="name"
-                            searchField="name"
-                            limit={10}
-                            errors={Boolean(errors?.certificationId)}
-                            errorMessage={"Vui lòng chọn nơi công tác"}
-                            inputRef={certificationIdRef}
-                            {...certificationIdRefProps}
-                            changeValue={changeValueCertificateDoctors}
-                            width="80%"
-                        /> */}
 
                         <Box
                             sx={{
@@ -210,7 +183,9 @@ const CertificationFormAdd: React.FC<ICertificationForm> = (props: ICertificatio
                         >
                             <Button
                                 variant="outlined"
-                                onClick={() => props.handleClose("CANCEL", undefined, clearErrors)}
+                                onClick={() =>
+                                    props.handleClose("CANCEL", undefined, file, clearErrors)
+                                }
                             >
                                 Hủy
                             </Button>

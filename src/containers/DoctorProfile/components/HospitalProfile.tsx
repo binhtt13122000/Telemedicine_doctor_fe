@@ -44,6 +44,10 @@ const HospitalProfile: React.FC = () => {
     if (isLoading) {
         return <CircularProgress />;
     }
+
+    const refreshPage = () => {
+        window.location.reload();
+    };
     const handleClose = (
         type: "SAVE" | "CANCEL",
         dataHospital?: Hospital,
@@ -62,8 +66,6 @@ const HospitalProfile: React.FC = () => {
                         description: dataHospital?.description,
                         isActive: dataHospital?.isActive,
                     });
-                } else {
-                    // useGetPostDoctor
                 }
             }
         }
@@ -71,6 +73,7 @@ const HospitalProfile: React.FC = () => {
             clearErrors();
         }
         setOpen(false);
+        refreshPage();
     };
     const createHospital = async (data: DoctorFromAdd) => {
         try {
@@ -127,6 +130,7 @@ const HospitalProfile: React.FC = () => {
         if (clearErrors) {
             clearErrors();
         }
+        refreshPage();
         setOpenAdd(false);
     };
     const handleOpen = async (hos: Hospital) => {

@@ -57,6 +57,10 @@ const Profile: React.FC = () => {
         setOpen(true);
         data && setAccount(data);
     };
+
+    const refreshPage = () => {
+        window.location.reload();
+    };
     const handleClose = (
         type: "SAVE" | "CANCEL",
         dataProfile?: Account,

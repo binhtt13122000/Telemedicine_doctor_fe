@@ -5,21 +5,11 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import logo from "../../../assets/logo.png";
 import { Doctor } from "../models/Doctor.model";
 
-import { PhotoCamera } from "@mui/icons-material";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import DesktopDatePicker from "@mui/lab/DesktopDatePicker";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
-import {
-    Button,
-    Card,
-    Grid,
-    IconButton,
-    Input,
-    Modal,
-    Switch,
-    TextField,
-    Typography,
-} from "@mui/material";
+import { Button, Card, Grid, Modal, TextField, Typography } from "@mui/material";
+import { styled } from "@mui/material/styles";
 import { Box } from "@mui/system";
 
 export interface IPracticingForm {
@@ -28,6 +18,9 @@ export interface IPracticingForm {
     handleClose: (type: "SAVE" | "CANCEL", dataPracticing?: Doctor, callback?: Function) => void;
 }
 
+const Input = styled("input")({
+    display: "none",
+});
 const PracticingForm: React.FC<IPracticingForm> = (props: IPracticingForm) => {
     const { dataPracticing } = props;
     const [checked, setChecked] = useState<boolean>(dataPracticing.isActive);
@@ -51,6 +44,7 @@ const PracticingForm: React.FC<IPracticingForm> = (props: IPracticingForm) => {
     };
 
     const uploadedFile = (event?: React.ChangeEvent<HTMLInputElement>) => {
+        console.log(event?.target.files);
         setImgLink(URL.createObjectURL(event?.target.files![0]));
         setFile(event?.target.files![0] as Blob);
     };
@@ -77,9 +71,7 @@ const PracticingForm: React.FC<IPracticingForm> = (props: IPracticingForm) => {
         // setValue("rating", dataPracticing.rating);
         // setValue("isVerify", dataPracticing.isVerify);
         setValue("isActive", dataPracticing.isActive);
-        // setValue("certificationDoctors", dataPracticing.certificationDoctors);
-        // setValue("hospitalDoctors", dataPracticing.hospitalDoctors);
-        // setValue("majorDoctors", dataPracticing.majorDoctors);
+
         setChecked(dataPracticing.isActive);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [dataPracticing, setChecked]);
@@ -127,7 +119,7 @@ const PracticingForm: React.FC<IPracticingForm> = (props: IPracticingForm) => {
                     }}
                 >
                     <Grid container spacing={1}>
-                        <Grid item xs={4}>
+                        {/* <Grid item xs={4}>
                             <TextField
                                 id="certificateCode"
                                 label="Mã chứng chỉ*"
@@ -136,7 +128,7 @@ const PracticingForm: React.FC<IPracticingForm> = (props: IPracticingForm) => {
                                 helperText={errors.certificateCode && "Mã chứng chỉ là bắt buộc"}
                                 {...register("certificateCode", { required: true })}
                             />
-                        </Grid>
+                        </Grid> */}
 
                         <Grid item xs={4}>
                             <TextField
@@ -161,8 +153,6 @@ const PracticingForm: React.FC<IPracticingForm> = (props: IPracticingForm) => {
                                 {...register("scopeOfPractice", { required: true })}
                             />
                         </Grid>
-                    </Grid>
-                    <Grid container spacing={1}>
                         <Grid item xs={4}>
                             <LocalizationProvider dateAdapter={AdapterDateFns}>
                                 <DesktopDatePicker
@@ -183,33 +173,8 @@ const PracticingForm: React.FC<IPracticingForm> = (props: IPracticingForm) => {
                                 />
                             </LocalizationProvider>
                         </Grid>
-                        <Grid item xs={4}>
-                            <img
-                                src={imgLink}
-                                alt="Practising certificate"
-                                width="100"
-                                height="100"
-                            />
-                            <label htmlFor="icon-button-file">
-                                <Input
-                                    // accept="/*"
-                                    id="icon-button-file"
-                                    type="file"
-                                    {...register("practisingCertificate")}
-                                    onChange={() => uploadedFile()}
-                                />
-                                <IconButton
-                                    color="primary"
-                                    aria-label="upload picture"
-                                    component="span"
-                                >
-                                    <PhotoCamera />
-                                </IconButton>
-                            </label>
-                        </Grid>
-                        <Grid item xs={4}></Grid>
                     </Grid>
-                    <Box sx={{ mt: 4 }} />
+
                     <TextField
                         id="description"
                         label="Mô tả*"
@@ -221,23 +186,47 @@ const PracticingForm: React.FC<IPracticingForm> = (props: IPracticingForm) => {
                         {...register("description", { required: true })}
                     />
 
-                    <Grid item xs={6}>
-                        <Typography
-                            sx={{
-                                // mx: "auto",
-                                p: 1,
-                                //
-                                // "& > :not(style)": { m: 1 },
-                            }}
-                        >
-                            Trạng thái: {}
-                        </Typography>
-                        <Switch
-                            checked={checked}
-                            onChange={handleChangeActive}
-                            inputProps={{ "aria-label": "controlled" }}
-                        />
+                    <Grid container spacing={1}>
+                        <Grid item xs={6}>
+                            <img
+                                src={imgLink}
+                                alt="Practising certificate"
+                                width="100"
+                                height="100"
+                            />
+                            <label htmlFor="icon-button-file">
+                                <Input
+                                    accept="/*"
+                                    id="contained-button-file"
+                                    multiple
+                                    type="file"
+                                    {...register("practisingCertificate")}
+                                    onChange={uploadedFile}
+                                />
+                                <Button variant="contained" component="span">
+                                    Upload hình ảnh
+                                </Button>
+                            </label>
+                        </Grid>
+                        {/* <Grid item xs={6}>
+                            <Typography
+                                sx={{
+                                    // mx: "auto",
+                                    p: 1,
+                                    //
+                                    // "& > :not(style)": { m: 1 },
+                                }}
+                            >
+                                Trạng thái: {}
+                            </Typography>
+                            <Switch
+                                checked={checked}
+                                onChange={handleChangeActive}
+                                inputProps={{ "aria-label": "controlled" }}
+                            />
+                        </Grid> */}
                     </Grid>
+
                     <Box
                         sx={{
                             justifyContent: "center",

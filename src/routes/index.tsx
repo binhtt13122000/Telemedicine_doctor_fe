@@ -9,6 +9,7 @@ import AccountForm from "src/containers/AccountForm";
 import Dashboard from "src/containers/Dashboard";
 import DoctorForm from "src/containers/DoctorForm";
 import DoctorProfile from "src/containers/DoctorProfile";
+import HealthCheckDetail from "src/containers/HealthCheckDetail";
 import HealthCheckListing from "src/containers/HealthCheckListing";
 import Layout from "src/containers/Layout";
 import Login from "src/containers/Login";
@@ -51,6 +52,11 @@ export const privateRoutes = [
         path: "/health-checks",
         name: "health-check",
         component: HealthCheckListing,
+    },
+    {
+        path: "/health-checks/1",
+        name: "health-check-detail",
+        component: HealthCheckDetail,
     },
 ];
 

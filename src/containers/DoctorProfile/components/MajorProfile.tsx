@@ -9,7 +9,6 @@ import MajorForm from "./MajorForm";
 import MajorFormAdd from "./MajorFormAdd";
 
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
-import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import {
     Button,
     Card,
@@ -75,6 +74,18 @@ const MajorProfile: React.FC = () => {
         }
     };
 
+    const editMajor = async (dataMajor?: Major) => {
+        if (dataMajor) {
+            if (dataMajor.id) {
+                const response = await mutate({
+                    id: dataMajor.id,
+                    name: dataMajor?.name,
+                    description: dataMajor?.description,
+                    isActive: dataMajor?.isActive,
+                });
+            }
+        }
+    };
     // Edit major
     const handleClose = (type: "SAVE" | "CANCEL", dataMajor?: Major, clearErrors?: Function) => {
         // setLoading(isLoading);
@@ -90,11 +101,12 @@ const MajorProfile: React.FC = () => {
                 } else {
                 }
             }
+            // editMajor(dataMajor);
         }
         if (clearErrors) {
             clearErrors();
         }
-
+        refreshPage();
         setOpen(false);
     };
 
@@ -106,6 +118,9 @@ const MajorProfile: React.FC = () => {
     //Add major
     const handleCreate = () => {
         setOpenAdd(true);
+    };
+    const refreshPage = () => {
+        window.location.reload();
     };
 
     const handleCloseMajorAdd = (
@@ -122,7 +137,7 @@ const MajorProfile: React.FC = () => {
         if (clearErrors) {
             clearErrors();
         }
-
+        refreshPage();
         setOpenAdd(false);
     };
 
@@ -145,9 +160,6 @@ const MajorProfile: React.FC = () => {
                 <Box sx={{ ml: 2 }}>
                     <Typography variant="h6" component="div">
                         Chuyên khoa
-                        <IconButton>
-                            <ControlPointIcon />
-                        </IconButton>
                     </Typography>
                 </Box>
                 <Box sx={{ display: "block", gridTemplateColumns: "repeat(3, 1fr)" }}>
