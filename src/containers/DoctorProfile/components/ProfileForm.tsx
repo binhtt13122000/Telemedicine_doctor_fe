@@ -30,7 +30,12 @@ interface Ward extends Area {
 export interface IProfileForm {
     dataProfile: Account;
     open: boolean;
-    handleClose: (type: "SAVE" | "CANCEL", dataProfile?: Account, callback?: Function) => void;
+    handleClose: (
+        type: "SAVE" | "CANCEL",
+        dataProfile?: Account,
+        file?: Blob,
+        callback?: Function
+    ) => void;
 }
 
 const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
@@ -41,11 +46,15 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
     const [wards, setWards] = useState<Ward[]>([]);
     const [disableDistrict, setDisableDistrict] = useState<boolean>(true);
     const [disableWard, setDisableWard] = useState<boolean>(true);
-
+    const [valueProvince, setValueProvince] = useState<Province>();
+    const [valueDistrict, setValueDistrict] = useState<District>();
+    const [valueWard, setValueWard] = useState<Ward>();
+    const [file, setFile] = React.useState<Blob>();
     const {
         register,
         handleSubmit,
         formState: { errors },
+        getValues,
         setValue,
         clearErrors,
     } = useForm<Account>({});
@@ -70,8 +79,8 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
     const submitHandler: SubmitHandler<Account> = (dataProfile: Account) => {
         // eslint-disable-next-line no-console
         // console.log(dataProfile);
-        if (dataProfile) {
-            props.handleClose("SAVE", dataProfile, clearErrors);
+        if (dataProfile && file) {
+            props.handleClose("SAVE", dataProfile, file, clearErrors);
         }
     };
     const onChangeProvince = (newProvince: Province | null) => {
@@ -146,6 +155,26 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
         fetchProvinces();
     }, [fetchProvinces]);
 
+    useEffect(() => {
+        provinces.map((item) => {
+            if (item.name === dataProfile.city) {
+                console.log("item ", item);
+                setValueProvince(item);
+            }
+        });
+        wards.map((item) => {
+            if (item.name === dataProfile.ward) {
+                console.log("item ", item);
+                setValueWard(item);
+            }
+        });
+        districts.map((item) => {
+            if (item.name === dataProfile.locality) {
+                console.log("item ", item);
+                setValueDistrict(item);
+            }
+        });
+    }, [provinces, dataProfile.city, wards, dataProfile.ward, districts, dataProfile.locality]);
     return (
         <Modal open={props.open}>
             <Card
@@ -269,6 +298,7 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
                             <Autocomplete
                                 options={provinces}
                                 getOptionLabel={(province: Province) => province.name}
+                                defaultValue={valueProvince}
                                 isOptionEqualToValue={(option, value) => option.name === value.name}
                                 onChange={(_, newProvince) => onChangeProvince(newProvince)}
                                 renderInput={(params) => (
@@ -290,6 +320,7 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
                             <Autocomplete
                                 disabled={disableDistrict}
                                 options={districts}
+                                defaultValue={valueDistrict}
                                 getOptionLabel={(district: District) => district.name}
                                 isOptionEqualToValue={(option, value) => option.name === value.name}
                                 onChange={(_, newDistrict) => onChangeDistrict(newDistrict)}
@@ -310,6 +341,7 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
                             <Autocomplete
                                 disabled={disableWard}
                                 options={wards}
+                                defaultValue={valueWard}
                                 getOptionLabel={(ward: Ward) => ward.name}
                                 isOptionEqualToValue={(option, value) => option.name === value.name}
                                 onChange={(_, newWard) => {
@@ -359,7 +391,9 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
                     >
                         <Button
                             variant="outlined"
-                            onClick={() => props.handleClose("CANCEL", undefined, clearErrors)}
+                            onClick={() =>
+                                props.handleClose("CANCEL", undefined, file, clearErrors)
+                            }
                         >
                             Hủy
                         </Button>

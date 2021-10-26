@@ -23,6 +23,12 @@ class AccountService<T> {
         return axios.put<T>("/accounts", data);
     }
 
+    updateFormData(data: FormData) {
+        return axios.put<T>("/accounts", data, {
+            headers: { "Content-Type": "multipart/form-data" },
+        });
+    }
+
     delete(id: number) {
         return axios.delete<{ message: "string" }>(`/accounts/${id}`);
     }

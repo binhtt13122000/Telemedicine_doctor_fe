@@ -5,6 +5,7 @@ import moment from "moment";
 import useGetAccount from "../hooks/useGetAccount";
 import usePutAccount from "../hooks/usePutAccount";
 import { Account } from "../models/Account.model";
+import AccountService from "../services/Account.service";
 import ProfileForm from "./ProfileForm";
 
 import {
@@ -61,32 +62,44 @@ const Profile: React.FC = () => {
     const refreshPage = () => {
         window.location.reload();
     };
+
+    const updateAccount = async (data: Account, file: Blob) => {
+        try {
+            let formData = new FormData();
+            formData.append("Email", data.email);
+            formData.append("FirstName", data.firstName);
+            formData.append("LastName", data.lastName);
+            formData.append("Image", file);
+            formData.append("Ward", data.ward);
+            formData.append("StreetAddress", data.streetAddress);
+            formData.append("Locality", data.locality);
+            formData.append("City", data.city);
+            formData.append("PostalCode", data.postalCode);
+            formData.append("Phone", data.phone);
+            formData.append("Dob", data.dob);
+            formData.append("IsMale", data.isMale.toString());
+            const service = new AccountService<Account>();
+            const response = await service.updateFormData(formData);
+            if (response.status === 201) {
+                // eslint-disable-next-line no-console
+                console.log(response.data);
+            }
+        } catch (e) {
+            // eslint-disable-next-line no-console
+            console.log(e);
+        }
+    };
+
     const handleClose = (
         type: "SAVE" | "CANCEL",
         dataProfile?: Account,
+        file?: Blob,
         clearErrors?: Function
     ) => {
         if (type === "SAVE") {
-            if (dataProfile) {
+            if (dataProfile && file) {
                 if (dataProfile.id) {
-                    mutate({
-                        id: dataProfile?.id,
-                        email: dataProfile?.email,
-                        firstName: dataProfile?.firstName,
-                        lastName: dataProfile?.lastName,
-                        ward: dataProfile?.ward,
-                        streetAddress: dataProfile?.streetAddress,
-                        locality: dataProfile?.locality,
-                        city: dataProfile?.city,
-                        postalCode: dataProfile?.postalCode,
-                        phone: dataProfile?.phone,
-                        avatar: dataProfile?.avatar,
-                        dob: dataProfile?.dob,
-                        isMale: dataProfile?.isMale,
-                        active: dataProfile?.active,
-                    });
-                } else {
-                    // postDrug(data);
+                    updateAccount(dataProfile, file);
                 }
             }
         }
