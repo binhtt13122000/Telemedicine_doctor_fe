@@ -11,7 +11,7 @@ export type Account = {
     city: string;
     postalCode: string;
     phone: string;
-    avatar?: string;
+    avatar: string;
     dob: string;
     isMale: boolean;
     active: boolean;

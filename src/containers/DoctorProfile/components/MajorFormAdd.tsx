@@ -34,25 +34,7 @@ const MajorFormAdd: React.FC<IMajorForm> = (props: IMajorForm) => {
     } = useForm<DoctorFromAdd>({});
 
     React.useEffect(() => {
-        // setValue("id", dataMajorAdd.id);
-        // setValue("email", dataMajorAdd.email);
-        // setValue("name", dataMajorAdd.name);
-        // setValue("avatar", dataMajorAdd.avatar);
-        // setValue("practisingCertificate", dataMajorAdd.practisingCertificate);
-        // setValue("certificateCode", dataMajorAdd.certificateCode);
-        // setValue("placeOfCertificate", dataMajorAdd.placeOfCertificate);
-        // setValue("dateOfCertificate", dataMajorAdd.dateOfCertificate);
-        // setValue("scopeOfPractice", dataMajorAdd.scopeOfPractice);
-        // setValue("description", dataMajorAdd.description);
-        // setValue("numberOfConsultants", dataMajorAdd.numberOfConsultants);
-        // setValue("rating", dataMajorAdd.rating);
-        // setValue("isVerify", dataMajorAdd.isVerify);
-        // setValue("isActive", dataMajorAdd.isActive);
-        // setValue("certificationDoctors", dataMajorAdd.certificationDoctors);
-        // setValue("hospitalDoctors", dataMajorAdd.hospitalDoctors);
-        // setValue("majorDoctors", dataMajorAdd.majorDoctors);
         setValue("id", dataMajorAdd.id);
-        // setValue("email", dataHospital.email);
         setValue("certificateCode", dataMajorAdd.certificateCode);
         setValue("placeOfCertificate", dataMajorAdd.placeOfCertificate);
         setValue("dateOfCertificate", dataMajorAdd.dateOfCertificate);

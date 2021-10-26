@@ -61,7 +61,7 @@ export type DoctorPraticing = {
 };
 
 export type CetificationAdd = {
-    certificationId?: number;
+    certificationId: number;
     evidence: string;
     dateOfIssue: string;
 };

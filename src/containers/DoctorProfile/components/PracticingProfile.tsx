@@ -267,7 +267,7 @@ const PracticingProfile: React.FC = () => {
                                     component="div"
                                     sx={{ fontWeight: "bold" }}
                                 >
-                                    Mo ta
+                                    Mô tả:
                                 </Typography>
 
                                 <Typography variant="body2" component="h5">
