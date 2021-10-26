@@ -98,9 +98,7 @@ const Profile: React.FC = () => {
     ) => {
         if (type === "SAVE") {
             if (dataProfile && file) {
-                if (dataProfile.id) {
-                    updateAccount(dataProfile, file);
-                }
+                updateAccount(dataProfile, file);
             }
         }
         if (clearErrors) {
