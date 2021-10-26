@@ -14,7 +14,8 @@ import "./index.scss";
 import { MicOffOutlined } from "@mui/icons-material";
 import MicNoneIcon from "@mui/icons-material/MicNoneRounded";
 import { Avatar, Box, Grid, GridSize, Typography } from "@mui/material";
-import { deepOrange } from "@mui/material/colors";
+import { Account } from "src/common/models/Account.model";
+import LocalStorageUtil from "src/utils/LocalStorageUtil";
 
 export interface ListVideoCallProps {
     users: IAgoraRTCRemoteUser[];
@@ -23,19 +24,21 @@ export interface ListVideoCallProps {
         video: boolean;
         audio: boolean;
     };
-    anotherTrackVideo: boolean;
-    anotherTrackAudio: boolean;
+    anotherTrackVideos: Record<string, boolean>;
+    anotherTrackAudios: Record<string, boolean>;
     healthCheck: HealthCheck;
 }
+
 const ListVideoCall: React.FC<ListVideoCallProps> = (props: ListVideoCallProps) => {
-    const { users, tracks, trackState, anotherTrackVideo, anotherTrackAudio, healthCheck } = props;
+    const user = LocalStorageUtil.getItem("user") as Account;
+    const { users, tracks, trackState, anotherTrackVideos, anotherTrackAudios, healthCheck } =
+        props;
 
     const [gridSpacing, setGridSpacing] = useState<GridSize>(12);
 
     useEffect(() => {
         setGridSpacing(Math.max(Math.floor(12 / (users.length + 1)), 4) as GridSize);
     }, [users, tracks]);
-
     return (
         <Grid container sx={{ height: "100%" }}>
             {tracks && (
@@ -89,9 +92,14 @@ const ListVideoCall: React.FC<ListVideoCallProps> = (props: ListVideoCallProps) 
                                                 <MicOffOutlined sx={{ color: "white" }} />
                                             )}
                                             <Typography color="white" variant="subtitle1">
-                                                Bs.{" "}
-                                                {healthCheck?.slots &&
-                                                    healthCheck?.slots[0].doctor?.name}
+                                                {user.email === healthCheck?.patient?.email
+                                                    ? healthCheck?.patient?.name
+                                                    : healthCheck?.slots &&
+                                                      healthCheck?.slots.length > 0 &&
+                                                      healthCheck?.slots[0].doctor?.email ===
+                                                          user.email
+                                                    ? healthCheck?.slots[0].doctor?.name
+                                                    : user.email}
                                             </Typography>
                                         </Box>
                                     </Box>
@@ -111,13 +119,17 @@ const ListVideoCall: React.FC<ListVideoCallProps> = (props: ListVideoCallProps) 
                                 >
                                     <Avatar
                                         sx={{
-                                            bgcolor: deepOrange[500],
                                             width: 200,
                                             height: 200,
                                         }}
                                         src={
-                                            healthCheck?.slots &&
-                                            healthCheck?.slots[0].doctor?.avatar
+                                            user.email === healthCheck?.patient?.email
+                                                ? healthCheck?.patient?.avatar
+                                                : healthCheck?.slots &&
+                                                  healthCheck?.slots.length > 0 &&
+                                                  healthCheck?.slots[0].doctor?.email === user.email
+                                                ? healthCheck?.slots[0].doctor?.avatar
+                                                : "https://e7.pngegg.com/pngimages/340/946/png-clipart-avatar-user-computer-icons-software-developer-avatar-child-face-thumbnail.png"
                                         }
                                     >
                                         {/* <Typography fontSize={100}>B</Typography> */}
@@ -136,9 +148,13 @@ const ListVideoCall: React.FC<ListVideoCallProps> = (props: ListVideoCallProps) 
                                             <MicOffOutlined sx={{ color: "white" }} />
                                         )}
                                         <Typography color="white" variant="subtitle1">
-                                            Bs.{" "}
-                                            {healthCheck?.slots &&
-                                                healthCheck?.slots[0].doctor?.name}
+                                            {user.email === healthCheck?.patient?.email
+                                                ? healthCheck?.patient?.name
+                                                : healthCheck?.slots &&
+                                                  healthCheck?.slots.length > 0 &&
+                                                  healthCheck?.slots[0].doctor?.email === user.email
+                                                ? healthCheck?.slots[0].doctor?.name
+                                                : user.email}
                                         </Typography>
                                     </Box>
                                 </Box>
@@ -165,7 +181,7 @@ const ListVideoCall: React.FC<ListVideoCallProps> = (props: ListVideoCallProps) 
                                             position: "relative",
                                         }}
                                     >
-                                        {anotherTrackVideo ? (
+                                        {anotherTrackVideos[`${user.uid}`] ? (
                                             <React.Fragment>
                                                 <AgoraVideoPlayer
                                                     id="video-call"
@@ -192,7 +208,7 @@ const ListVideoCall: React.FC<ListVideoCallProps> = (props: ListVideoCallProps) 
                                                             display: "flex",
                                                         }}
                                                     >
-                                                        {anotherTrackAudio ? (
+                                                        {anotherTrackAudios[`${user.uid}`] ? (
                                                             <MicNoneIcon sx={{ color: "white" }} />
                                                         ) : (
                                                             <MicOffOutlined
@@ -203,7 +219,15 @@ const ListVideoCall: React.FC<ListVideoCallProps> = (props: ListVideoCallProps) 
                                                             color="white"
                                                             variant="subtitle1"
                                                         >
-                                                            {healthCheck?.patient?.name}
+                                                            {user.uid ===
+                                                            healthCheck?.patient?.email
+                                                                ? healthCheck?.patient?.name
+                                                                : healthCheck?.slots &&
+                                                                  healthCheck?.slots.length > 0 &&
+                                                                  healthCheck?.slots[0].doctor
+                                                                      ?.email === user.uid
+                                                                ? healthCheck?.slots[0].doctor?.name
+                                                                : user.uid}
                                                         </Typography>
                                                     </Box>
                                                 </Box>
@@ -223,11 +247,19 @@ const ListVideoCall: React.FC<ListVideoCallProps> = (props: ListVideoCallProps) 
                                             >
                                                 <Avatar
                                                     sx={{
-                                                        bgcolor: deepOrange[500],
                                                         width: 200,
                                                         height: 200,
                                                     }}
-                                                    src={healthCheck?.patient?.avatar}
+                                                    src={
+                                                        user.uid === healthCheck?.patient?.email
+                                                            ? healthCheck?.patient?.avatar
+                                                            : healthCheck?.slots &&
+                                                              healthCheck?.slots.length > 0 &&
+                                                              healthCheck?.slots[0].doctor
+                                                                  ?.email === user.uid
+                                                            ? healthCheck?.slots[0].doctor?.avatar
+                                                            : "https://e7.pngegg.com/pngimages/340/946/png-clipart-avatar-user-computer-icons-software-developer-avatar-child-face-thumbnail.png"
+                                                    }
                                                 ></Avatar>
                                                 <Box
                                                     sx={{
@@ -237,13 +269,20 @@ const ListVideoCall: React.FC<ListVideoCallProps> = (props: ListVideoCallProps) 
                                                         display: "flex",
                                                     }}
                                                 >
-                                                    {anotherTrackAudio ? (
+                                                    {anotherTrackAudios[`${user.uid}`] ? (
                                                         <MicNoneIcon sx={{ color: "white" }} />
                                                     ) : (
                                                         <MicOffOutlined sx={{ color: "white" }} />
                                                     )}
                                                     <Typography color="white" variant="subtitle1">
-                                                        {healthCheck?.patient?.name}
+                                                        {user.uid === healthCheck?.patient?.email
+                                                            ? healthCheck?.patient?.name
+                                                            : healthCheck?.slots &&
+                                                              healthCheck?.slots.length > 0 &&
+                                                              healthCheck?.slots[0].doctor
+                                                                  ?.email === user.uid
+                                                            ? healthCheck?.slots[0].doctor?.name
+                                                            : user.uid}
                                                     </Typography>
                                                 </Box>
                                             </Box>
@@ -281,11 +320,19 @@ const ListVideoCall: React.FC<ListVideoCallProps> = (props: ListVideoCallProps) 
                                         >
                                             <Avatar
                                                 sx={{
-                                                    bgcolor: deepOrange[500],
                                                     width: 200,
                                                     height: 200,
                                                 }}
-                                                src={healthCheck?.patient?.avatar}
+                                                src={
+                                                    user.uid === healthCheck?.patient?.email
+                                                        ? healthCheck?.patient?.avatar
+                                                        : healthCheck?.slots &&
+                                                          healthCheck?.slots.length > 0 &&
+                                                          healthCheck?.slots[0].doctor?.email ===
+                                                              user.uid
+                                                        ? healthCheck?.slots[0].doctor?.avatar
+                                                        : "https://e7.pngegg.com/pngimages/340/946/png-clipart-avatar-user-computer-icons-software-developer-avatar-child-face-thumbnail.png"
+                                                }
                                             ></Avatar>
                                             <Box
                                                 sx={{
@@ -295,13 +342,20 @@ const ListVideoCall: React.FC<ListVideoCallProps> = (props: ListVideoCallProps) 
                                                     display: "flex",
                                                 }}
                                             >
-                                                {anotherTrackAudio ? (
+                                                {anotherTrackAudios[`${user.uid}`] ? (
                                                     <MicNoneIcon sx={{ color: "white" }} />
                                                 ) : (
                                                     <MicOffOutlined sx={{ color: "white" }} />
                                                 )}
                                                 <Typography color="white" variant="subtitle1">
-                                                    {healthCheck?.patient?.name}
+                                                    {user.uid === healthCheck?.patient?.email
+                                                        ? healthCheck?.patient?.name
+                                                        : healthCheck?.slots &&
+                                                          healthCheck?.slots.length > 0 &&
+                                                          healthCheck?.slots[0].doctor?.email ===
+                                                              user.uid
+                                                        ? healthCheck?.slots[0].doctor?.name
+                                                        : user.uid}
                                                 </Typography>
                                             </Box>
                                         </Box>

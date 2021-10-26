@@ -6,6 +6,9 @@ import { HealthCheck } from "../../models/VideoCall.model";
 import { useClient, useMicrophoneAndCameraTracks } from "../../setting";
 import VideoCall from "../VideoCall";
 
+import { Account } from "src/common/models/Account.model";
+import LocalStorageUtil from "src/utils/LocalStorageUtil";
+
 export interface VideoCallMainScreenProps {
     appId: string;
     token: string;
@@ -17,14 +20,16 @@ const VideoCallMainScreen: React.FC<VideoCallMainScreenProps> = (
     props: VideoCallMainScreenProps
 ) => {
     const { appId, channel, token, healthCheck } = props;
+    const user = LocalStorageUtil.getItem("user") as Account;
 
     const [users, setUsers] = useState<IAgoraRTCRemoteUser[]>([]);
     const [start, setStart] = useState(false);
     const client = useClient();
     const { ready, tracks } = useMicrophoneAndCameraTracks();
 
-    const [anotherTrackVideo, setAnotherTrackVideo] = useState<boolean>(true);
-    const [anotherTrackAudio, setAnotherTrackAudio] = useState<boolean>(true);
+    const [anotherTrackAudios, setAnotherTrackAudios] = useState<Record<string, boolean>>({});
+
+    const [anotherTrackVideos, setAnotherTrackVideos] = useState<Record<string, boolean>>({});
 
     useEffect(() => {
         let init = async (name: string) => {
@@ -38,6 +43,12 @@ const VideoCallMainScreen: React.FC<VideoCallMainScreenProps> = (
                             return [...prevUsers, user];
                         }
                         return [...prevUsers];
+                    });
+                    setAnotherTrackAudios((prev) => {
+                        return { ...prev, [`${user.uid}`]: true };
+                    });
+                    setAnotherTrackVideos((prev) => {
+                        return { ...prev, [`${user.uid}`]: true };
                     });
                 }
                 if (mediaType === "audio") {
@@ -62,22 +73,38 @@ const VideoCallMainScreen: React.FC<VideoCallMainScreenProps> = (
                 setUsers((prevUsers) => {
                     return prevUsers.filter((User) => User.uid !== user.uid);
                 });
+                setAnotherTrackAudios((prev) => {
+                    delete prev[`${user.uid}`];
+                    return { ...prev };
+                });
+                setAnotherTrackVideos((prev) => {
+                    delete prev[`${user.uid}`];
+                    return { ...prev };
+                });
             });
 
             client.on("user-info-updated", (uid, msg) => {
                 if (msg === "mute-video") {
-                    setAnotherTrackVideo(false);
+                    setAnotherTrackVideos((prev) => {
+                        return { ...prev, [`${uid}`]: false };
+                    });
                 } else if (msg === "unmute-video") {
-                    setAnotherTrackVideo(true);
+                    setAnotherTrackVideos((prev) => {
+                        return { ...prev, [`${uid}`]: true };
+                    });
                 } else if (msg === "mute-audio") {
-                    setAnotherTrackAudio(false);
+                    setAnotherTrackAudios((prev) => {
+                        return { ...prev, [`${uid}`]: false };
+                    });
                 } else if (msg === "unmute-audio") {
-                    setAnotherTrackAudio(true);
+                    setAnotherTrackAudios((prev) => {
+                        return { ...prev, [`${uid}`]: true };
+                    });
                 }
             });
 
             try {
-                await client.join(appId, name, token, null);
+                await client.join(appId, name, token, user.email);
             } catch (error) {
                 // eslint-disable-next-line no-console
                 console.log("error");
@@ -95,7 +122,7 @@ const VideoCallMainScreen: React.FC<VideoCallMainScreenProps> = (
                 console.log(error);
             }
         }
-    }, [channel, appId, token, client, ready, tracks]);
+    }, [channel, appId, token, client, ready, tracks, user]);
 
     useEffect(() => {
         // eslint-disable-next-line no-console
@@ -103,6 +130,20 @@ const VideoCallMainScreen: React.FC<VideoCallMainScreenProps> = (
         // eslint-disable-next-line no-console
         console.log(users);
     }, [users]);
+
+    useEffect(() => {
+        // eslint-disable-next-line no-console
+        console.log("audio track:");
+        // eslint-disable-next-line no-console
+        console.log(anotherTrackAudios);
+    }, [anotherTrackAudios]);
+
+    useEffect(() => {
+        // eslint-disable-next-line no-console
+        console.log("audio video:");
+        // eslint-disable-next-line no-console
+        console.log(anotherTrackVideos);
+    }, [anotherTrackVideos]);
     return (
         <React.Fragment>
             <VideoCall
@@ -112,8 +153,8 @@ const VideoCallMainScreen: React.FC<VideoCallMainScreenProps> = (
                 setStart={setStart}
                 users={users}
                 healthCheck={healthCheck}
-                anotherTrackVideo={anotherTrackVideo}
-                anotherTrackAudio={anotherTrackAudio}
+                anotherTrackVideos={anotherTrackVideos}
+                anotherTrackAudios={anotherTrackAudios}
             />
         </React.Fragment>
     );

@@ -1,6 +1,7 @@
 import React from "react";
 
 import moment from "moment";
+import { useHistory } from "react-router";
 
 import useGetNearestHealthCheck from "../../hooks/useGetNearestHealthCheck";
 
@@ -20,6 +21,7 @@ import { Account } from "src/common/models/Account.model";
 import LocalStorageUtil from "src/utils/LocalStorageUtil";
 
 const NextHealthCheck: React.FC = () => {
+    const history = useHistory();
     const user = LocalStorageUtil.getItem("user") as Account;
     const refenrenceId = LocalStorageUtil.getItem("refenrenceId") as string;
     const { data, isLoading, isError } = useGetNearestHealthCheck(
@@ -110,6 +112,9 @@ const NextHealthCheck: React.FC = () => {
                                                     color="success"
                                                     aria-label="call"
                                                     component="span"
+                                                    onClick={() =>
+                                                        history.push("call/" + (data.id || 0))
+                                                    }
                                                 >
                                                     <Call />
                                                 </IconButton>
