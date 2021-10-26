@@ -13,7 +13,8 @@ export type RoutesCollapseType = {
         id: number;
         name: string;
         path: string;
-        icon: JSX.Element;
+        // icon: JSX.Element;
+        icon: string;
     }[];
     handleListItemClick: (
         index: number,
@@ -48,7 +49,14 @@ const RoutesCollapse: React.FC<RoutesCollapseType> = (props: RoutesCollapseType)
                                 )
                             }
                         >
-                            <ListItemIcon>{itemChildren?.icon}</ListItemIcon>
+                            <ListItemIcon>
+                                <img
+                                    src={itemChildren?.icon}
+                                    width="30px"
+                                    height="auto"
+                                    alt="icon"
+                                />
+                            </ListItemIcon>
                             <ListItemText primary={itemChildren?.name} />
                         </ListItem>
                     );
