@@ -158,7 +158,7 @@ const MajorProfile: React.FC = () => {
             <MajorForm dataMajor={major} opened={open} handleClose={handleClose} />
             <Card sx={{ height: "100%", borderRadius: 5 }}>
                 <Box sx={{ ml: 2 }}>
-                    <Typography variant="h6" component="div">
+                    <Typography sx={{ mt: 3 }} variant="h6" component="div">
                         Chuyên khoa
                     </Typography>
                 </Box>

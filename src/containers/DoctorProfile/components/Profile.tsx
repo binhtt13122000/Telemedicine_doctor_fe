@@ -114,12 +114,12 @@ const Profile: React.FC = () => {
         <React.Fragment>
             {data && <ProfileForm dataProfile={account} open={open} handleClose={handleClose} />}
             <Card sx={{ minHeight: "100%", width: 450, borderRadius: 5, pl: 5 }}>
-                <Box sx={{ display: "flex" }}>
-                    <Typography variant="h6" component="div">
-                        Profile doctor
+                <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                    <Typography sx={{ mt: 3 }} variant="h6" component="div">
+                        Thông tin bác sĩ
                     </Typography>
-                    <Box sx={{ ml: 29 }}>
-                        <Typography variant="h6" component="h5">
+                    <Box>
+                        <Typography sx={{ mt: 3, mr: 3 }} variant="h6" component="h5">
                             <IconButton onClick={() => handleOpenModal()}>
                                 <Icon>edit</Icon>
                             </IconButton>
@@ -164,27 +164,31 @@ const Profile: React.FC = () => {
                             }}
                         /> */}
                     <Stack direction="row" spacing={1}>
-                        <Typography variant="h6" component="div">
+                        <Typography variant="subtitle1" component="div">
                             {data?.isMale ? "Bà" : "Ông"}{" "}
                             {`${data?.firstName}
                         ${data?.lastName}`}
                         </Typography>
                     </Stack>
                     <Stack direction="row" spacing={1}>
-                        <Typography variant="h6" component="div">
+                        <Typography variant="subtitle1" component="div">
                             Email:
                         </Typography>
-                        <Typography variant="h6" component="div" sx={{ fontWeight: "normal" }}>
+                        <Typography
+                            variant="subtitle1"
+                            component="div"
+                            sx={{ fontWeight: "normal" }}
+                        >
                             {data?.email}
                         </Typography>
                     </Stack>
                     <Stack direction="row" spacing={1}>
-                        <Typography variant="h6" component="div">
+                        <Typography variant="subtitle1" component="div">
                             Số điện thoại:
                         </Typography>
                         <Typography
                             gutterBottom
-                            variant="h6"
+                            variant="subtitle1"
                             component="div"
                             sx={{ fontWeight: "normal" }}
                         >
@@ -192,12 +196,12 @@ const Profile: React.FC = () => {
                         </Typography>
                     </Stack>
                     <Stack direction="row" spacing={1}>
-                        <Typography variant="h6" component="div">
+                        <Typography variant="subtitle1" component="div">
                             Ngày sinh:
                         </Typography>
                         <Typography
                             gutterBottom
-                            variant="h6"
+                            variant="subtitle1"
                             component="div"
                             sx={{ fontWeight: "normal" }}
                         >
@@ -205,7 +209,7 @@ const Profile: React.FC = () => {
                         </Typography>
                     </Stack>
                     <Box sx={{ display: "inline" }}>
-                        <Typography variant="h6" component="div">
+                        <Typography variant="subtitle1" component="div" marginRight={5}>
                             Địa chỉ:{" "}
                             {`${data?.streetAddress}, ${data?.locality}, ${data?.ward}, ${data?.city} `}
                         </Typography>

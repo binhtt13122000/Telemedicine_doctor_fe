@@ -154,7 +154,7 @@ const HospitalProfile: React.FC = () => {
             <HospitalForm dataHospital={hospital} opened={open} handleClose={handleClose} />
             <Card sx={{ minHeight: "100%", borderRadius: 5 }}>
                 <Box sx={{ ml: 2 }}>
-                    <Typography variant="h6" component="div">
+                    <Typography sx={{ mt: 3 }} variant="h6" component="div">
                         Bệnh viện
                     </Typography>
                 </Box>
