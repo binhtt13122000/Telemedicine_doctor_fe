@@ -37,6 +37,8 @@ const VideoCallMainScreen: React.FC<VideoCallMainScreenProps> = (
                 await client.subscribe(user, mediaType);
                 if (mediaType === "video") {
                     // eslint-disable-next-line no-console
+                    console.log("dmmmm");
+                    // eslint-disable-next-line no-console
                     console.log(user);
                     setUsers((prevUsers) => {
                         if (prevUsers.findIndex((x) => x.uid === user.uid) === -1) {
@@ -104,7 +106,7 @@ const VideoCallMainScreen: React.FC<VideoCallMainScreenProps> = (
             });
 
             try {
-                await client.join(appId, name, token, user.email);
+                await client.join(appId, name, token, user.id);
             } catch (error) {
                 // eslint-disable-next-line no-console
                 console.log("error");

@@ -30,10 +30,10 @@ const DoctorProfile: React.FC = () => {
                     </Grid> */}
                     <Box sx={{ mt: 2 }} />
                     <Grid container spacing={4}>
-                        <Grid item xs={5}>
+                        <Grid item xs={12} md={5}>
                             <Profile />
                         </Grid>
-                        <Grid item xs={7}>
+                        <Grid item xs={12} md={7}>
                             <CertificateCarousel />
                         </Grid>
                     </Grid>

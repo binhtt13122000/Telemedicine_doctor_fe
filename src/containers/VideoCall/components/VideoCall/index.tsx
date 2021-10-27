@@ -134,7 +134,8 @@ export const VideoCall: React.FC<VideoCallProps> = (props: VideoCallProps) => {
             props.tracks[1].close();
         }
         props.setStart(false);
-        history.push("/");
+        history.replace("/");
+        window.location.reload();
     };
 
     const info = () => {
@@ -159,7 +160,7 @@ export const VideoCall: React.FC<VideoCallProps> = (props: VideoCallProps) => {
                 </Grid>
                 <Grid container>
                     <Grid item xs={4}>
-                        Chiều cao:
+                        Chiều cao: {props.users?.length}
                     </Grid>
                     <Grid item xs={8}>
                         {props.healthCheck?.height / 100 || 0}m
