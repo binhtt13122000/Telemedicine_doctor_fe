@@ -1,27 +1,16 @@
 import React from "react";
 
-import CallRoundedIcon from "@mui/icons-material/CallRounded";
-import {
-    Grid,
-    Card,
-    CardHeader,
-    Divider,
-    CardContent,
-    Avatar,
-    Typography,
-    List,
-    ListItemAvatar,
-    ListItemText,
-    ListItem,
-    IconButton,
-} from "@mui/material";
-import { Doughnut } from "react-chartjs-2";
+import NextAppointment from "./components/NextAppointment";
+import TotalAppointments from "./components/TotalAppointments";
+import UpcomingAppointments from "./components/UpcomingAppointments";
+
+import { Grid, Card, CardHeader, Divider, CardContent } from "@mui/material";
+import { Bar, Doughnut, Line } from "react-chartjs-2";
 
 const Dashboard: React.FC = () => {
     const doughnutData = {
         datasets: [
             {
-                //   label: '# of Votes',
                 data: [50, 36],
                 backgroundColor: ["rgba(54, 162, 235, 0.2)", "rgba(255, 99, 132, 0.2)"],
                 borderColor: ["rgba(54, 162, 235, 1)", "rgba(255, 99, 132, 1)"],
@@ -29,6 +18,46 @@ const Dashboard: React.FC = () => {
             },
         ],
         labels: ["Nam", "Nữ"],
+    };
+
+    const lineData = {
+        labels: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"],
+        datasets: [
+            {
+                label: "buổi tư vấn",
+                data: [12, 19, 13, 35, 29, 37, 25, 36, 15, 45, 12, 20],
+                fill: false,
+                backgroundColor: "rgb(255, 99, 132)",
+                borderColor: "rgba(255, 99, 132, 0.2)",
+            },
+        ],
+    };
+
+    const barData = {
+        labels: [
+            "8:00",
+            "9:00",
+            "10:00",
+            "11:00",
+            "12:00",
+            "13:00",
+            "14:00",
+            "15:00",
+            "16:00",
+            "17:00",
+            "18:00",
+        ],
+        datasets: [
+            {
+                label: "buổi tư vấn",
+                data: [12, 19, 13, 15, 20, 23, 19, 13, 15, 18, 10],
+                backgroundColor: "rgba(75, 192, 192, 0.2)",
+                borderColor: "rgba(75, 192, 192, 1)",
+                borderWidth: 1,
+                barThickness: 4,
+                fill: true,
+            },
+        ],
     };
 
     // const doughnutOptions = {
@@ -42,156 +71,51 @@ const Dashboard: React.FC = () => {
 
     return (
         <Grid container spacing={2}>
-            {/* Next Appointment */}
-            <Grid container item xs={4}>
-                <Card sx={{ width: "100%" }}>
-                    <CardHeader title="Buổi tư vấn tiếp theo" />
-                    <Divider />
-                    <CardContent>
-                        <Avatar src="" />
-                        <Typography>10:00</Typography>
-                        <Typography>10:00</Typography>
-                    </CardContent>
-                </Card>
-            </Grid>
-            {/* Statistic of the number of appointments */}
-            <Grid container item xs={4} spacing={2}>
-                <Grid item xs={6}>
-                    <Card>
+            <Grid container item lg={8} spacing={2}>
+                <Grid item lg={6}>
+                    <NextAppointment />
+                </Grid>
+                {/* Statistic of the number of appointments */}
+                <Grid item lg={3}>
+                    <Card sx={{ width: "100%", height: "100%" }}>
                         <Doughnut data={doughnutData} />
                     </Card>
                 </Grid>
-                <Grid container item xs={6} spacing={2}>
-                    <Grid item>
-                        <Card>
-                            <CardHeader title="Lịch hẹn tháng 10" />
-                            <Typography variant="h3" align="center">
-                                60
-                            </Typography>
-                        </Card>
+                <Grid container item lg={3} spacing={2}>
+                    <Grid item xs={12}>
+                        <TotalAppointments title="Trong tháng 10" value={60} />
                     </Grid>
-                    <Grid item>
-                        <Card>
-                            <CardHeader title="Đã hoàn thành" />
-                            <Typography variant="h3" align="center">
-                                45
-                            </Typography>
-                        </Card>
+                    <Grid item xs={12}>
+                        <TotalAppointments title="Đã hoàn thành" value={45} />
                     </Grid>
                 </Grid>
+                <Grid item lg={6}>
+                    <Card sx={{ width: "100%" }}>
+                        <CardHeader
+                            title="Thống kê theo tháng"
+                            titleTypographyProps={{ variant: "h6" }}
+                        />
+                        <Divider />
+                        <CardContent>
+                            <Line data={lineData} />
+                        </CardContent>
+                    </Card>
+                </Grid>
+                <Grid item lg={6}>
+                    <Card sx={{ width: "100%" }}>
+                        <CardHeader
+                            title="Thống kê theo khung giờ"
+                            titleTypographyProps={{ variant: "h6" }}
+                        />
+                        <Divider />
+                        <CardContent>
+                            <Bar data={barData} />
+                        </CardContent>
+                    </Card>
+                </Grid>
             </Grid>
-            {/* Upcoming Appointments */}
-            <Grid item xs={4}>
-                <Card>
-                    <CardHeader title="Lịch tư vấn sắp tới" />
-                    <Divider />
-                    <List>
-                        <ListItem
-                            secondaryAction={
-                                <IconButton edge="end" aria-label="call">
-                                    <CallRoundedIcon />
-                                </IconButton>
-                            }
-                        >
-                            <ListItemAvatar>
-                                <Avatar src="" />
-                            </ListItemAvatar>
-                            <ListItemText
-                                primary="Ngọc Nguyễn"
-                                secondary={
-                                    <React.Fragment>
-                                        <Typography
-                                            sx={{ display: "inline" }}
-                                            component="span"
-                                            variant="body2"
-                                            color="text.primary"
-                                        >
-                                            Triệu chứng:
-                                        </Typography>
-                                        {" Đau họng, sốt, ho, khó thở, mệt mỏi, đau nhức"}
-                                        <Typography
-                                            sx={{ display: "block" }}
-                                            variant="body2"
-                                            color="text.primary"
-                                        >
-                                            10am - 26/10/2021
-                                        </Typography>
-                                    </React.Fragment>
-                                }
-                            />
-                        </ListItem>
-                        <Divider component="li" variant="middle" />
-                        <ListItem
-                            secondaryAction={
-                                <IconButton edge="end" aria-label="call">
-                                    <CallRoundedIcon />
-                                </IconButton>
-                            }
-                        >
-                            <ListItemAvatar>
-                                <Avatar src="" />
-                            </ListItemAvatar>
-                            <ListItemText
-                                primary="Ngọc Nguyễn"
-                                secondary={
-                                    <React.Fragment>
-                                        <Typography
-                                            sx={{ display: "inline" }}
-                                            component="span"
-                                            variant="body2"
-                                            color="text.primary"
-                                        >
-                                            Triệu chứng:
-                                        </Typography>
-                                        {" Đau họng, sốt, ho, khó thở, mệt mỏi, đau nhức"}
-                                        <Typography
-                                            sx={{ display: "block" }}
-                                            variant="body2"
-                                            color="text.primary"
-                                        >
-                                            10am - 26/10/2021
-                                        </Typography>
-                                    </React.Fragment>
-                                }
-                            />
-                        </ListItem>
-                        {/* <Divider component="li" variant="middle" />
-                        <ListItem
-                            secondaryAction={
-                                <IconButton edge="end" aria-label="call">
-                                    <CallRoundedIcon />
-                                </IconButton>
-                            }
-                        >
-                            <ListItemAvatar>
-                                <Avatar src="" />
-                            </ListItemAvatar>
-                            <ListItemText
-                                primary="Ngọc Nguyễn"
-                                secondary={
-                                    <React.Fragment>
-                                        <Typography
-                                            sx={{ display: "inline" }}
-                                            component="span"
-                                            variant="body2"
-                                            color="text.primary"
-                                        >
-                                            Triệu chứng:
-                                        </Typography>
-                                        {" Đau họng, sốt, ho, khó thở, mệt mỏi, đau nhức"}
-                                        <Typography
-                                            sx={{ display: "block" }}
-                                            variant="body2"
-                                            color="text.primary"
-                                        >
-                                            10am - 26/10/2021
-                                        </Typography>
-                                    </React.Fragment>
-                                }
-                            />
-                        </ListItem> */}
-                    </List>
-                </Card>
+            <Grid item lg={4}>
+                <UpcomingAppointments />
             </Grid>
         </Grid>
     );
