@@ -1,3 +1,8 @@
+import moment from "moment";
+
+import healthCheckDetail from "../../../../assets/health-check-detail.png";
+import { HealthCheck } from "../../models/HealthCheck.model";
+
 import BloodtypeOutlinedIcon from "@mui/icons-material/BloodtypeOutlined";
 import CakeOutlinedIcon from "@mui/icons-material/CakeOutlined";
 import CreateOutlinedIcon from "@mui/icons-material/CreateOutlined";
@@ -21,15 +26,49 @@ import {
     Typography,
 } from "@mui/material";
 import { Box } from "@mui/system";
+import { Account } from "src/containers/AccountForm/models/Account.model";
 
-const HealthCheckDetail: React.FC = () => {
-    return (
-        <Card sx={{ width: 500 }}>
+export interface IHealthCheckDetail {
+    healthCheck?: HealthCheck;
+    patientAccount?: Account;
+}
+
+const HealthCheckDetail: React.FC<IHealthCheckDetail> = (props: IHealthCheckDetail) => {
+    const { healthCheck, patientAccount } = props;
+
+    const defaultLayout = (
+        <Card
+            sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                height: 640,
+                p: 2,
+                "& > :not(style)": { p: 1 },
+            }}
+        >
+            <img alt="Health Check" src={healthCheckDetail} />
+            <div>Chọn một lịch hẹn để xem chi tiết</div>
+        </Card>
+    );
+
+    return !healthCheck ? (
+        defaultLayout
+    ) : (
+        <Card sx={{ height: 640, overflow: "auto" }}>
             {/* Block 1 */}
             <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
                 <CardHeader title="Thông tin chi tiết" />
-                <Avatar src="" alt="avatar image" sx={{ height: 100, width: 100 }} />
-                <Typography variant="h6">Tên bệnh nhân</Typography>
+                <Avatar
+                    src={healthCheck.patient.avatar}
+                    alt={healthCheck.patient.name}
+                    sx={{ height: 100, width: 100 }}
+                />
+                <Typography component="div">
+                    <Box sx={{ fontWeight: "medium", fontSize: 24, pb: 1 }}>
+                        {healthCheck.patient.name}
+                    </Box>
+                </Typography>
             </Box>
             <Divider variant="middle" />
             {/* Block 2 */}
@@ -39,38 +78,40 @@ const HealthCheckDetail: React.FC = () => {
                         <ListItemIcon>
                             <BloodtypeOutlinedIcon />
                         </ListItemIcon>
-                        <ListItemText primary="Nhóm máu O" />
+                        <ListItemText primary={healthCheck.patient.bloodGroup} />
                     </ListItem>
                     <ListItem>
                         <ListItemIcon>
                             <WcRoundedIcon />
                         </ListItemIcon>
-                        <ListItemText primary="Giới tính" />
+                        <ListItemText primary={patientAccount?.isMale ? "Nam" : "Nữ"} />
                     </ListItem>
                     <ListItem>
                         <ListItemIcon>
                             <CakeOutlinedIcon />
                         </ListItemIcon>
-                        <ListItemText primary="06/12/2000" />
+                        <ListItemText primary={moment(patientAccount?.dob).format("DD/MM/YYYY")} />
                     </ListItem>
                     <ListItem>
                         <ListItemIcon>
                             <PhoneOutlinedIcon />
                         </ListItemIcon>
-                        <ListItemText primary="0369902385" />
+                        <ListItemText primary={patientAccount?.phone} />
                     </ListItem>
                 </Box>
                 <ListItem>
                     <ListItemIcon>
                         <EmailOutlinedIcon />
                     </ListItemIcon>
-                    <ListItemText primary="email@gmail.com" />
+                    <ListItemText primary={patientAccount?.email} />
                 </ListItem>
                 <ListItem>
                     <ListItemIcon>
                         <HomeOutlinedIcon />
                     </ListItemIcon>
-                    <ListItemText primary="123 Street, Ward, District, City" />
+                    <ListItemText
+                        primary={`${patientAccount?.streetAddress}, ${patientAccount?.locality}, ${patientAccount?.city}`}
+                    />
                 </ListItem>
             </List>
             <Divider variant="middle" />
@@ -82,11 +123,15 @@ const HealthCheckDetail: React.FC = () => {
                 <Grid container sx={{ display: "flex", flexDirection: "row", pl: 3, pb: 1 }}>
                     <Grid item xs={6} sx={{ display: "flex", flexDirection: "row" }}>
                         <Typography>Chiều cao:</Typography>
-                        <Typography sx={{ color: "text.secondary", ml: 1 }}>170cm</Typography>
+                        <Typography sx={{ color: "text.secondary", ml: 1 }}>
+                            {healthCheck.height}cm
+                        </Typography>
                     </Grid>
                     <Grid item xs={6} sx={{ display: "flex", flexDirection: "row" }}>
                         <Typography>Cân nặng:</Typography>
-                        <Typography sx={{ color: "text.secondary", ml: 1 }}>65kg</Typography>
+                        <Typography sx={{ color: "text.secondary", ml: 1 }}>
+                            {healthCheck.weight}kg
+                        </Typography>
                     </Grid>
                 </Grid>
                 <Grid container sx={{ display: "flex", flexWrap: "wrap", pl: 3, pb: 1 }}>
@@ -95,7 +140,7 @@ const HealthCheckDetail: React.FC = () => {
                     </Grid>
                     <Grid item xs={9}>
                         <Typography sx={{ color: "text.secondary" }}>
-                            Đậu phộng, sữa bò, nha đam, hải sản, trứng
+                            {healthCheck.patient.allergy}
                         </Typography>
                     </Grid>
                 </Grid>
@@ -105,7 +150,7 @@ const HealthCheckDetail: React.FC = () => {
                     </Grid>
                     <Grid item xs={9}>
                         <Typography sx={{ color: "text.secondary" }}>
-                            Viêm gan B, suy thận, viêm phổi, sỏi thận
+                            {healthCheck.patient.backgroundDisease}
                         </Typography>
                     </Grid>
                 </Grid>
@@ -115,7 +160,9 @@ const HealthCheckDetail: React.FC = () => {
                     </Grid>
                     <Grid item xs={9}>
                         <Typography sx={{ color: "text.secondary" }}>
-                            Đau họng, sốt cao, khó thở
+                            {healthCheck.symptomHealthChecks
+                                .map((item) => item.symptom.name)
+                                .join(", ")}
                         </Typography>
                     </Grid>
                 </Grid>
