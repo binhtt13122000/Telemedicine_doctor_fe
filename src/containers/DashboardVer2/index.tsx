@@ -60,14 +60,22 @@ const Dashboard: React.FC = () => {
         ],
     };
 
-    // const doughnutOptions = {
-    //     plugins: {
-    //         legend: {
-    //             display: true,
-    //             position: "bottom",
-    //         },
-    //     },
-    // };
+    const doughnutOptions = {
+        plugins: {
+            legend: {
+                display: true,
+                position: "bottom" as "bottom",
+            },
+        },
+    };
+
+    const lineOptions = {
+        plugins: {
+            legend: {
+                display: false,
+            },
+        },
+    };
 
     return (
         <Grid container spacing={2}>
@@ -78,7 +86,13 @@ const Dashboard: React.FC = () => {
                 {/* Statistic of the number of appointments */}
                 <Grid item lg={3}>
                     <Card sx={{ width: "100%", height: "100%" }}>
-                        <Doughnut data={doughnutData} />
+                        <CardHeader
+                            title="Tổng lịch hẹn"
+                            titleTypographyProps={{ variant: "h6" }}
+                        />
+                        <CardContent>
+                            <Doughnut data={doughnutData} options={doughnutOptions} />
+                        </CardContent>
                     </Card>
                 </Grid>
                 <Grid container item lg={3} spacing={2}>
@@ -97,7 +111,7 @@ const Dashboard: React.FC = () => {
                         />
                         <Divider />
                         <CardContent>
-                            <Line data={lineData} />
+                            <Line data={lineData} options={lineOptions} />
                         </CardContent>
                     </Card>
                 </Grid>
@@ -109,7 +123,7 @@ const Dashboard: React.FC = () => {
                         />
                         <Divider />
                         <CardContent>
-                            <Bar data={barData} />
+                            <Bar data={barData} options={lineOptions} />
                         </CardContent>
                     </Card>
                 </Grid>
