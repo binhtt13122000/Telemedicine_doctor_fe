@@ -6,9 +6,8 @@ import { PrivateRoute } from "./PrivateRoute";
 import PublicRoute from "./PublicRoute";
 
 import AccountForm from "src/containers/AccountForm";
-import Dashboard from "src/containers/Dashboard";
-import DashboardVer2 from "src/containers/DashboardVer2";
 import DashboardSchedule from "src/containers/DashboardSchedule";
+import DashboardVer2 from "src/containers/DashboardVer2";
 import DoctorForm from "src/containers/DoctorForm";
 import DoctorProfile from "src/containers/DoctorProfile";
 import HealthCheckListing from "src/containers/HealthCheckList";
