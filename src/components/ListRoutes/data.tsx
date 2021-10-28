@@ -12,7 +12,7 @@ export const routes = [
     },
     {
         id: 2,
-        name: "Danh sách lịch hẹn",
+        name: "Lịch sử",
         path: "/health-checks",
         icon: healthCheck,
     },
