@@ -1,21 +1,31 @@
 import React, { useState } from "react";
 
 import { IMicrophoneAudioTrack, ICameraVideoTrack, IAgoraRTCRemoteUser } from "agora-rtc-react";
+import { AxiosResponse } from "axios";
 import moment from "moment";
 import { useHistory } from "react-router";
+import axios from "src/axios";
 
+import { CircularProgress } from "@material-ui/core";
+import { NotificationCM } from "src/components/AppBar";
 import CustomizeAutocomplete from "src/components/CustomizeAutocomplete";
+import useSnackbar from "src/components/Snackbar/useSnackbar";
 
+import useGetDoctorListByEmail from "../../hooks/useGetDoctorListByEmail";
 import { HealthCheck } from "../../models/VideoCall.model";
 import { useClient } from "../../setting";
 import ListVideoCall from "../ListVideoCall";
+import ListVideoCallWithThreePeople from "../ListVideoCallWithThreePeople";
 import VideoCallWithLayout2 from "../VideoCallWithLayout2";
-import VideoCallWithLayout3 from "../VideoCallWithLayout3";
 
+// import VideoCallWithLayout2 from "../VideoCallWithLayout2";
+// import VideoCallWithLayout3 from "../VideoCallWithLayout3";
 import {
     Add,
+    AddCircle,
     BrandingWatermark,
     CalendarViewWeek,
+    ContentCopy,
     DashboardOutlined,
     InfoOutlined,
     MicOffOutlined,
@@ -26,6 +36,7 @@ import CallEndIcon from "@mui/icons-material/CallEnd";
 import MicNoneIcon from "@mui/icons-material/MicNoneRounded";
 import VideocamIcon from "@mui/icons-material/VideocamOutlined";
 import {
+    Avatar,
     Button,
     Card,
     CardContent,
@@ -52,8 +63,8 @@ export interface VideoCallProps {
     ready: boolean;
     tracks: [IMicrophoneAudioTrack, ICameraVideoTrack] | null;
     healthCheck: HealthCheck;
-    anotherTrackVideo: boolean;
-    anotherTrackAudio: boolean;
+    anotherTrackVideos: Record<string, boolean>;
+    anotherTrackAudios: Record<string, boolean>;
 }
 
 const steps = [
@@ -69,7 +80,11 @@ export const VideoCall: React.FC<VideoCallProps> = (props: VideoCallProps) => {
         checked: false,
         type: "",
     });
+    const [search, setSearch] = useState("");
 
+    const showSnackbar = useSnackbar();
+
+    const { isLoading, data } = useGetDoctorListByEmail(search);
     const [layoutType, setLayoutType] = useState<number>(0);
 
     const [activeStep, setActiveStep] = React.useState(0);
@@ -88,7 +103,7 @@ export const VideoCall: React.FC<VideoCallProps> = (props: VideoCallProps) => {
 
     const client = useClient();
 
-    const clickIcon = (type: "info" | "dashboard") => {
+    const clickIcon = (type: "info" | "dashboard" | "invite") => {
         if (checkType.type !== type) {
             setCheckType({
                 checked: true,
@@ -99,6 +114,29 @@ export const VideoCall: React.FC<VideoCallProps> = (props: VideoCallProps) => {
                 ...checkType,
                 checked: !checkType.checked,
             });
+        }
+    };
+
+    const inviteDoctor = async (email: string) => {
+        try {
+            const response = await axios.post<
+                Notification,
+                AxiosResponse<Notification>,
+                NotificationCM
+            >("/notifications", {
+                content: `${props.healthCheck?.id || ""}`,
+                type: 10,
+                email: email,
+            });
+            if (response.status === 201) {
+                showSnackbar({
+                    severity: "success",
+                    children: "Đã mời bác sĩ thành công",
+                });
+            }
+        } catch (ex) {
+            // eslint-disable-next-line no-console
+            console.log(ex);
         }
     };
 
@@ -126,7 +164,8 @@ export const VideoCall: React.FC<VideoCallProps> = (props: VideoCallProps) => {
             props.tracks[1].close();
         }
         props.setStart(false);
-        history.push("/");
+        history.replace("/");
+        window.location.reload();
     };
 
     const info = () => {
@@ -151,7 +190,7 @@ export const VideoCall: React.FC<VideoCallProps> = (props: VideoCallProps) => {
                 </Grid>
                 <Grid container>
                     <Grid item xs={4}>
-                        Chiều cao:
+                        Chiều cao: {props.users?.length}
                     </Grid>
                     <Grid item xs={8}>
                         {props.healthCheck?.height / 100 || 0}m
@@ -183,6 +222,79 @@ export const VideoCall: React.FC<VideoCallProps> = (props: VideoCallProps) => {
                         );
                     })
                 )}
+            </React.Fragment>
+        );
+    };
+
+    const invite = () => {
+        return (
+            <React.Fragment>
+                <Grid container sx={{ mt: 3 }}>
+                    <Grid item xs={10}>
+                        <TextField disabled value={window.location.href} size="small" fullWidth />
+                    </Grid>
+                    <Grid item xs={2} display="flex" alignItems="center" justifyContent="center">
+                        <IconButton>
+                            <ContentCopy />
+                        </IconButton>
+                    </Grid>
+                </Grid>
+                <Typography sx={{ mt: 3 }} variant="subtitle2">
+                    Tìm bác sĩ trong hệ thống
+                </Typography>
+                <TextField
+                    sx={{ mt: 3 }}
+                    variant="standard"
+                    placeholder="Tìm bác sĩ"
+                    size="small"
+                    fullWidth
+                    onChange={(e) => setSearch(e.target.value)}
+                />
+                <Box sx={{ mt: 3, position: "relative", overflow: "auto", maxHeight: 300 }} />
+                {isLoading && <CircularProgress />}
+                {data &&
+                    data?.content?.map((x) => {
+                        return (
+                            <Box key={x.id} width="100%" minHeight={70}>
+                                <Card
+                                    elevation={7}
+                                    sx={{ minHeight: 60, display: "flex", alignItems: "center" }}
+                                >
+                                    <Grid container alignItems="center">
+                                        <Grid
+                                            item
+                                            display="flex"
+                                            justifyContent="center"
+                                            alignItems="center"
+                                            sm={3}
+                                        >
+                                            <Avatar sizes="large" src={x.avatar} alt={x.email} />
+                                        </Grid>
+                                        <Grid item sm={7}>
+                                            <Box>
+                                                <Typography>{x.name}</Typography>
+                                                <Divider variant="fullWidth"></Divider>
+                                                <Typography variant="body2">{x.email}</Typography>
+                                            </Box>
+                                        </Grid>
+                                        <Grid
+                                            item
+                                            display="flex"
+                                            justifyContent="center"
+                                            alignItems="center"
+                                            sm={2}
+                                        >
+                                            <Tooltip title="Mời tham gia cuộc gọi">
+                                                <IconButton onClick={() => inviteDoctor(x.email)}>
+                                                    <AddCircle color="primary" />
+                                                </IconButton>
+                                            </Tooltip>
+                                        </Grid>
+                                    </Grid>
+                                </Card>
+                            </Box>
+                        );
+                    })}
             </React.Fragment>
         );
     };
@@ -429,36 +541,58 @@ export const VideoCall: React.FC<VideoCallProps> = (props: VideoCallProps) => {
                     width={checkType.checked ? "75%" : "100%"}
                     sx={{ backgroundColor: "#202124" }}
                 >
-                    {props.ready && props.start && props.tracks && layoutType === 0 && (
-                        <ListVideoCall
-                            anotherTrackVideo={props.anotherTrackVideo}
-                            trackState={trackState}
-                            users={props.users}
-                            tracks={props.tracks}
-                            healthCheck={props.healthCheck}
-                            anotherTrackAudio={props.anotherTrackAudio}
-                        />
-                    )}
+                    {props.ready &&
+                        props.start &&
+                        props.tracks &&
+                        layoutType === 0 &&
+                        props.users?.length < 2 && (
+                            <ListVideoCall
+                                anotherTrackVideos={props.anotherTrackVideos}
+                                trackState={trackState}
+                                users={props.users}
+                                tracks={props.tracks}
+                                healthCheck={props.healthCheck}
+                                anotherTrackAudios={props.anotherTrackAudios}
+                            />
+                        )}
+                    {props.ready &&
+                        props.start &&
+                        props.tracks &&
+                        layoutType === 0 &&
+                        props.users?.length < 4 &&
+                        props.users?.length > 1 && (
+                            <ListVideoCallWithThreePeople
+                                anotherTrackVideos={props.anotherTrackVideos}
+                                trackState={trackState}
+                                users={props.users}
+                                tracks={props.tracks}
+                                healthCheck={props.healthCheck}
+                                anotherTrackAudios={props.anotherTrackAudios}
+                            />
+                        )}
                     {props.ready && props.start && props.tracks && layoutType === 1 && (
                         <VideoCallWithLayout2
-                            anotherTrackVideo={props.anotherTrackVideo}
+                            anotherTrackVideos={props.anotherTrackVideos}
                             trackState={trackState}
                             users={props.users}
                             tracks={props.tracks}
                             healthCheck={props.healthCheck}
-                            anotherTrackAudio={props.anotherTrackAudio}
+                            anotherTrackAudios={props.anotherTrackAudios}
                         />
                     )}
-                    {props.ready && props.start && props.tracks && layoutType === 2 && (
-                        <VideoCallWithLayout3
-                            anotherTrackVideo={props.anotherTrackVideo}
-                            trackState={trackState}
-                            users={props.users}
-                            tracks={props.tracks}
-                            healthCheck={props.healthCheck}
-                            anotherTrackAudio={props.anotherTrackAudio}
-                        />
-                    )}
+                    {props.ready &&
+                        props.start &&
+                        props.tracks &&
+                        layoutType === 2 &&
+                        // <VideoCallWithLayout3
+                        //     anotherTrackVideos={props.anotherTrackVideos}
+                        //     trackState={trackState}
+                        //     users={props.users}
+                        //     tracks={props.tracks}
+                        //     healthCheck={props.healthCheck}
+                        //     anotherTrackAudios={props.anotherTrackAudios}
+                        // />
+                        null}
                 </Box>
                 <Slide direction="left" in={checkType.checked} mountOnEnter unmountOnExit>
                     <Box
@@ -478,7 +612,11 @@ export const VideoCall: React.FC<VideoCallProps> = (props: VideoCallProps) => {
                             }}
                         >
                             <CardContent>
-                                {checkType.type === "info" ? info() : dashboard()}
+                                {checkType.type === "info"
+                                    ? info()
+                                    : checkType.type === "dashboard"
+                                    ? dashboard()
+                                    : invite()}
                             </CardContent>
                         </Card>
                     </Box>
@@ -626,6 +764,22 @@ export const VideoCall: React.FC<VideoCallProps> = (props: VideoCallProps) => {
                                                 onClick={() => clickIcon("info")}
                                             >
                                                 <InfoOutlined fontSize="medium" />
+                                            </IconButton>
+                                        </Tooltip>
+                                    </Grid>
+                                    <Grid item>
+                                        <Tooltip title="Mời thêm người">
+                                            <IconButton
+                                                color="inherit"
+                                                sx={{
+                                                    "&:hover": {
+                                                        backgroundColor: "#3c4043",
+                                                        color: "white",
+                                                    },
+                                                }}
+                                                onClick={() => clickIcon("invite")}
+                                            >
+                                                <AddCircle fontSize="medium" />
                                             </IconButton>
                                         </Tooltip>
                                     </Grid>

@@ -19,7 +19,7 @@ import {
 import { Account } from "src/common/models/Account.model";
 import LocalStorageUtil from "src/utils/LocalStorageUtil";
 
-const Dashboard: React.FC = () => {
+const DashboardSchedule: React.FC = () => {
     const user = LocalStorageUtil.getItem("user") as Account;
     const { data, isLoading } = useGetDoctorByEmail(`${user.email || ""}`);
     return (
@@ -172,4 +172,4 @@ const Dashboard: React.FC = () => {
     );
 };
 
-export default Dashboard;
+export default DashboardSchedule;

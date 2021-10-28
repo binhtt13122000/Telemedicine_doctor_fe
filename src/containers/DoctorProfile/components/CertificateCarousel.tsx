@@ -6,7 +6,9 @@ import { autoPlay } from "react-swipeable-views-utils";
 import useGetDoctor from "../hooks/useGetDoctor";
 import usePutCeritificate from "../hooks/usePutCeritificate";
 import { Cetification } from "../models/Cetification.model";
-import CertificationForm from "./CeritificateForm";
+import { CetificationAdd, Doctor } from "../models/Doctor.model";
+import DoctorService from "../services/Doctor.service";
+import CertificationFormAdd from "./CeritificateFormAdd";
 
 import BlockIcon from "@mui/icons-material/Block";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
@@ -27,13 +29,21 @@ const CertificateCarousel: React.FC = () => {
         description: "",
         isActive: true,
     };
+    const initCetificationAdd: CetificationAdd = {
+        certificationId: 0,
+        evidence: "",
+        dateOfIssue: "2021-10-20T15:58:02.973Z",
+    };
     const theme = useTheme();
     const [activeStep, setActiveStep] = React.useState(0);
     const { data, isLoading, isError } = useGetDoctor();
     // const maxSteps = data?.certificationDoctors.length;
     const { mutate } = usePutCeritificate();
     const [open, setOpen] = React.useState<boolean>(false);
+    const [openAdd, setOpenAdd] = React.useState<boolean>(false);
     const [ab, setAb] = React.useState<Cetification>(initCetification);
+    const [cetificationAdd, setCeficationAdd] =
+        React.useState<CetificationAdd>(initCetificationAdd);
     const handleNext = () => {
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
     };
@@ -45,34 +55,43 @@ const CertificateCarousel: React.FC = () => {
     const handleStepChange = (step: number) => {
         setActiveStep(step);
     };
-
+    const createCetificate = async (dataCeti: CetificationAdd, file: Blob, id: number) => {
+        try {
+            let formData = new FormData();
+            console.log("evidence", dataCeti.evidence);
+            formData.append("CertificationId", JSON.stringify(dataCeti.certificationId));
+            formData.append("Evidence", file);
+            formData.append("DateOfIssue ", dataCeti.dateOfIssue);
+            const service = new DoctorService<Doctor>();
+            const response = await service.createFormData(id, formData);
+            if (response.status === 201) {
+                // eslint-disable-next-line no-console
+                console.log(response.data);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
     const handleOpen = async (ceti: Cetification) => {
         setOpen(true);
         setAb(ceti);
     };
-    const handleClose = (
+    const handleCloseFormAdd = (
         type: "SAVE" | "CANCEL",
-        dataCeti?: Cetification,
+        dataCetificationAdd?: CetificationAdd,
+        file?: Blob,
         clearErrors?: Function
     ) => {
         if (type === "SAVE") {
-            if (dataCeti) {
-                if (dataCeti.id) {
-                    mutate({
-                        id: dataCeti.id,
-                        name: dataCeti?.name,
-                        description: dataCeti?.description,
-                        isActive: dataCeti?.isActive,
-                    });
-                } else {
-                    // postDrug(data);
-                }
+            if (dataCetificationAdd && file) {
+                data?.id && createCetificate(dataCetificationAdd, file, data?.id);
             }
         }
         if (clearErrors) {
             clearErrors();
         }
-        setOpen(false);
+        refreshPage();
+        setOpenAdd(false);
     };
     if (isError) {
         return <div> Error</div>;
@@ -80,12 +99,21 @@ const CertificateCarousel: React.FC = () => {
     if (isLoading) {
         return <CircularProgress />;
     }
+    const refreshPage = () => {
+        window.location.reload();
+    };
     const handleCreate = () => {
-        setOpen(true);
+        setOpenAdd(true);
     };
     return (
         <React.Fragment>
-            <CertificationForm dataCeti={ab} open={open} handleClose={handleClose} />
+            {data && (
+                <CertificationFormAdd
+                    dataCetificationAdd={cetificationAdd}
+                    open={openAdd}
+                    handleClose={handleCloseFormAdd}
+                />
+            )}
             <Box sx={{ minWidth: 500, flexGrow: 1 }}>
                 <Paper
                     square
@@ -119,17 +147,17 @@ const CertificateCarousel: React.FC = () => {
                     {data?.certificationDoctors?.map((step, index) => (
                         <div key={step?.certification?.name}>
                             <Box sx={{ display: "flex" }}>
-                                <Box
+                                {/* <Box
                                     sx={{
+                                        ml: "5rem",
                                         alignItems: "left",
                                         justifyContent: "left",
                                     }}
-                                >
+                                ></Box> */}
+                                <Box sx={{ ml: "3rem", display: "flex" }}>
                                     <Typography variant="h6" component="div">
                                         {step?.certification?.name}
                                     </Typography>
-                                </Box>
-                                <Box sx={{ ml: "24rem", display: "flex" }}>
                                     {step?.isActive ? (
                                         <IconButton>
                                             <VerifiedIcon color="success" />
@@ -140,11 +168,11 @@ const CertificateCarousel: React.FC = () => {
                                         </IconButton>
                                     )}
 
-                                    <Typography variant="h6" component="h5">
+                                    {/* <Typography variant="h6" component="h5">
                                         <IconButton onClick={() => handleOpen(step?.certification)}>
                                             <Icon>edit</Icon>
                                         </IconButton>
-                                    </Typography>
+                                    </Typography> */}
                                 </Box>
                             </Box>
                             {Math.abs(activeStep - index) <= 2 ? (

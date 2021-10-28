@@ -147,10 +147,10 @@ const PracticingProfile: React.FC = () => {
                 <PracticingForm dataPracticing={data} open={openModal} handleClose={handleClose} />
             )}
             <Card sx={{ minHeight: "100%", borderRadius: 5 }}>
-                <Box sx={{ ml: 2, display: "flex" }}>
+                <Box sx={{ ml: 2, display: "flex", justifyContent: "space-between" }}>
                     <Box>
-                        <Typography variant="h6" component="div">
-                            Hồ sơ
+                        <Typography sx={{ mt: 3 }} variant="h6" component="div">
+                            Hồ sơ hành nghề
                             {data?.isActive ? (
                                 <Tooltip title="Còn hoạt động">
                                     <IconButton>
@@ -166,7 +166,7 @@ const PracticingProfile: React.FC = () => {
                             )}
                         </Typography>
                     </Box>
-                    <Box sx={{ ml: 27 }}>
+                    <Box sx={{ mt: 3 }}>
                         <Typography variant="h6" component="h5">
                             <IconButton onClick={() => handleOpenModal()}>
                                 <Icon>edit</Icon>
@@ -178,7 +178,7 @@ const PracticingProfile: React.FC = () => {
                     <Item>
                         <Box sx={{ display: "block" }}>
                             <Box sx={{ display: "flex" }}>
-                                <Stack direction="row" spacing={1}>
+                                <Stack direction="row" spacing={1} sx={{ mt: 2 }}>
                                     <Typography
                                         variant="body2"
                                         component="div"
@@ -210,7 +210,7 @@ const PracticingProfile: React.FC = () => {
                                     </DialogContent>
                                 </Dialog>
                             </Box>
-                            <Stack direction="row" spacing={1}>
+                            <Stack direction="row" spacing={1} sx={{ mt: 2 }}>
                                 <Typography
                                     variant="body2"
                                     component="div"
@@ -222,7 +222,7 @@ const PracticingProfile: React.FC = () => {
                                     {data?.certificateCode}
                                 </Typography>
                             </Stack>
-                            <Stack direction="row" spacing={1}>
+                            <Stack direction="row" spacing={1} sx={{ mt: 2 }}>
                                 <Typography
                                     variant="body2"
                                     component="div"
@@ -235,7 +235,7 @@ const PracticingProfile: React.FC = () => {
                                     {data?.placeOfCertificate}
                                 </Typography>
                             </Stack>
-                            <Stack direction="row" spacing={1}>
+                            <Stack direction="row" spacing={1} sx={{ mt: 2 }}>
                                 <Typography
                                     variant="body2"
                                     component="div"
@@ -248,7 +248,7 @@ const PracticingProfile: React.FC = () => {
                                     {moment(data?.dateOfCertificate).format("DD/MM/YYYY")}
                                 </Typography>
                             </Stack>
-                            <Stack direction="row" spacing={1}>
+                            <Stack direction="row" spacing={1} sx={{ mt: 2 }}>
                                 <Typography
                                     variant="body2"
                                     component="div"
@@ -261,20 +261,20 @@ const PracticingProfile: React.FC = () => {
                                     {data?.scopeOfPractice}
                                 </Typography>
                             </Stack>
-                            <Stack direction="row" spacing={1}>
+                            <Stack direction="row" spacing={1} sx={{ mt: 2 }}>
                                 <Typography
                                     variant="body2"
                                     component="div"
                                     sx={{ fontWeight: "bold" }}
                                 >
-                                    Mo ta
+                                    Mô tả:
                                 </Typography>
 
                                 <Typography variant="body2" component="h5">
                                     {data?.description}
                                 </Typography>
                             </Stack>
-                            <Stack direction="row" spacing={1}>
+                            <Stack direction="row" spacing={1} sx={{ mt: 2 }}>
                                 <Typography
                                     variant="body2"
                                     component="div"
@@ -291,7 +291,7 @@ const PracticingProfile: React.FC = () => {
 
                             <Box sx={{ mt: 1 }} />
 
-                            <Stack direction="row" spacing={1}>
+                            <Stack direction="row" spacing={1} sx={{ mt: 2 }}>
                                 {/* <Typography
                                     variant="body2"
                                     component="div"

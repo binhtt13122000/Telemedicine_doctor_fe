@@ -6,15 +6,24 @@ import SnackbarBase, {
     SnackbarBaseProps,
 } from "src/components/Snackbar/SnackbarBase";
 
-export type showSnackbar = (newAlert: AlertBaseProps, snackbarBase?: SnackbarBaseProps) => void;
+export type showSnackbar = (
+    newAlert: AlertBaseProps,
+    snackbarBase?: SnackbarBaseProps,
+    time?: number
+) => void;
 export const SnackbarContext = createContext<showSnackbar>(({}) => {});
 
 const SnackbarProvider: React.FC = ({ children }) => {
     const [alert, setAlert] = useState<AlertBaseProps>({});
     const [snackbar, setSnackbar] = useState<SnackbarBaseProps>({});
+    const [time, setTime] = useState<number | null>(null);
     const [open, setOpen] = useState<boolean>(false);
 
-    const showSnackbar = (newAlert: AlertBaseProps, snackbarBase?: SnackbarBaseProps) => {
+    const showSnackbar = (
+        newAlert: AlertBaseProps,
+        snackbarBase?: SnackbarBaseProps,
+        time: number | undefined = undefined
+    ) => {
         setAlert({
             variant: "filled",
             severity: "success",
@@ -22,6 +31,11 @@ const SnackbarProvider: React.FC = ({ children }) => {
         });
         if (snackbarBase) {
             setSnackbar(snackbarBase);
+        }
+        if (time) {
+            setTime(time);
+        } else {
+            setTime(null);
         }
         setOpen(true);
     };
@@ -46,7 +60,7 @@ const SnackbarProvider: React.FC = ({ children }) => {
                 }}
                 open={open}
                 onClose={handleClose}
-                autoHideDuration={4000}
+                autoHideDuration={time}
                 {...snackbar}
             >
                 <AlertBase

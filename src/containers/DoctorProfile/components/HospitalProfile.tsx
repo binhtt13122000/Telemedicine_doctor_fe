@@ -44,6 +44,10 @@ const HospitalProfile: React.FC = () => {
     if (isLoading) {
         return <CircularProgress />;
     }
+
+    const refreshPage = () => {
+        window.location.reload();
+    };
     const handleClose = (
         type: "SAVE" | "CANCEL",
         dataHospital?: Hospital,
@@ -62,8 +66,6 @@ const HospitalProfile: React.FC = () => {
                         description: dataHospital?.description,
                         isActive: dataHospital?.isActive,
                     });
-                } else {
-                    // useGetPostDoctor
                 }
             }
         }
@@ -71,6 +73,7 @@ const HospitalProfile: React.FC = () => {
             clearErrors();
         }
         setOpen(false);
+        refreshPage();
     };
     const createHospital = async (data: DoctorFromAdd) => {
         try {
@@ -127,6 +130,7 @@ const HospitalProfile: React.FC = () => {
         if (clearErrors) {
             clearErrors();
         }
+        refreshPage();
         setOpenAdd(false);
     };
     const handleOpen = async (hos: Hospital) => {
@@ -150,7 +154,7 @@ const HospitalProfile: React.FC = () => {
             <HospitalForm dataHospital={hospital} opened={open} handleClose={handleClose} />
             <Card sx={{ minHeight: "100%", borderRadius: 5 }}>
                 <Box sx={{ ml: 2 }}>
-                    <Typography variant="h6" component="div">
+                    <Typography sx={{ mt: 3 }} variant="h6" component="div">
                         Bệnh viện
                     </Typography>
                 </Box>

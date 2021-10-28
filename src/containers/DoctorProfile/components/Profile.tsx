@@ -5,6 +5,7 @@ import moment from "moment";
 import useGetAccount from "../hooks/useGetAccount";
 import usePutAccount from "../hooks/usePutAccount";
 import { Account } from "../models/Account.model";
+import AccountService from "../services/Account.service";
 import ProfileForm from "./ProfileForm";
 
 import {
@@ -57,33 +58,47 @@ const Profile: React.FC = () => {
         setOpen(true);
         data && setAccount(data);
     };
+
+    const refreshPage = () => {
+        window.location.reload();
+    };
+
+    const updateAccount = async (data: Account, file: Blob) => {
+        try {
+            let formData = new FormData();
+            formData.append("Email", data.email);
+            formData.append("FirstName", data.firstName);
+            formData.append("LastName", data.lastName);
+            formData.append("Image", file);
+            formData.append("Ward", data.ward);
+            formData.append("StreetAddress", data.streetAddress);
+            formData.append("Locality", data.locality);
+            formData.append("City", data.city);
+            formData.append("PostalCode", data.postalCode);
+            formData.append("Phone", data.phone);
+            formData.append("Dob", data.dob);
+            formData.append("IsMale", data.isMale.toString());
+            const service = new AccountService<Account>();
+            const response = await service.updateFormData(formData);
+            if (response.status === 201) {
+                // eslint-disable-next-line no-console
+                console.log(response.data);
+            }
+        } catch (e) {
+            // eslint-disable-next-line no-console
+            console.log(e);
+        }
+    };
+
     const handleClose = (
         type: "SAVE" | "CANCEL",
         dataProfile?: Account,
+        file?: Blob,
         clearErrors?: Function
     ) => {
         if (type === "SAVE") {
-            if (dataProfile) {
-                if (dataProfile.id) {
-                    mutate({
-                        id: dataProfile?.id,
-                        email: dataProfile?.email,
-                        firstName: dataProfile?.firstName,
-                        lastName: dataProfile?.lastName,
-                        ward: dataProfile?.ward,
-                        streetAddress: dataProfile?.streetAddress,
-                        locality: dataProfile?.locality,
-                        city: dataProfile?.city,
-                        postalCode: dataProfile?.postalCode,
-                        phone: dataProfile?.phone,
-                        avatar: dataProfile?.avatar,
-                        dob: dataProfile?.dob,
-                        isMale: dataProfile?.isMale,
-                        active: dataProfile?.active,
-                    });
-                } else {
-                    // postDrug(data);
-                }
+            if (dataProfile && file) {
+                updateAccount(dataProfile, file);
             }
         }
         if (clearErrors) {
@@ -99,12 +114,12 @@ const Profile: React.FC = () => {
         <React.Fragment>
             {data && <ProfileForm dataProfile={account} open={open} handleClose={handleClose} />}
             <Card sx={{ minHeight: "100%", width: 450, borderRadius: 5, pl: 5 }}>
-                <Box sx={{ display: "flex" }}>
-                    <Typography variant="h6" component="div">
-                        Profile doctor
+                <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                    <Typography sx={{ mt: 3 }} variant="h6" component="div">
+                        Thông tin bác sĩ
                     </Typography>
-                    <Box sx={{ ml: 29 }}>
-                        <Typography variant="h6" component="h5">
+                    <Box>
+                        <Typography sx={{ mt: 3, mr: 3 }} variant="h6" component="h5">
                             <IconButton onClick={() => handleOpenModal()}>
                                 <Icon>edit</Icon>
                             </IconButton>
@@ -149,27 +164,31 @@ const Profile: React.FC = () => {
                             }}
                         /> */}
                     <Stack direction="row" spacing={1}>
-                        <Typography variant="h6" component="div">
+                        <Typography variant="subtitle1" component="div">
                             {data?.isMale ? "Bà" : "Ông"}{" "}
                             {`${data?.firstName}
                         ${data?.lastName}`}
                         </Typography>
                     </Stack>
                     <Stack direction="row" spacing={1}>
-                        <Typography variant="h6" component="div">
+                        <Typography variant="subtitle1" component="div">
                             Email:
                         </Typography>
-                        <Typography variant="h6" component="div" sx={{ fontWeight: "normal" }}>
+                        <Typography
+                            variant="subtitle1"
+                            component="div"
+                            sx={{ fontWeight: "normal" }}
+                        >
                             {data?.email}
                         </Typography>
                     </Stack>
                     <Stack direction="row" spacing={1}>
-                        <Typography variant="h6" component="div">
+                        <Typography variant="subtitle1" component="div">
                             Số điện thoại:
                         </Typography>
                         <Typography
                             gutterBottom
-                            variant="h6"
+                            variant="subtitle1"
                             component="div"
                             sx={{ fontWeight: "normal" }}
                         >
@@ -177,12 +196,12 @@ const Profile: React.FC = () => {
                         </Typography>
                     </Stack>
                     <Stack direction="row" spacing={1}>
-                        <Typography variant="h6" component="div">
+                        <Typography variant="subtitle1" component="div">
                             Ngày sinh:
                         </Typography>
                         <Typography
                             gutterBottom
-                            variant="h6"
+                            variant="subtitle1"
                             component="div"
                             sx={{ fontWeight: "normal" }}
                         >
@@ -190,7 +209,7 @@ const Profile: React.FC = () => {
                         </Typography>
                     </Stack>
                     <Box sx={{ display: "inline" }}>
-                        <Typography variant="h6" component="div">
+                        <Typography variant="subtitle1" component="div" marginRight={5}>
                             Địa chỉ:{" "}
                             {`${data?.streetAddress}, ${data?.locality}, ${data?.ward}, ${data?.city} `}
                         </Typography>

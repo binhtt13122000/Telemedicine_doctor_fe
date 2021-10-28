@@ -48,6 +48,7 @@ const CustomizeAutocomplete = <T extends Record<string, string>>(props: ICustomi
                 const response = await axios.get<IPagingSupport<T>>(
                     `${query}?${searchField}=${search}&page-offset=1&limit=${limit}`
                 );
+
                 if (response.status === 200) {
                     setData(response?.data?.content);
                 }

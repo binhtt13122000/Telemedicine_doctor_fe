@@ -12,7 +12,7 @@ import "./index.scss";
 
 import { MicOffOutlined } from "@mui/icons-material";
 import MicNoneIcon from "@mui/icons-material/MicNoneRounded";
-import { Avatar, Box, Grid, Typography } from "@mui/material";
+import { Avatar, Box, Grid } from "@mui/material";
 import { deepOrange } from "@mui/material/colors";
 
 export interface VideoCallWithLayout2 {
@@ -22,12 +22,13 @@ export interface VideoCallWithLayout2 {
         video: boolean;
         audio: boolean;
     };
-    anotherTrackVideo: boolean;
-    anotherTrackAudio: boolean;
+    anotherTrackVideos: Record<string, boolean>;
+    anotherTrackAudios: Record<string, boolean>;
     healthCheck: HealthCheck;
 }
 const VideoCallWithLayout2: React.FC<VideoCallWithLayout2> = (props: VideoCallWithLayout2) => {
-    const { users, tracks, trackState, anotherTrackVideo, anotherTrackAudio, healthCheck } = props;
+    const { users, tracks, trackState, anotherTrackVideos, anotherTrackAudios, healthCheck } =
+        props;
 
     return (
         <Box
@@ -103,11 +104,11 @@ const VideoCallWithLayout2: React.FC<VideoCallWithLayout2> = (props: VideoCallWi
                                                 ) : (
                                                     <MicOffOutlined sx={{ color: "white" }} />
                                                 )}
-                                                <Typography color="white" variant="subtitle1">
+                                                {/* <Typography color="white" variant="subtitle1">
                                                     Bs.{" "}
                                                     {healthCheck?.slots &&
                                                         healthCheck?.slots[0].doctor?.name}
-                                                </Typography>
+                                                </Typography> */}
                                             </Box>
                                         </Box>
                                     </React.Fragment>
@@ -154,11 +155,11 @@ const VideoCallWithLayout2: React.FC<VideoCallWithLayout2> = (props: VideoCallWi
                                             ) : (
                                                 <MicOffOutlined sx={{ color: "white" }} />
                                             )}
-                                            <Typography color="white" variant="subtitle1">
+                                            {/* <Typography color="white" variant="subtitle1">
                                                 Bs.{" "}
                                                 {healthCheck?.slots &&
                                                     healthCheck?.slots[0].doctor?.name}
-                                            </Typography>
+                                            </Typography> */}
                                         </Box>
                                     </Box>
                                 )}
@@ -186,7 +187,7 @@ const VideoCallWithLayout2: React.FC<VideoCallWithLayout2> = (props: VideoCallWi
                                                 position: "relative",
                                             }}
                                         >
-                                            {anotherTrackVideo ? (
+                                            {anotherTrackVideos[`${user.uid}`] ? (
                                                 <React.Fragment>
                                                     <AgoraVideoPlayer
                                                         id="video-call"
@@ -213,7 +214,7 @@ const VideoCallWithLayout2: React.FC<VideoCallWithLayout2> = (props: VideoCallWi
                                                                 display: "flex",
                                                             }}
                                                         >
-                                                            {anotherTrackAudio ? (
+                                                            {anotherTrackAudios[`${user.uid}`] ? (
                                                                 <MicNoneIcon
                                                                     sx={{ color: "white" }}
                                                                 />
@@ -222,12 +223,12 @@ const VideoCallWithLayout2: React.FC<VideoCallWithLayout2> = (props: VideoCallWi
                                                                     sx={{ color: "white" }}
                                                                 />
                                                             )}
-                                                            <Typography
+                                                            {/* <Typography
                                                                 color="white"
                                                                 variant="subtitle1"
                                                             >
                                                                 {healthCheck?.patient?.name}
-                                                            </Typography>
+                                                            </Typography> */}
                                                         </Box>
                                                     </Box>
                                                 </React.Fragment>
@@ -260,19 +261,19 @@ const VideoCallWithLayout2: React.FC<VideoCallWithLayout2> = (props: VideoCallWi
                                                             display: "flex",
                                                         }}
                                                     >
-                                                        {anotherTrackAudio ? (
+                                                        {anotherTrackAudios[`${user.uid}`] ? (
                                                             <MicNoneIcon sx={{ color: "white" }} />
                                                         ) : (
                                                             <MicOffOutlined
                                                                 sx={{ color: "white" }}
                                                             />
                                                         )}
-                                                        <Typography
+                                                        {/* <Typography
                                                             color="white"
                                                             variant="subtitle1"
                                                         >
                                                             {healthCheck?.patient?.name}
-                                                        </Typography>
+                                                        </Typography> */}
                                                     </Box>
                                                 </Box>
                                             )}
@@ -323,14 +324,14 @@ const VideoCallWithLayout2: React.FC<VideoCallWithLayout2> = (props: VideoCallWi
                                                         display: "flex",
                                                     }}
                                                 >
-                                                    {anotherTrackAudio ? (
+                                                    {anotherTrackAudios[`${user.uid}`] ? (
                                                         <MicNoneIcon sx={{ color: "white" }} />
                                                     ) : (
                                                         <MicOffOutlined sx={{ color: "white" }} />
                                                     )}
-                                                    <Typography color="white" variant="subtitle1">
+                                                    {/* <Typography color="white" variant="subtitle1">
                                                         {healthCheck?.patient?.name}
-                                                    </Typography>
+                                                    </Typography> */}
                                                 </Box>
                                             </Box>
                                         </Box>

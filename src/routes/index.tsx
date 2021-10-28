@@ -8,9 +8,10 @@ import PublicRoute from "./PublicRoute";
 import AccountForm from "src/containers/AccountForm";
 import Dashboard from "src/containers/Dashboard";
 import DashboardVer2 from "src/containers/DashboardVer2";
+import DashboardSchedule from "src/containers/DashboardSchedule";
 import DoctorForm from "src/containers/DoctorForm";
 import DoctorProfile from "src/containers/DoctorProfile";
-import HealthCheckDetail from "src/containers/HealthCheckDetail";
+import HealthCheckListing from "src/containers/HealthCheckList";
 import Layout from "src/containers/Layout";
 import Login from "src/containers/Login";
 import VideoCall from "src/containers/VideoCall";
@@ -41,7 +42,12 @@ export const privateRoutes = [
     {
         path: "/d",
         name: "home",
-        component: Dashboard,
+        component: DashboardSchedule,
+    },
+    {
+        path: "/schedule",
+        name: "schedule",
+        component: DashboardSchedule,
     },
     {
         path: "/",
@@ -54,9 +60,9 @@ export const privateRoutes = [
         component: DoctorProfile,
     },
     {
-        path: "/health-checks/1",
-        name: "health-check-detail",
-        component: HealthCheckDetail,
+        path: "/health-checks",
+        name: "health-check",
+        component: HealthCheckListing,
     },
 ];
 
