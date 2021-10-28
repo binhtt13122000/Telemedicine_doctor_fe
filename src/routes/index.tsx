@@ -6,6 +6,8 @@ import { PrivateRoute } from "./PrivateRoute";
 import PublicRoute from "./PublicRoute";
 
 import AccountForm from "src/containers/AccountForm";
+import Dashboard from "src/containers/Dashboard";
+import DashboardVer2 from "src/containers/DashboardVer2";
 import DashboardSchedule from "src/containers/DashboardSchedule";
 import DoctorForm from "src/containers/DoctorForm";
 import DoctorProfile from "src/containers/DoctorProfile";
@@ -38,7 +40,7 @@ export const publicRoutes = [
 ];
 export const privateRoutes = [
     {
-        path: "/",
+        path: "/d",
         name: "home",
         component: DashboardSchedule,
     },
@@ -46,6 +48,11 @@ export const privateRoutes = [
         path: "/schedule",
         name: "schedule",
         component: DashboardSchedule,
+    },
+    {
+        path: "/",
+        name: "home",
+        component: DashboardVer2,
     },
     {
         path: "/doctors",
