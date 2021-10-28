@@ -5,7 +5,7 @@ import { Doctor } from "../models/VideoCall.model";
 
 class DoctorService {
     getDoctorByEmail(email: string) {
-        return axios.get<IPagingSupport<Doctor>>(`/doctors?email=${email}&limit=6`);
+        return axios.get<IPagingSupport<Doctor>>(`/doctors?email=${email}&limit=4`);
     }
 }
 

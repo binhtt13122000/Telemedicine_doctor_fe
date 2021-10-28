@@ -12,7 +12,7 @@ import "./index.scss";
 
 import { MicOffOutlined } from "@mui/icons-material";
 import MicNoneIcon from "@mui/icons-material/MicNoneRounded";
-import { Avatar, Box, Grid, Typography } from "@mui/material";
+import { Avatar, Box, Grid } from "@mui/material";
 import { Account } from "src/common/models/Account.model";
 import LocalStorageUtil from "src/utils/LocalStorageUtil";
 
@@ -86,7 +86,7 @@ const ListVideoCallWithThreePeople: React.FC<ListVideoCallProps> = (props: ListV
                                                 ) : (
                                                     <MicOffOutlined sx={{ color: "white" }} />
                                                 )}
-                                                <Typography color="white" variant="subtitle1">
+                                                {/* <Typography color="white" variant="subtitle1">
                                                     {user.email === healthCheck?.patient?.email
                                                         ? healthCheck?.patient?.name
                                                         : healthCheck?.slots &&
@@ -95,7 +95,7 @@ const ListVideoCallWithThreePeople: React.FC<ListVideoCallProps> = (props: ListV
                                                               user.email
                                                         ? healthCheck?.slots[0].doctor?.name
                                                         : user.email}
-                                                </Typography>
+                                                </Typography> */}
                                             </Box>
                                         </Box>
                                     </React.Fragment>
@@ -143,7 +143,7 @@ const ListVideoCallWithThreePeople: React.FC<ListVideoCallProps> = (props: ListV
                                             ) : (
                                                 <MicOffOutlined sx={{ color: "white" }} />
                                             )}
-                                            <Typography color="white" variant="subtitle1">
+                                            {/* <Typography color="white" variant="subtitle1">
                                                 {user.email === healthCheck?.patient?.email
                                                     ? healthCheck?.patient?.name
                                                     : healthCheck?.slots &&
@@ -152,7 +152,7 @@ const ListVideoCallWithThreePeople: React.FC<ListVideoCallProps> = (props: ListV
                                                           user.email
                                                     ? healthCheck?.slots[0].doctor?.name
                                                     : user.email}
-                                            </Typography>
+                                            </Typography> */}
                                         </Box>
                                     </Box>
                                 )}
@@ -221,7 +221,7 @@ const ListVideoCallWithThreePeople: React.FC<ListVideoCallProps> = (props: ListV
                                                                         sx={{ color: "white" }}
                                                                     />
                                                                 )}
-                                                                <Typography
+                                                                {/* <Typography
                                                                     color="white"
                                                                     variant="subtitle1"
                                                                 >
@@ -237,7 +237,7 @@ const ListVideoCallWithThreePeople: React.FC<ListVideoCallProps> = (props: ListV
                                                                         ? healthCheck?.slots[0]
                                                                               .doctor?.name
                                                                         : user.uid}
-                                                                </Typography>
+                                                                </Typography> */}
                                                             </Box>
                                                         </Box>
                                                     </React.Fragment>
@@ -290,7 +290,7 @@ const ListVideoCallWithThreePeople: React.FC<ListVideoCallProps> = (props: ListV
                                                                     sx={{ color: "white" }}
                                                                 />
                                                             )}
-                                                            <Typography
+                                                            {/* <Typography
                                                                 color="white"
                                                                 variant="subtitle1"
                                                             >
@@ -305,7 +305,7 @@ const ListVideoCallWithThreePeople: React.FC<ListVideoCallProps> = (props: ListV
                                                                     ? healthCheck?.slots[0].doctor
                                                                           ?.name
                                                                     : user.uid}
-                                                            </Typography>
+                                                            </Typography> */}
                                                         </Box>
                                                     </Box>
                                                 )}
@@ -372,7 +372,7 @@ const ListVideoCallWithThreePeople: React.FC<ListVideoCallProps> = (props: ListV
                                                                 sx={{ color: "white" }}
                                                             />
                                                         )}
-                                                        <Typography
+                                                        {/* <Typography
                                                             color="white"
                                                             variant="subtitle1"
                                                         >
@@ -385,7 +385,7 @@ const ListVideoCallWithThreePeople: React.FC<ListVideoCallProps> = (props: ListV
                                                                       ?.email === user.uid
                                                                 ? healthCheck?.slots[0].doctor?.name
                                                                 : user.uid}
-                                                        </Typography>
+                                                        </Typography> */}
                                                     </Box>
                                                 </Box>
                                             </Box>
@@ -457,7 +457,7 @@ const ListVideoCallWithThreePeople: React.FC<ListVideoCallProps> = (props: ListV
                                                                         sx={{ color: "white" }}
                                                                     />
                                                                 )}
-                                                                <Typography
+                                                                {/* <Typography
                                                                     color="white"
                                                                     variant="subtitle1"
                                                                 >
@@ -473,7 +473,7 @@ const ListVideoCallWithThreePeople: React.FC<ListVideoCallProps> = (props: ListV
                                                                         ? healthCheck?.slots[0]
                                                                               .doctor?.name
                                                                         : user.uid}
-                                                                </Typography>
+                                                                </Typography> */}
                                                             </Box>
                                                         </Box>
                                                     </React.Fragment>
@@ -526,7 +526,7 @@ const ListVideoCallWithThreePeople: React.FC<ListVideoCallProps> = (props: ListV
                                                                     sx={{ color: "white" }}
                                                                 />
                                                             )}
-                                                            <Typography
+                                                            {/* <Typography
                                                                 color="white"
                                                                 variant="subtitle1"
                                                             >
@@ -541,7 +541,7 @@ const ListVideoCallWithThreePeople: React.FC<ListVideoCallProps> = (props: ListV
                                                                     ? healthCheck?.slots[0].doctor
                                                                           ?.name
                                                                     : user.uid}
-                                                            </Typography>
+                                                            </Typography> */}
                                                         </Box>
                                                     </Box>
                                                 )}
@@ -608,7 +608,7 @@ const ListVideoCallWithThreePeople: React.FC<ListVideoCallProps> = (props: ListV
                                                                 sx={{ color: "white" }}
                                                             />
                                                         )}
-                                                        <Typography
+                                                        {/* <Typography
                                                             color="white"
                                                             variant="subtitle1"
                                                         >
@@ -621,7 +621,7 @@ const ListVideoCallWithThreePeople: React.FC<ListVideoCallProps> = (props: ListV
                                                                       ?.email === user.uid
                                                                 ? healthCheck?.slots[0].doctor?.name
                                                                 : user.uid}
-                                                        </Typography>
+                                                        </Typography> */}
                                                     </Box>
                                                 </Box>
                                             </Box>
