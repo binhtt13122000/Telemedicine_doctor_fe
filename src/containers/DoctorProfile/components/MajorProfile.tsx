@@ -32,8 +32,6 @@ const MajorProfile: React.FC = () => {
     const { mutate } = usePutMajor();
     const [open, setOpen] = useState<boolean>(false);
     const [openAdd, setOpenAdd] = useState<boolean>(false);
-    const [reload, setReload] = useState<Function>(() => {});
-    // const [loading, setLoading] = useState<boolean>(false);
     const [major, setMajor] = useState<Major>(initCetification);
     if (isError) {
         return <div> Error</div>;

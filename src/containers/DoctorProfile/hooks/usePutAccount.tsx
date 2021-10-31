@@ -27,6 +27,3 @@ const usePutAccount = () => {
 };
 
 export default usePutAccount;
-function variable(variable: Account) {
-    throw new Error("Function not implemented.");
-}

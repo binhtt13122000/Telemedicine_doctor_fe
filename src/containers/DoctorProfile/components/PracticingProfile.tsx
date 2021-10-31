@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import moment from "moment";
 
 import useGetDoctor from "../hooks/useGetDoctor";
-import usePutDoctor from "../hooks/usePutDoctor";
 import { Doctor, DoctorFromAdd, DoctorPraticing } from "../models/Doctor.model";
 import DoctorService from "../services/Doctor.service";
 import PracticingForm from "./PracticingForm";
@@ -48,7 +47,6 @@ function Item(props: BoxProps) {
 
 const PracticingProfile: React.FC = () => {
     const { data, isLoading, isError } = useGetDoctor();
-    const { mutate } = usePutDoctor();
     const [openModal, setOpenModal] = useState<boolean>(false);
     const [open, setOpen] = useState(false);
     const [doctorPracticing, setDoctorPracticing] = useState<DoctorPraticing>();
@@ -110,29 +108,7 @@ const PracticingProfile: React.FC = () => {
         if (type === "SAVE") {
             if (dataPracticing) {
                 if (dataPracticing.id) {
-                    // mutate({
-                    //     id: dataPracticing.id,
-                    //     email: dataPracticing.email,
-                    //     name: dataPracticing.name,
-                    //     avatar: dataPracticing.avatar,
-                    //     practisingCertificate: dataPracticing.practisingCertificate,
-                    //     certificateCode: dataPracticing.certificateCode,
-                    //     placeOfCertificate: dataPracticing.placeOfCertificate,
-                    //     dateOfCertificate: dataPracticing.dateOfCertificate,
-                    //     scopeOfPractice: dataPracticing.scopeOfPractice,
-                    //     description: dataPracticing.description,
-                    //     numberOfConsultants: dataPracticing.numberOfConsultants,
-                    //     numberOfCancels: dataPracticing.numberOfCancels,
-                    //     rating: dataPracticing.rating,
-                    //     isVerify: dataPracticing.isVerify,
-                    //     isActive: dataPracticing.isActive,
-                    //     certificationDoctors: dataPracticing.certificationDoctors,
-                    //     hospitalDoctors: dataPracticing.hospitalDoctors,
-                    //     majorDoctors: dataPracticing.majorDoctors,
-                    // });
                     createPraticing(dataPracticing);
-                } else {
-                    // postDrug(data);
                 }
             }
         }

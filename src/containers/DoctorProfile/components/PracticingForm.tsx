@@ -27,24 +27,8 @@ const PracticingForm: React.FC<IPracticingForm> = (props: IPracticingForm) => {
     const [date, setDate] = React.useState<Date | null>(new Date("2000-01-01T21:11:54"));
     const [imgLink, setImgLink] = React.useState<string>(logo);
     const [file, setFile] = React.useState<string | Blob>("");
-    const handleChangeActive = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setChecked(event.target.checked);
-        // eslint-disable-next-line no-console
-        console.log(event.target.checked); //true
-        if (event.target.checked === true) {
-            setValue("isActive", true);
-            clearErrors("id");
-        } else if (event.target.checked === false) {
-            setValue("isActive", false);
-            clearErrors("id");
-        } else {
-            // eslint-disable-next-line no-console
-            console.log(event.target.checked);
-        }
-    };
 
     const uploadedFile = (event?: React.ChangeEvent<HTMLInputElement>) => {
-        console.log(event?.target.files);
         setImgLink(URL.createObjectURL(event?.target.files![0]));
         setFile(event?.target.files![0] as Blob);
     };
@@ -58,7 +42,6 @@ const PracticingForm: React.FC<IPracticingForm> = (props: IPracticingForm) => {
 
     React.useEffect(() => {
         setValue("id", dataPracticing.id);
-        // setValue("email", dataPracticing.email);
         setValue("name", dataPracticing.name);
         setValue("avatar", dataPracticing.avatar);
         setValue("practisingCertificate", dataPracticing.practisingCertificate);
@@ -67,9 +50,6 @@ const PracticingForm: React.FC<IPracticingForm> = (props: IPracticingForm) => {
         setValue("dateOfCertificate", dataPracticing.dateOfCertificate);
         setValue("scopeOfPractice", dataPracticing.scopeOfPractice);
         setValue("description", dataPracticing.description);
-        // setValue("numberOfConsultants", dataPracticing.numberOfConsultants);
-        // setValue("rating", dataPracticing.rating);
-        // setValue("isVerify", dataPracticing.isVerify);
         setValue("isActive", dataPracticing.isActive);
 
         setChecked(dataPracticing.isActive);
@@ -119,17 +99,6 @@ const PracticingForm: React.FC<IPracticingForm> = (props: IPracticingForm) => {
                     }}
                 >
                     <Grid container spacing={1}>
-                        {/* <Grid item xs={4}>
-                            <TextField
-                                id="certificateCode"
-                                label="Mã chứng chỉ*"
-                                variant="outlined"
-                                error={!!errors.certificateCode}
-                                helperText={errors.certificateCode && "Mã chứng chỉ là bắt buộc"}
-                                {...register("certificateCode", { required: true })}
-                            />
-                        </Grid> */}
-
                         <Grid item xs={4}>
                             <TextField
                                 id="placeOfCertificate"
@@ -208,23 +177,6 @@ const PracticingForm: React.FC<IPracticingForm> = (props: IPracticingForm) => {
                                 </Button>
                             </label>
                         </Grid>
-                        {/* <Grid item xs={6}>
-                            <Typography
-                                sx={{
-                                    // mx: "auto",
-                                    p: 1,
-                                    //
-                                    // "& > :not(style)": { m: 1 },
-                                }}
-                            >
-                                Trạng thái: {}
-                            </Typography>
-                            <Switch
-                                checked={checked}
-                                onChange={handleChangeActive}
-                                inputProps={{ "aria-label": "controlled" }}
-                            />
-                        </Grid> */}
                     </Grid>
 
                     <Box

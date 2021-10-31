@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import moment from "moment";
 
 import useGetAccount from "../hooks/useGetAccount";
-import usePutAccount from "../hooks/usePutAccount";
 import { Account } from "../models/Account.model";
 import AccountService from "../services/Account.service";
 import ProfileForm from "./ProfileForm";
@@ -45,7 +44,6 @@ const Profile: React.FC = () => {
     const user = LocalStorageUtil.getItem("user") as Account;
     const { data, isLoading, isError } = useGetAccount(user.email);
     const [value, setValue] = React.useState<number | null>(4);
-    const { mutate } = usePutAccount();
     const [open, setOpen] = useState<boolean>(false);
     const [account, setAccount] = useState<Account>(initAccount);
     if (isError) {
@@ -59,9 +57,9 @@ const Profile: React.FC = () => {
         data && setAccount(data);
     };
 
-    const refreshPage = () => {
-        window.location.reload();
-    };
+    // const refreshPage = () => {
+    //     window.location.reload();
+    // };
 
     const updateAccount = async (data: Account, file: Blob) => {
         try {

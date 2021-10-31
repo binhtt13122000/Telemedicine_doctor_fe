@@ -21,10 +21,6 @@ export interface IMajorForm {
 const MajorFormAdd: React.FC<IMajorForm> = (props: IMajorForm) => {
     const { dataMajorAdd } = props;
 
-    const changeValue = (value: number) => {
-        setValue("id", value);
-        clearErrors("id");
-    };
     const {
         register,
         handleSubmit,

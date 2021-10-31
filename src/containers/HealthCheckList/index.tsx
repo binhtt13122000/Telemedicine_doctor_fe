@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 import moment from "moment";
 
@@ -29,14 +29,12 @@ import {
 import { Box } from "@mui/system";
 
 const HealthCheckListing: React.FC = () => {
-    const { data, isLoading, isError } = useGetHealthCheck();
+    const { isLoading, isError } = useGetHealthCheck();
     const [searchTerm, setSearchTerm] = useState("");
-    const typingTimeoutRef = useRef();
     const [dataHealth, setDataHealth] = useState<HealthCheck[]>([]);
     const [order, setOrder] = useState<Order>("desc");
     const [orderBy, setOrderBy] = useState<boolean>(true);
     const filtering = "string";
-    // const order = "asc";
     const statusStr = "BOOKED";
     const [selectedHealthCheck, setSelectedHealthCheck] = useState<HealthCheck>();
     const [selectedPatientAccount, setSelectedPatientAccount] = useState<Account>();
@@ -57,25 +55,15 @@ const HealthCheckListing: React.FC = () => {
                 order,
                 filtering
             );
-            //     await axios.get(`${API_ROOT_URL}/health-checks?order-type=${order}&filtering=${filtering}
-            // &page-offset=${offset}&limit=${limit}`);
             if (response.status === 200) {
-                // const dataH: IPagingSupport<T> = response.data;
-                console.log("healthcheck", response.data);
                 setDataHealth(response.data.content);
             }
         },
         []
     );
 
-    const onHandleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = e.currentTarget.value;
-        setSearchTerm(value);
-    };
-
     const handlerChangeOrder = () => {
         if (orderBy === true) {
-            console.log(orderBy);
             setOrderBy(false);
             setOrder("asc");
         } else {
