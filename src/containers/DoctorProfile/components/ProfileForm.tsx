@@ -39,6 +39,14 @@ export interface IProfileForm {
 }
 
 const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
+    const initDictrict: District = {
+        name: "Huyện Thới Bình",
+        code: 1,
+        codename: "string",
+        division_type: "string",
+        province_code: 1,
+        wards: [],
+    };
     const { dataProfile } = props;
     const [provinces, setProvinces] = useState<Province[]>([]);
     const [districts, setDistricts] = useState<District[]>([]);
@@ -53,6 +61,7 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
         register,
         handleSubmit,
         formState: { errors },
+        getValues,
         setValue,
         clearErrors,
     } = useForm<Account>({});
@@ -65,6 +74,8 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
         setValue("ward", dataProfile.ward);
         setValue("streetAddress", dataProfile.streetAddress);
         setValue("locality", dataProfile.locality);
+        console.log("locality", dataProfile.locality);
+        // setValue("locality", "Huyện Thới Bình");
         setValue("city", dataProfile.city);
         setValue("postalCode", dataProfile.postalCode);
         setValue("phone", dataProfile.phone);
@@ -81,6 +92,7 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
     const onChangeProvince = (newProvince: Province | null) => {
         if (newProvince) {
             setValue("city", newProvince.name);
+            // console.log("city", newProvince.name);
             fetchDistricts(newProvince.code);
             setDisableDistrict(false);
         } else {
@@ -110,11 +122,19 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
             const response = await service.getProvinces();
             if (response.status === 200) {
                 setProvinces(response.data);
+                // provinces.map((item) => {
+                //     if (item.name === dataProfile.city) {
+                //         console.log("province", item.code);
+                //         let number = item.code;
+                //         setValueProvince(item);
+                //         // fetchDistricts(number);
+                //     }
+                // });
             }
         } catch (_) {}
     }, []);
 
-    const fetchDistricts = async (provinceCode: number) => {
+    const fetchDistricts = useCallback(async (provinceCode: number) => {
         try {
             const service = new AddressService<Province>();
             const response = await service.getDistricts(provinceCode);
@@ -122,7 +142,7 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
                 setDistricts(response.data.districts);
             }
         } catch (_) {}
-    };
+    }, []);
 
     const fetchWards = async (districtCode: number) => {
         try {
@@ -148,20 +168,43 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
     useEffect(() => {
         provinces.map((item) => {
             if (item.name === dataProfile.city) {
+                console.log("province", item.code);
+                let number = item.code;
                 setValueProvince(item);
             }
         });
-        wards.map((item) => {
-            if (item.name === dataProfile.ward) {
-                setValueWard(item);
-            }
-        });
-        districts.map((item) => {
-            if (item.name === dataProfile.locality) {
-                setValueDistrict(item);
-            }
-        });
-    }, [provinces, dataProfile.city, wards, dataProfile.ward, districts, dataProfile.locality]);
+
+        // console.log("District", valueDistrict);
+        // districts.map((item) => {
+        //     if (item.name === dataProfile.locality) {
+        //         console.log("districts", item.name);
+        //         setValueDistrict(item);
+        //         fetchWards(item.code);
+        //     }
+        // });
+        // console.log("District", valueDistrict);
+
+        // wards.map((item) => {
+        //     if (item.name === dataProfile.ward) {
+        //         console.log("ward");
+        //         console.log("ward", item.name);
+        //         setValueWard(item);
+        //     }
+        // });
+        // console.log("Ward", valueWard);
+    }, [
+        // fetchDistricts,
+        valueWard,
+        valueDistrict,
+
+        dataProfile.city,
+        wards,
+        dataProfile.ward,
+        districts,
+        provinces,
+        dataProfile.locality,
+        valueProvince?.code,
+    ]);
     return (
         <Modal open={props.open}>
             <Card
@@ -304,12 +347,12 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
                                 renderInput={(params) => (
                                     <TextField
                                         {...params}
-                                        id="ward"
+                                        id="locality"
                                         variant="outlined"
                                         placeholder="Quận/Huyện"
                                         // error={!!errors.ward}
                                         // helperText={errors.ward && "Vui lòng chọn Quận/Huyện"}
-                                        {...register("ward", { required: true })}
+                                        {...register("locality", { required: true })}
                                     />
                                 )}
                             />
@@ -323,40 +366,23 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
                                 isOptionEqualToValue={(option, value) => option.name === value.name}
                                 onChange={(_, newWard) => {
                                     if (newWard) {
-                                        setValue("locality", newWard.name);
+                                        setValue("ward", newWard.name);
                                     }
                                 }}
                                 renderInput={(params) => (
                                     <TextField
                                         {...params}
-                                        id="locality"
+                                        id="ward"
                                         variant="outlined"
                                         placeholder="Phường/Xã"
                                         // error={!!errors.locality}
                                         // helperText={errors.locality && "Vui lòng chọn Phường/Xã"}
-                                        {...register("locality", { required: true })}
+                                        {...register("ward", { required: true })}
                                     />
                                 )}
                             />
                         </Grid>
                     </Grid>
-                    {/* <Stack direction="row" spacing={0}>
-                        <Typography
-                            sx={{
-                                // mx: "auto",
-                                p: 1,
-                                //
-                                // "& > :not(style)": { m: 1 },
-                            }}
-                        >
-                            Trạng thái:
-                        </Typography>
-                        <Switch
-                            checked={checked}
-                            onChange={handleChange}
-                            inputProps={{ "aria-label": "controlled" }}
-                        />
-                    </Stack> */}
                     <Box
                         sx={{
                             justifyContent: "center",

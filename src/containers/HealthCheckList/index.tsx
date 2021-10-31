@@ -12,6 +12,7 @@ import HealthCheckService from "./services/HealthCheck.service";
 
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import {
     Avatar,
     Card,
@@ -38,7 +39,7 @@ const HealthCheckListing: React.FC = () => {
     const statusStr = "BOOKED";
     const [selectedHealthCheck, setSelectedHealthCheck] = useState<HealthCheck>();
     const [selectedPatientAccount, setSelectedPatientAccount] = useState<Account>();
-
+    const [arrow, setArrow] = useState<boolean>(false);
     const getHealthCheck = useCallback(
         async (
             limit: number,
@@ -62,14 +63,9 @@ const HealthCheckListing: React.FC = () => {
         []
     );
 
-    const handlerChangeOrder = () => {
-        if (orderBy === true) {
-            setOrderBy(false);
-            setOrder("asc");
-        } else {
-            setOrderBy(true);
-            setOrder("desc");
-        }
+    const handlerChangeOrder = (e: React.ChangeEvent<HTMLInputElement>) => {
+        console.log("arrow", arrow);
+        setArrow(!arrow);
     };
 
     const handleSearchTermChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -117,8 +113,17 @@ const HealthCheckListing: React.FC = () => {
                             </Typography>
                         </Box>
                         <Box sx={{ ml: "10rem", display: "flex" }}>
-                            <IconButton onClick={() => handlerChangeOrder}>
-                                <ArrowDownwardIcon />
+                            <IconButton
+                                onClick={() => {
+                                    setArrow(!arrow);
+                                    if (arrow) {
+                                        setOrder("desc");
+                                    } else {
+                                        setOrder("asc");
+                                    }
+                                }}
+                            >
+                                {arrow ? <ArrowDownwardIcon /> : <ArrowUpwardIcon />}
                             </IconButton>
                             <form>
                                 <TextField
