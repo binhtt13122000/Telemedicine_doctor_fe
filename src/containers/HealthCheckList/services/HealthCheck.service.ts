@@ -8,6 +8,12 @@ class HealthCheckService<T> {
         return axios.get<IPagingSupport<T>>(`/health-checks?limit=${limit}&page-offset=${offset}`);
     }
 
+    getAllByDoctorId(doctorId: number, limit: number, offset: number) {
+        return axios.get<IPagingSupport<T>>(
+            `/health-checks?doctor-id=${doctorId}&limit=${limit}&page-offset=${offset}`
+        );
+    }
+
     getBy(limit: number, offset: number, status: string, order: string, filtering: string) {
         return axios.get<
             IPagingSupport<T>
