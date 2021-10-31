@@ -72,18 +72,6 @@ const MajorProfile: React.FC = () => {
         }
     };
 
-    const editMajor = async (dataMajor?: Major) => {
-        if (dataMajor) {
-            if (dataMajor.id) {
-                const response = await mutate({
-                    id: dataMajor.id,
-                    name: dataMajor?.name,
-                    description: dataMajor?.description,
-                    isActive: dataMajor?.isActive,
-                });
-            }
-        }
-    };
     // Edit major
     const handleClose = (type: "SAVE" | "CANCEL", dataMajor?: Major, clearErrors?: Function) => {
         // setLoading(isLoading);

@@ -55,17 +55,6 @@ const HospitalForm: React.FC<IHospitalForm> = (props: IHospitalForm) => {
         }
     };
 
-    const { ref: idRef, ...idRefProps } = register("id", {
-        min: {
-            value: 1,
-            message: "Mã chuyên ngành không được để trống",
-        },
-    });
-
-    const changeValue = (value: number) => {
-        setValue("id", value);
-        clearErrors("id");
-    };
     return (
         <Modal open={props.opened}>
             <Card

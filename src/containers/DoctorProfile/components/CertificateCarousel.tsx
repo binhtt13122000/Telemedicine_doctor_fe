@@ -4,7 +4,6 @@ import SwipeableViews from "react-swipeable-views";
 import { autoPlay } from "react-swipeable-views-utils";
 
 import useGetDoctor from "../hooks/useGetDoctor";
-import { Cetification } from "../models/Cetification.model";
 import { CetificationAdd, Doctor } from "../models/Doctor.model";
 import DoctorService from "../services/Doctor.service";
 import CertificationFormAdd from "./CeritificateFormAdd";
@@ -23,11 +22,6 @@ import { useTheme } from "@mui/material/styles";
 const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
 
 const CertificateCarousel: React.FC = () => {
-    const initCetification: Cetification = {
-        name: "",
-        description: "",
-        isActive: true,
-    };
     const initCetificationAdd: CetificationAdd = {
         certificationId: 0,
         evidence: "",
@@ -36,13 +30,8 @@ const CertificateCarousel: React.FC = () => {
     const theme = useTheme();
     const [activeStep, setActiveStep] = React.useState(0);
     const { data, isLoading, isError } = useGetDoctor();
-    const [maxStep, setMaxStep] = React.useState<number | undefined>(
-        data?.certificationDoctors.length
-    );
-    const maxSteps = data?.certificationDoctors.length as string | undefined;
     const [openAdd, setOpenAdd] = React.useState<boolean>(false);
-    const [cetificationAdd, setCeficationAdd] =
-        React.useState<CetificationAdd>(initCetificationAdd);
+    const [cetificationAdd] = React.useState<CetificationAdd>(initCetificationAdd);
     const handleNext = () => {
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
     };
@@ -105,9 +94,6 @@ const CertificateCarousel: React.FC = () => {
         setOpenAdd(true);
     };
 
-    // React.useEffect(() => {
-    //     data?.certificationDoctors.length && setMaxStep(data?.certificationDoctors.length);
-    // }, [setMaxStep, data?.certificationDoctors.length]);
     return (
         <React.Fragment>
             {data && (

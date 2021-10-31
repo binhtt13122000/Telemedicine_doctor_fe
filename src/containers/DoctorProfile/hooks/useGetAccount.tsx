@@ -9,7 +9,7 @@ export enum AccountStateKeysEnum {
     CreateAccounts = "creatAccount",
 }
 
-const useGetAccount = (email: string = "nhanlt16235@gmail.com") => {
+const useGetAccount = (email: string) => {
     let accountService = new AccountService<Account>();
     const result = useQuery<Account, Error>([AccountStateKeysEnum.Accounts, email], async () => {
         const result = await accountService.getAccountByEmail(email);

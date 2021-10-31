@@ -43,7 +43,7 @@ const Profile: React.FC = () => {
     };
     const user = LocalStorageUtil.getItem("user") as Account;
     const { data, isLoading, isError } = useGetAccount(user.email);
-    const [value, setValue] = React.useState<number | null>(4);
+    const [value] = React.useState<number | null>(4);
     const [open, setOpen] = useState<boolean>(false);
     const [account, setAccount] = useState<Account>(initAccount);
     if (isError) {

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 
 import { SubmitHandler, useForm } from "react-hook-form";
 
@@ -23,7 +23,7 @@ const Input = styled("input")({
 });
 const PracticingForm: React.FC<IPracticingForm> = (props: IPracticingForm) => {
     const { dataPracticing } = props;
-    const [checked, setChecked] = useState<boolean>(dataPracticing.isActive);
+    // const [checked, setChecked] = useState<boolean>(dataPracticing.isActive);
     const [date, setDate] = React.useState<Date | null>(new Date("2000-01-01T21:11:54"));
     const [imgLink, setImgLink] = React.useState<string>(logo);
     const [file, setFile] = React.useState<string | Blob>("");
@@ -52,9 +52,9 @@ const PracticingForm: React.FC<IPracticingForm> = (props: IPracticingForm) => {
         setValue("description", dataPracticing.description);
         setValue("isActive", dataPracticing.isActive);
 
-        setChecked(dataPracticing.isActive);
+        // setChecked(dataPracticing.isActive);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [dataPracticing, setChecked]);
+    }, [dataPracticing]);
     const submitHandler: SubmitHandler<Doctor> = (dataPracticing: Doctor) => {
         // eslint-disable-next-line no-console
         console.log(dataPracticing);

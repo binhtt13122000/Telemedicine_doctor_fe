@@ -130,7 +130,9 @@ const HospitalProfile: React.FC = () => {
         if (clearErrors) {
             clearErrors();
         }
-        refreshPage();
+        if (type === "SAVE") {
+            refreshPage();
+        }
         setOpenAdd(false);
     };
     const handleOpen = async (hos: Hospital) => {
