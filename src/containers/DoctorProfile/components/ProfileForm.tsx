@@ -2,9 +2,12 @@ import React, { useCallback, useEffect, useState } from "react";
 
 import { SubmitHandler, useForm } from "react-hook-form";
 
-import { Account } from "../models/Account.model";
+import { AccountUpdate } from "../models/Account.model";
 import AddressService from "../services/Address.service";
 
+import AdapterDateFns from "@mui/lab/AdapterDateFns";
+import DesktopDatePicker from "@mui/lab/DesktopDatePicker";
+import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import { Autocomplete, Button, Card, Grid, Modal, TextField, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 
@@ -28,12 +31,12 @@ interface Ward extends Area {
     district_code: number;
 }
 export interface IProfileForm {
-    dataProfile: Account;
+    dataProfile: AccountUpdate;
     open: boolean;
     handleClose: (
         type: "SAVE" | "CANCEL",
-        dataProfile?: Account,
-        file?: Blob,
+        dataProfile?: AccountUpdate,
+
         callback?: Function
     ) => void;
 }
@@ -48,6 +51,7 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
         wards: [],
     };
     const { dataProfile } = props;
+    const [date, setDate] = React.useState<Date | null>();
     const [provinces, setProvinces] = useState<Province[]>([]);
     const [districts, setDistricts] = useState<District[]>([]);
     const [wards, setWards] = useState<Ward[]>([]);
@@ -56,37 +60,38 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
     const [valueProvince, setValueProvince] = useState<Province>();
     const [valueDistrict, setValueDistrict] = useState<District>();
     const [valueWard, setValueWard] = useState<Ward>();
-    const [file, setFile] = React.useState<Blob>();
+    const [file, setFile] = React.useState<Blob | null>();
     const {
         register,
         handleSubmit,
         formState: { errors },
-        getValues,
         setValue,
         clearErrors,
-    } = useForm<Account>({});
+    } = useForm<AccountUpdate>({});
 
     React.useEffect(() => {
         setValue("id", dataProfile.id);
-        setValue("email", dataProfile.email);
         setValue("firstName", dataProfile.firstName);
         setValue("lastName", dataProfile.lastName);
+        // setValue("avatar", dataProfile.avatar);
         setValue("ward", dataProfile.ward);
         setValue("streetAddress", dataProfile.streetAddress);
         setValue("locality", dataProfile.locality);
-        console.log("locality", dataProfile.locality);
+        // console.log("locality", dataProfile.locality);
         // setValue("locality", "Huyện Thới Bình");
         setValue("city", dataProfile.city);
         setValue("postalCode", dataProfile.postalCode);
         setValue("phone", dataProfile.phone);
         setValue("dob", dataProfile.dob);
-        setValue("isMale", dataProfile.isMale);
-        setValue("active", dataProfile.active);
+
+        console.log("dataProfile", dataProfile);
     }, [dataProfile, setValue]);
 
-    const submitHandler: SubmitHandler<Account> = (dataProfile: Account) => {
-        if (dataProfile && file) {
-            props.handleClose("SAVE", dataProfile, file, clearErrors);
+    const submitHandler: SubmitHandler<AccountUpdate> = (dataProfile: AccountUpdate) => {
+        console.log("profile form", dataProfile);
+        if (dataProfile) {
+            console.log("form");
+            props.handleClose("SAVE", dataProfile, clearErrors);
         }
     };
     const onChangeProvince = (newProvince: Province | null) => {
@@ -154,12 +159,15 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
         } catch (_) {}
     };
 
-    const { ref: city, ...cityProps } = register("city", {
-        min: {
-            value: 1,
-            message: "Thành phố không được để trống",
-        },
-    });
+    // const { ref: city, ...cityProps } = register("city", {
+    //     min: {
+    //         value: 1,
+    //         message: "Thành phố không được để trống",
+    //     },
+    // });
+    const handleChange = (newDate: Date | null) => {
+        setDate(newDate);
+    };
 
     useEffect(() => {
         fetchProvinces();
@@ -227,6 +235,8 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
                 </Box>
                 <Box
                     component="form"
+                    encType="multipart/form-data"
+                    // onSubmit={handleSubmit(onSubmit)}
                     sx={{
                         "& > :not(style)": {
                             m: 2,
@@ -236,6 +246,12 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
                     }}
                 >
                     <Grid container columnSpacing={1}>
+                        <TextField
+                            id="id"
+                            label="id*"
+                            variant="outlined"
+                            {...register("id", { required: true })}
+                        />
                         <Grid item xs={3}>
                             <TextField
                                 id="firstName"
@@ -257,23 +273,33 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
                             />
                         </Grid>
                         <Grid item xs={4}>
-                            <TextField
-                                id="dob"
-                                label="Ngày sinh*"
-                                variant="outlined"
-                                {...register("dob", { required: true })}
-                            />
+                            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                <DesktopDatePicker
+                                    inputFormat="dd/MM/yyyy"
+                                    value={date}
+                                    onChange={handleChange}
+                                    renderInput={(params) => (
+                                        <TextField
+                                            {...params}
+                                            error={!!errors.dob}
+                                            helperText={errors.dob && "Vui lòng nhập ngày cấp"}
+                                            {...register("dob", { required: true })}
+                                            sx={{ width: "90%" }}
+                                        />
+                                    )}
+                                />
+                            </LocalizationProvider>
                         </Grid>
                     </Grid>
                     <Grid container columnSpacing={1}>
-                        <Grid item xs={4}>
+                        {/* <Grid item xs={4}>
                             <TextField
                                 id="email"
                                 label="Email*"
                                 variant="outlined"
                                 {...register("email", { required: true })}
                             />
-                        </Grid>
+                        </Grid> */}
                         <Grid item xs={4}>
                             <TextField
                                 id="phone"
@@ -282,15 +308,15 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
                                 {...register("phone", { required: true })}
                             />
                         </Grid>
-                        <Grid item xs={3}>
+                        {/* <Grid item xs={3}>
                             <TextField
                                 id="isMale"
                                 label="Giới tính*"
                                 disabled
                                 variant="outlined"
-                                {...register("isMale", { required: true })}
+                                {...register("isMale", { required: false })}
                             />
-                        </Grid>
+                        </Grid> */}
                     </Grid>
                     <Grid container spacing={1}>
                         <Grid item xs={5}>
@@ -306,7 +332,7 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
                                 id="postalCode"
                                 label="Mã bưu điện*"
                                 variant="outlined"
-                                disabled
+                                // disabled
                                 // error={!!errors.postalCode}
                                 // helperText={errors.postalCode && "Mã bưu điện là bắt buộc"}
                                 {...register("postalCode", { required: true })}
@@ -394,9 +420,7 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
                     >
                         <Button
                             variant="outlined"
-                            onClick={() =>
-                                props.handleClose("CANCEL", undefined, file, clearErrors)
-                            }
+                            onClick={() => props.handleClose("CANCEL", undefined, clearErrors)}
                         >
                             Hủy
                         </Button>

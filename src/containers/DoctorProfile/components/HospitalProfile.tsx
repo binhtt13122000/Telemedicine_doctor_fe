@@ -72,8 +72,10 @@ const HospitalProfile: React.FC = () => {
         if (clearErrors) {
             clearErrors();
         }
+        if (type === "SAVE") {
+            refreshPage();
+        }
         setOpen(false);
-        refreshPage();
     };
     const createHospital = async (data: DoctorFromAdd) => {
         try {
@@ -130,9 +132,9 @@ const HospitalProfile: React.FC = () => {
         if (clearErrors) {
             clearErrors();
         }
-        if (type === "SAVE") {
-            refreshPage();
-        }
+        // if (type === "SAVE") {
+        //     refreshPage();
+        // }
         setOpenAdd(false);
     };
     const handleOpen = async (hos: Hospital) => {

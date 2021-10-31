@@ -54,6 +54,7 @@ const CertificateCarousel: React.FC = () => {
             if (response.status === 201) {
                 // eslint-disable-next-line no-console
                 console.log(response.data);
+                refreshPage();
             }
         } catch (error) {
             // eslint-disable-next-line no-console
@@ -72,14 +73,19 @@ const CertificateCarousel: React.FC = () => {
     ) => {
         if (type === "SAVE") {
             if (dataCetificationAdd && file) {
-                data?.id && createCetificate(dataCetificationAdd, file, data?.id);
+                if (data?.id) {
+                    createCetificate(dataCetificationAdd, file, data?.id);
+                }
             }
         }
         if (clearErrors) {
             clearErrors();
         }
-        refreshPage();
+
         setOpenAdd(false);
+        // if (type === "SAVE") {
+        //     refreshPage();
+        // }
     };
     if (isError) {
         return <div> Error</div>;
@@ -103,7 +109,7 @@ const CertificateCarousel: React.FC = () => {
                     handleClose={handleCloseFormAdd}
                 />
             )}
-            <Box sx={{ minWidth: 500, flexGrow: 1 }}>
+            <Box sx={{ minWidth: "50%", flexGrow: 1 }}>
                 <Paper
                     square
                     elevation={0}
@@ -169,11 +175,11 @@ const CertificateCarousel: React.FC = () => {
                     ))}
                 </AutoPlaySwipeableViews>
                 <MobileStepper
-                    steps={5}
+                    steps={10}
                     position="static"
                     activeStep={activeStep}
                     nextButton={
-                        <Button size="small" onClick={handleNext} disabled={activeStep === 5 - 1}>
+                        <Button size="small" onClick={handleNext} disabled={activeStep === 10 - 1}>
                             Next
                             {theme.direction === "rtl" ? (
                                 <KeyboardArrowLeft />

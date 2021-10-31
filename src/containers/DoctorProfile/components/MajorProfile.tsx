@@ -142,7 +142,7 @@ const MajorProfile: React.FC = () => {
                 />
             )}
             <MajorForm dataMajor={major} opened={open} handleClose={handleClose} />
-            <Card sx={{ height: "100%", borderRadius: 5 }}>
+            <Card sx={{ height: "100%", width: "100%", borderRadius: 5 }}>
                 <Box sx={{ ml: 2 }}>
                     <Typography sx={{ mt: 3 }} variant="h6" component="div">
                         Chuyên khoa
@@ -152,7 +152,8 @@ const MajorProfile: React.FC = () => {
                     <List
                         sx={{
                             width: "100%",
-                            maxWidth: 360,
+                            // maxWidth: 360,
+                            alignItems: "center",
                             bgcolor: "background.paper",
                             position: "relative",
                             overflow: "auto",

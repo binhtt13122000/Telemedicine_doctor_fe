@@ -15,7 +15,12 @@ import { Box } from "@mui/system";
 export interface IPracticingForm {
     dataPracticing: Doctor;
     open: boolean;
-    handleClose: (type: "SAVE" | "CANCEL", dataPracticing?: Doctor, callback?: Function) => void;
+    handleClose: (
+        type: "SAVE" | "CANCEL",
+        dataPracticing?: Doctor,
+        file?: Blob,
+        callback?: Function
+    ) => void;
 }
 
 const Input = styled("input")({
@@ -26,7 +31,7 @@ const PracticingForm: React.FC<IPracticingForm> = (props: IPracticingForm) => {
     // const [checked, setChecked] = useState<boolean>(dataPracticing.isActive);
     const [date, setDate] = React.useState<Date | null>(new Date("2000-01-01T21:11:54"));
     const [imgLink, setImgLink] = React.useState<string>(logo);
-    const [file, setFile] = React.useState<string | Blob>("");
+    const [file, setFile] = React.useState<Blob>();
 
     const uploadedFile = (event?: React.ChangeEvent<HTMLInputElement>) => {
         setImgLink(URL.createObjectURL(event?.target.files![0]));
@@ -44,22 +49,17 @@ const PracticingForm: React.FC<IPracticingForm> = (props: IPracticingForm) => {
         setValue("id", dataPracticing.id);
         setValue("name", dataPracticing.name);
         setValue("avatar", dataPracticing.avatar);
-        setValue("practisingCertificate", dataPracticing.practisingCertificate);
+        setValue("practisingCertificate", "");
         setValue("certificateCode", dataPracticing.certificateCode);
         setValue("placeOfCertificate", dataPracticing.placeOfCertificate);
         setValue("dateOfCertificate", dataPracticing.dateOfCertificate);
         setValue("scopeOfPractice", dataPracticing.scopeOfPractice);
         setValue("description", dataPracticing.description);
         setValue("isActive", dataPracticing.isActive);
-
-        // setChecked(dataPracticing.isActive);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [dataPracticing]);
+    }, [dataPracticing, setValue]);
     const submitHandler: SubmitHandler<Doctor> = (dataPracticing: Doctor) => {
-        // eslint-disable-next-line no-console
-        console.log(dataPracticing);
-        if (dataPracticing) {
-            props.handleClose("SAVE", dataPracticing, clearErrors);
+        if (dataPracticing && file) {
+            props.handleClose("SAVE", dataPracticing, file, clearErrors);
         }
     };
 
@@ -166,8 +166,7 @@ const PracticingForm: React.FC<IPracticingForm> = (props: IPracticingForm) => {
                             <label htmlFor="icon-button-file">
                                 <Input
                                     accept="/*"
-                                    id="contained-button-file"
-                                    multiple
+                                    id="icon-button-file"
                                     type="file"
                                     {...register("practisingCertificate")}
                                     onChange={uploadedFile}
@@ -190,7 +189,9 @@ const PracticingForm: React.FC<IPracticingForm> = (props: IPracticingForm) => {
                     >
                         <Button
                             variant="outlined"
-                            onClick={() => props.handleClose("CANCEL", undefined, clearErrors)}
+                            onClick={() =>
+                                props.handleClose("CANCEL", undefined, file, clearErrors)
+                            }
                         >
                             Hủy
                         </Button>

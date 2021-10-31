@@ -57,14 +57,14 @@ const PracticingProfile: React.FC = () => {
         return <CircularProgress />;
     }
 
-    const createPraticing = async (data: DoctorFromAdd) => {
+    const createPraticing = async (data: DoctorFromAdd, file: Blob) => {
         try {
             let formData = new FormData();
             formData.append("Id", JSON.stringify(data?.id));
             formData.append("Email", data.email);
             formData.append("Name", data.name);
             formData.append("Avatar", data.avatar);
-            formData.append("PractisingCertificate", data.practisingCertificate);
+            formData.append("PractisingCertificate", file);
             formData.append("CertificateCode", data.certificateCode);
             formData.append("PlaceOfCertificate", data.placeOfCertificate);
             formData.append("DateOfCertificate", data.dateOfCertificate);
@@ -103,12 +103,13 @@ const PracticingProfile: React.FC = () => {
     const handleClose = (
         type: "SAVE" | "CANCEL",
         dataPracticing?: DoctorFromAdd,
+        file?: Blob,
         clearErrors?: Function
     ) => {
         if (type === "SAVE") {
-            if (dataPracticing) {
+            if (dataPracticing && file) {
                 if (dataPracticing.id) {
-                    createPraticing(dataPracticing);
+                    createPraticing(dataPracticing, file);
                 }
             }
         }
@@ -122,7 +123,7 @@ const PracticingProfile: React.FC = () => {
             {data && doctorPracticing && (
                 <PracticingForm dataPracticing={data} open={openModal} handleClose={handleClose} />
             )}
-            <Card sx={{ minHeight: "100%", borderRadius: 5 }}>
+            <Card sx={{ minHeight: "100%", width: "100%", borderRadius: 5 }}>
                 <Box sx={{ ml: 2, display: "flex", justifyContent: "space-between" }}>
                     <Box>
                         <Typography sx={{ mt: 3 }} variant="h6" component="div">

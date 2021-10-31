@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import moment from "moment";
 
 import useGetAccount from "../hooks/useGetAccount";
-import { Account } from "../models/Account.model";
+import { Account, AccountUpdate } from "../models/Account.model";
 import AccountService from "../services/Account.service";
 import ProfileForm from "./ProfileForm";
 
@@ -25,9 +25,8 @@ export interface IProfile {
 }
 
 const Profile: React.FC = () => {
-    const initAccount: Account = {
+    const initAccount: AccountUpdate = {
         id: 1,
-        email: "",
         firstName: "",
         lastName: "",
         ward: "",
@@ -38,14 +37,12 @@ const Profile: React.FC = () => {
         phone: "",
         avatar: "",
         dob: "",
-        isMale: true,
-        active: true,
     };
     const user = LocalStorageUtil.getItem("user") as Account;
     const { data, isLoading, isError } = useGetAccount(user.email);
     const [value] = React.useState<number | null>(4);
     const [open, setOpen] = useState<boolean>(false);
-    const [account, setAccount] = useState<Account>(initAccount);
+    const [account, setAccount] = useState<Account>();
     if (isError) {
         return <div>error</div>;
     }
@@ -61,13 +58,13 @@ const Profile: React.FC = () => {
     //     window.location.reload();
     // };
 
-    const updateAccount = async (data: Account, file: Blob) => {
+    const updateAccount = async (data: AccountUpdate) => {
         try {
             let formData = new FormData();
-            formData.append("Email", data.email);
+            formData.append("Id", JSON.stringify(data?.id));
             formData.append("FirstName", data.firstName);
             formData.append("LastName", data.lastName);
-            formData.append("Image", file);
+            // formData.append("Avatar", file);
             formData.append("Ward", data.ward);
             formData.append("StreetAddress", data.streetAddress);
             formData.append("Locality", data.locality);
@@ -75,9 +72,13 @@ const Profile: React.FC = () => {
             formData.append("PostalCode", data.postalCode);
             formData.append("Phone", data.phone);
             formData.append("Dob", data.dob);
-            formData.append("IsMale", data.isMale.toString());
-            const service = new AccountService<Account>();
+            // formData.append("IsMale", data.isMale.toString());
+            const service = new AccountService<AccountUpdate>();
             const response = await service.updateFormData(formData);
+            if (response.status === 200) {
+                // eslint-disable-next-line no-console
+                console.log(response.data);
+            }
             if (response.status === 201) {
                 // eslint-disable-next-line no-console
                 console.log(response.data);
@@ -90,27 +91,25 @@ const Profile: React.FC = () => {
 
     const handleClose = (
         type: "SAVE" | "CANCEL",
-        dataProfile?: Account,
-        file?: Blob,
+        dataProfile?: AccountUpdate,
         clearErrors?: Function
     ) => {
+        console.log("save");
+        console.log("data", dataProfile);
         if (type === "SAVE") {
-            if (dataProfile && file) {
-                updateAccount(dataProfile, file);
+            if (dataProfile) {
+                updateAccount(dataProfile);
             }
         }
         if (clearErrors) {
             clearErrors();
         }
         setOpen(false);
-        if (isLoading) {
-            return <CircularProgress />;
-        }
     };
 
     return (
         <React.Fragment>
-            {data && <ProfileForm dataProfile={account} open={open} handleClose={handleClose} />}
+            {account && <ProfileForm dataProfile={account} open={open} handleClose={handleClose} />}
             <Card sx={{ minHeight: "100%", width: 450, borderRadius: 5, pl: 5 }}>
                 <Box sx={{ display: "flex", justifyContent: "space-between" }}>
                     <Typography sx={{ mt: 3 }} variant="h6" component="div">
