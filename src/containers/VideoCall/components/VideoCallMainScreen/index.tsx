@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import { IAgoraRTCRemoteUser } from "agora-rtc-react";
+import { DocumentData } from "firebase/firestore";
 
 import { HealthCheck } from "../../models/VideoCall.model";
 import { useClient, useMicrophoneAndCameraTracks } from "../../setting";
@@ -14,12 +15,14 @@ export interface VideoCallMainScreenProps {
     token: string;
     channel: string;
     healthCheck: HealthCheck;
+    uid?: number;
+    users?: DocumentData;
 }
 
 const VideoCallMainScreen: React.FC<VideoCallMainScreenProps> = (
     props: VideoCallMainScreenProps
 ) => {
-    const { appId, channel, token, healthCheck } = props;
+    const { appId, channel, token, healthCheck, uid } = props;
     const user = LocalStorageUtil.getItem("user") as Account;
 
     const [users, setUsers] = useState<IAgoraRTCRemoteUser[]>([]);
@@ -106,7 +109,7 @@ const VideoCallMainScreen: React.FC<VideoCallMainScreenProps> = (
             });
 
             try {
-                await client.join(appId, name, token, user.id);
+                await client.join(appId, name, token, uid || null);
             } catch (error) {
                 // eslint-disable-next-line no-console
                 console.log("error");
@@ -124,7 +127,7 @@ const VideoCallMainScreen: React.FC<VideoCallMainScreenProps> = (
                 console.log(error);
             }
         }
-    }, [channel, appId, token, client, ready, tracks, user]);
+    }, [channel, appId, token, client, ready, tracks, user, uid]);
 
     useEffect(() => {
         // eslint-disable-next-line no-console
@@ -157,6 +160,8 @@ const VideoCallMainScreen: React.FC<VideoCallMainScreenProps> = (
                 healthCheck={healthCheck}
                 anotherTrackVideos={anotherTrackVideos}
                 anotherTrackAudios={anotherTrackAudios}
+                uid={uid}
+                userNames={props.users}
             />
         </React.Fragment>
     );

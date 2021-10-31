@@ -2,6 +2,7 @@
 import { getAnalytics } from "firebase/analytics";
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
 import { getMessaging, getToken, MessagePayload, onMessage } from "firebase/messaging";
 import {
     API_KEY,
@@ -51,6 +52,8 @@ export const getTokenFirebase = async () => {
 
     return currentToken;
 };
+
+export const db = getFirestore();
 
 export const onMessageListener = () =>
     new Promise<MessagePayload>((resolve) => {

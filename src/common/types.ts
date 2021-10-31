@@ -7,3 +7,11 @@ export interface IPagingSupport<T> {
     previousPage: number | null;
     content: T[];
 }
+
+export interface IBasicError {
+    response: {
+        data: {
+            message?: string;
+        };
+    };
+}

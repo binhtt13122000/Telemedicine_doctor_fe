@@ -7,13 +7,14 @@ import {
     AgoraVideoPlayer,
     IAgoraRTCRemoteUser,
 } from "agora-rtc-react";
+import { DocumentData } from "firebase/firestore";
 
 import { HealthCheck } from "../../models/VideoCall.model";
 import "./index.scss";
 
 import { MicOffOutlined } from "@mui/icons-material";
 import MicNoneIcon from "@mui/icons-material/MicNoneRounded";
-import { Avatar, Box, Grid, GridSize } from "@mui/material";
+import { Avatar, Box, Grid, GridSize, Typography } from "@mui/material";
 import { Account } from "src/common/models/Account.model";
 import LocalStorageUtil from "src/utils/LocalStorageUtil";
 
@@ -27,6 +28,8 @@ export interface ListVideoCallProps {
     anotherTrackVideos: Record<string, boolean>;
     anotherTrackAudios: Record<string, boolean>;
     healthCheck: HealthCheck;
+    uid?: number;
+    userNames?: DocumentData;
 }
 
 const ListVideoCall: React.FC<ListVideoCallProps> = (props: ListVideoCallProps) => {
@@ -91,6 +94,10 @@ const ListVideoCall: React.FC<ListVideoCallProps> = (props: ListVideoCallProps) 
                                             ) : (
                                                 <MicOffOutlined sx={{ color: "white" }} />
                                             )}
+                                            <Typography color="white" variant="subtitle1">
+                                                {props.userNames &&
+                                                    props.userNames[`${props.uid}` || "0"]}
+                                            </Typography>
                                             {/* <Typography color="white" variant="subtitle1">
                                                 {user.email === healthCheck?.patient?.email
                                                     ? healthCheck?.patient?.name
@@ -147,6 +154,10 @@ const ListVideoCall: React.FC<ListVideoCallProps> = (props: ListVideoCallProps) 
                                         ) : (
                                             <MicOffOutlined sx={{ color: "white" }} />
                                         )}
+                                        <Typography color="white" variant="subtitle1">
+                                            {props.userNames &&
+                                                props.userNames[`${props.uid}` || "0"]}
+                                        </Typography>
                                         {/* <Typography color="white" variant="subtitle1">
                                             {user.email === healthCheck?.patient?.email
                                                 ? healthCheck?.patient?.name
@@ -215,6 +226,15 @@ const ListVideoCall: React.FC<ListVideoCallProps> = (props: ListVideoCallProps) 
                                                                 sx={{ color: "white" }}
                                                             />
                                                         )}
+                                                        <Typography
+                                                            color="white"
+                                                            variant="subtitle1"
+                                                        >
+                                                            {props.userNames &&
+                                                                props.userNames[
+                                                                    `${user.uid}` || "0"
+                                                                ]}
+                                                        </Typography>
                                                         {/* <Typography
                                                             color="white"
                                                             variant="subtitle1"
@@ -274,6 +294,10 @@ const ListVideoCall: React.FC<ListVideoCallProps> = (props: ListVideoCallProps) 
                                                     ) : (
                                                         <MicOffOutlined sx={{ color: "white" }} />
                                                     )}
+                                                    <Typography color="white" variant="subtitle1">
+                                                        {props.userNames &&
+                                                            props.userNames[`${user.uid}` || "0"]}
+                                                    </Typography>
                                                     {/* <Typography color="white" variant="subtitle1">
                                                         {user.uid === healthCheck?.patient?.email
                                                             ? healthCheck?.patient?.name
@@ -347,6 +371,10 @@ const ListVideoCall: React.FC<ListVideoCallProps> = (props: ListVideoCallProps) 
                                                 ) : (
                                                     <MicOffOutlined sx={{ color: "white" }} />
                                                 )}
+                                                <Typography color="white" variant="subtitle1">
+                                                    {props.userNames &&
+                                                        props.userNames[`${user.uid}` || "0"]}
+                                                </Typography>
                                                 {/* <Typography color="white" variant="subtitle1">
                                                     {user.uid === healthCheck?.patient?.email
                                                         ? healthCheck?.patient?.name

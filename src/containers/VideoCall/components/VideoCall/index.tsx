@@ -18,6 +18,7 @@ import ListVideoCall from "../ListVideoCall";
 import ListVideoCallWithThreePeople from "../ListVideoCallWithThreePeople";
 import VideoCallWithLayout2 from "../VideoCallWithLayout2";
 
+import { DocumentData } from "@firebase/firestore";
 // import VideoCallWithLayout2 from "../VideoCallWithLayout2";
 // import VideoCallWithLayout3 from "../VideoCallWithLayout3";
 import {
@@ -65,6 +66,8 @@ export interface VideoCallProps {
     healthCheck: HealthCheck;
     anotherTrackVideos: Record<string, boolean>;
     anotherTrackAudios: Record<string, boolean>;
+    uid?: number;
+    userNames?: DocumentData;
 }
 
 const steps = [
@@ -553,6 +556,8 @@ export const VideoCall: React.FC<VideoCallProps> = (props: VideoCallProps) => {
                                 tracks={props.tracks}
                                 healthCheck={props.healthCheck}
                                 anotherTrackAudios={props.anotherTrackAudios}
+                                uid={props.uid}
+                                userNames={props.userNames}
                             />
                         )}
                     {props.ready &&
