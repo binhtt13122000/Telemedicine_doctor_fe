@@ -13,7 +13,7 @@ import "./index.scss";
 
 import { MicOffOutlined } from "@mui/icons-material";
 import MicNoneIcon from "@mui/icons-material/MicNoneRounded";
-import { Avatar, Box, Grid, GridSize, Typography } from "@mui/material";
+import { Avatar, Box, Grid, GridSize } from "@mui/material";
 import { Account } from "src/common/models/Account.model";
 import LocalStorageUtil from "src/utils/LocalStorageUtil";
 
@@ -91,7 +91,7 @@ const ListVideoCall: React.FC<ListVideoCallProps> = (props: ListVideoCallProps) 
                                             ) : (
                                                 <MicOffOutlined sx={{ color: "white" }} />
                                             )}
-                                            <Typography color="white" variant="subtitle1">
+                                            {/* <Typography color="white" variant="subtitle1">
                                                 {user.email === healthCheck?.patient?.email
                                                     ? healthCheck?.patient?.name
                                                     : healthCheck?.slots &&
@@ -100,7 +100,7 @@ const ListVideoCall: React.FC<ListVideoCallProps> = (props: ListVideoCallProps) 
                                                           user.email
                                                     ? healthCheck?.slots[0].doctor?.name
                                                     : user.email}
-                                            </Typography>
+                                            </Typography> */}
                                         </Box>
                                     </Box>
                                 </React.Fragment>
@@ -147,7 +147,7 @@ const ListVideoCall: React.FC<ListVideoCallProps> = (props: ListVideoCallProps) 
                                         ) : (
                                             <MicOffOutlined sx={{ color: "white" }} />
                                         )}
-                                        <Typography color="white" variant="subtitle1">
+                                        {/* <Typography color="white" variant="subtitle1">
                                             {user.email === healthCheck?.patient?.email
                                                 ? healthCheck?.patient?.name
                                                 : healthCheck?.slots &&
@@ -155,7 +155,7 @@ const ListVideoCall: React.FC<ListVideoCallProps> = (props: ListVideoCallProps) 
                                                   healthCheck?.slots[0].doctor?.email === user.email
                                                 ? healthCheck?.slots[0].doctor?.name
                                                 : user.email}
-                                        </Typography>
+                                        </Typography> */}
                                     </Box>
                                 </Box>
                             )}
@@ -215,7 +215,7 @@ const ListVideoCall: React.FC<ListVideoCallProps> = (props: ListVideoCallProps) 
                                                                 sx={{ color: "white" }}
                                                             />
                                                         )}
-                                                        <Typography
+                                                        {/* <Typography
                                                             color="white"
                                                             variant="subtitle1"
                                                         >
@@ -228,7 +228,7 @@ const ListVideoCall: React.FC<ListVideoCallProps> = (props: ListVideoCallProps) 
                                                                       ?.email === user.uid
                                                                 ? healthCheck?.slots[0].doctor?.name
                                                                 : user.uid}
-                                                        </Typography>
+                                                        </Typography> */}
                                                     </Box>
                                                 </Box>
                                             </React.Fragment>
@@ -274,7 +274,7 @@ const ListVideoCall: React.FC<ListVideoCallProps> = (props: ListVideoCallProps) 
                                                     ) : (
                                                         <MicOffOutlined sx={{ color: "white" }} />
                                                     )}
-                                                    <Typography color="white" variant="subtitle1">
+                                                    {/* <Typography color="white" variant="subtitle1">
                                                         {user.uid === healthCheck?.patient?.email
                                                             ? healthCheck?.patient?.name
                                                             : healthCheck?.slots &&
@@ -283,7 +283,7 @@ const ListVideoCall: React.FC<ListVideoCallProps> = (props: ListVideoCallProps) 
                                                                   ?.email === user.uid
                                                             ? healthCheck?.slots[0].doctor?.name
                                                             : user.uid}
-                                                    </Typography>
+                                                    </Typography> */}
                                                 </Box>
                                             </Box>
                                         )}
@@ -347,7 +347,7 @@ const ListVideoCall: React.FC<ListVideoCallProps> = (props: ListVideoCallProps) 
                                                 ) : (
                                                     <MicOffOutlined sx={{ color: "white" }} />
                                                 )}
-                                                <Typography color="white" variant="subtitle1">
+                                                {/* <Typography color="white" variant="subtitle1">
                                                     {user.uid === healthCheck?.patient?.email
                                                         ? healthCheck?.patient?.name
                                                         : healthCheck?.slots &&
@@ -356,7 +356,7 @@ const ListVideoCall: React.FC<ListVideoCallProps> = (props: ListVideoCallProps) 
                                                               user.uid
                                                         ? healthCheck?.slots[0].doctor?.name
                                                         : user.uid}
-                                                </Typography>
+                                                </Typography> */}
                                             </Box>
                                         </Box>
                                     </Box>

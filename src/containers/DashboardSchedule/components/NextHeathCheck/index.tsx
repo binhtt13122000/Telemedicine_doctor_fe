@@ -10,36 +10,25 @@ import {
     Box,
     Card,
     CardContent,
-    CardHeader,
     CircularProgress,
     Grid,
     IconButton,
     Tooltip,
     Typography,
 } from "@mui/material";
-import { Account } from "src/common/models/Account.model";
 import LocalStorageUtil from "src/utils/LocalStorageUtil";
 
 const NextHealthCheck: React.FC = () => {
     const history = useHistory();
-    const user = LocalStorageUtil.getItem("user") as Account;
     const refenrenceId = LocalStorageUtil.getItem("refenrenceId") as string;
     const { data, isLoading, isError } = useGetNearestHealthCheck(
         `${refenrenceId || 0}`,
         "NEAREST"
     );
     return (
-        <Card sx={{ width: "100%", minHeight: "100px" }}>
+        <Card sx={{ width: "100%", minHeight: "80px" }}>
             {isError && (
                 <React.Fragment>
-                    <CardHeader
-                        title={
-                            <Typography variant="h6">
-                                Xin chào {user.firstName} {user.lastName}. Chúc bạn một ngày làm
-                                việc hiệu quả!
-                            </Typography>
-                        }
-                    />
                     <CardContent>
                         <Box
                             sx={{
@@ -72,14 +61,6 @@ const NextHealthCheck: React.FC = () => {
             ) : (
                 data && (
                     <React.Fragment>
-                        <CardHeader
-                            title={
-                                <Typography variant="h6">
-                                    Xin chào {user.firstName} {user.lastName}. Chúc bạn một ngày làm
-                                    việc hiệu quả!
-                                </Typography>
-                            }
-                        />
                         <CardContent>
                             <Grid
                                 container

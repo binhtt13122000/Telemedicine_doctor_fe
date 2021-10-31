@@ -1,17 +1,22 @@
 import React, { useState } from "react";
 
 import { IMicrophoneAudioTrack, ICameraVideoTrack, IAgoraRTCRemoteUser } from "agora-rtc-react";
+import { AxiosResponse } from "axios";
 import moment from "moment";
 import { useHistory } from "react-router";
+import axios from "src/axios";
 
 import { CircularProgress } from "@material-ui/core";
+import { NotificationCM } from "src/components/AppBar";
 import CustomizeAutocomplete from "src/components/CustomizeAutocomplete";
+import useSnackbar from "src/components/Snackbar/useSnackbar";
 
 import useGetDoctorListByEmail from "../../hooks/useGetDoctorListByEmail";
 import { HealthCheck } from "../../models/VideoCall.model";
 import { useClient } from "../../setting";
 import ListVideoCall from "../ListVideoCall";
 import ListVideoCallWithThreePeople from "../ListVideoCallWithThreePeople";
+import VideoCallWithLayout2 from "../VideoCallWithLayout2";
 
 // import VideoCallWithLayout2 from "../VideoCallWithLayout2";
 // import VideoCallWithLayout3 from "../VideoCallWithLayout3";
@@ -77,6 +82,8 @@ export const VideoCall: React.FC<VideoCallProps> = (props: VideoCallProps) => {
     });
     const [search, setSearch] = useState("");
 
+    const showSnackbar = useSnackbar();
+
     const { isLoading, data } = useGetDoctorListByEmail(search);
     const [layoutType, setLayoutType] = useState<number>(0);
 
@@ -107,6 +114,29 @@ export const VideoCall: React.FC<VideoCallProps> = (props: VideoCallProps) => {
                 ...checkType,
                 checked: !checkType.checked,
             });
+        }
+    };
+
+    const inviteDoctor = async (email: string) => {
+        try {
+            const response = await axios.post<
+                Notification,
+                AxiosResponse<Notification>,
+                NotificationCM
+            >("/notifications", {
+                content: `${props.healthCheck?.id || ""}`,
+                type: 10,
+                email: email,
+            });
+            if (response.status === 201) {
+                showSnackbar({
+                    severity: "success",
+                    children: "Đã mời bác sĩ thành công",
+                });
+            }
+        } catch (ex) {
+            // eslint-disable-next-line no-console
+            console.log(ex);
         }
     };
 
@@ -220,7 +250,7 @@ export const VideoCall: React.FC<VideoCallProps> = (props: VideoCallProps) => {
                     fullWidth
                     onChange={(e) => setSearch(e.target.value)}
                 />
-                <Box sx={{ mt: 3 }} />
+                <Box sx={{ mt: 3, position: "relative", overflow: "auto", maxHeight: 300 }} />
                 {isLoading && <CircularProgress />}
                 {data &&
                     data?.content?.map((x) => {
@@ -255,7 +285,7 @@ export const VideoCall: React.FC<VideoCallProps> = (props: VideoCallProps) => {
                                             sm={2}
                                         >
                                             <Tooltip title="Mời tham gia cuộc gọi">
-                                                <IconButton>
+                                                <IconButton onClick={() => inviteDoctor(x.email)}>
                                                     <AddCircle color="primary" />
                                                 </IconButton>
                                             </Tooltip>
@@ -529,7 +559,8 @@ export const VideoCall: React.FC<VideoCallProps> = (props: VideoCallProps) => {
                         props.start &&
                         props.tracks &&
                         layoutType === 0 &&
-                        props.users?.length === 2 && (
+                        props.users?.length < 4 &&
+                        props.users?.length > 1 && (
                             <ListVideoCallWithThreePeople
                                 anotherTrackVideos={props.anotherTrackVideos}
                                 trackState={trackState}
@@ -539,19 +570,16 @@ export const VideoCall: React.FC<VideoCallProps> = (props: VideoCallProps) => {
                                 anotherTrackAudios={props.anotherTrackAudios}
                             />
                         )}
-                    {props.ready &&
-                        props.start &&
-                        props.tracks &&
-                        layoutType === 1 &&
-                        // <VideoCallWithLayout2
-                        //     anotherTrackVideos={props.anotherTrackVideos}
-                        //     trackState={trackState}
-                        //     users={props.users}
-                        //     tracks={props.tracks}
-                        //     healthCheck={props.healthCheck}
-                        //     anotherTrackAudios={props.anotherTrackAudios}
-                        // />
-                        null}
+                    {props.ready && props.start && props.tracks && layoutType === 1 && (
+                        <VideoCallWithLayout2
+                            anotherTrackVideos={props.anotherTrackVideos}
+                            trackState={trackState}
+                            users={props.users}
+                            tracks={props.tracks}
+                            healthCheck={props.healthCheck}
+                            anotherTrackAudios={props.anotherTrackAudios}
+                        />
+                    )}
                     {props.ready &&
                         props.start &&
                         props.tracks &&
