@@ -7,9 +7,6 @@ import { HealthCheck } from "../../models/VideoCall.model";
 import { useClient, useMicrophoneAndCameraTracks } from "../../setting";
 import VideoCall from "../VideoCall";
 
-import { Account } from "src/common/models/Account.model";
-import LocalStorageUtil from "src/utils/LocalStorageUtil";
-
 export interface VideoCallMainScreenProps {
     appId: string;
     token: string;
@@ -23,7 +20,6 @@ const VideoCallMainScreen: React.FC<VideoCallMainScreenProps> = (
     props: VideoCallMainScreenProps
 ) => {
     const { appId, channel, token, healthCheck, uid } = props;
-    const user = LocalStorageUtil.getItem("user") as Account;
 
     const [users, setUsers] = useState<IAgoraRTCRemoteUser[]>([]);
     const [start, setStart] = useState(false);
@@ -127,7 +123,7 @@ const VideoCallMainScreen: React.FC<VideoCallMainScreenProps> = (
                 console.log(error);
             }
         }
-    }, [channel, appId, token, client, ready, tracks, user, uid]);
+    }, [channel, appId, token, client, ready, tracks, uid]);
 
     useEffect(() => {
         // eslint-disable-next-line no-console
