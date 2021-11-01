@@ -1,23 +1,57 @@
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
+import ChartLabel from "./components/ChartLabel";
 import NextAppointment from "./components/NextAppointment";
 import TotalAppointments from "./components/TotalAppointments";
 import UpcomingAppointments from "./components/UpcomingAppointments";
 
-import { Grid, Card, CardHeader, Divider, CardContent } from "@mui/material";
+import DoctorService from "../../containers/DoctorProfile/services/Doctor.service";
+import { Doctor } from "../DoctorProfile/models/Doctor.model";
+import { HealthCheck } from "../HealthCheckList/models/HealthCheck.model";
+import HealthCheckService from "../HealthCheckList/services/HealthCheck.service";
+
+import { Grid, Card, CardHeader, Divider, CardContent, Stack, Typography } from "@mui/material";
+import { Box } from "@mui/system";
 import { Bar, Doughnut, Line } from "react-chartjs-2";
+import LocalStorageUtil from "src/utils/LocalStorageUtil";
 
 const Dashboard: React.FC = () => {
+    const [doctor, setDoctor] = useState<Doctor>();
+    const [healthChecks, setHealthChecks] = useState<HealthCheck[]>([]);
+    const [upcomingAppointments, setUpcomingAppointments] = useState<HealthCheck[]>([]);
+    const [nextAppointment, setNextAppointment] = useState<HealthCheck>();
+    const [completedHealthCheckQuantity, setCompletedHealthCheckQuantity] = useState<number>(0);
+    const [bookedHealthCheckQuantity, setBookedHealthCheckQuantity] = useState<number>(0);
+    const [cancelledHealthCheckQuantity, setCancelledHealthCheckQuantity] = useState<number>(0);
+    const [totalHCInMonth, setTotalHCInMonth] = useState<number>(0);
+    const [completedHCInMonth, setCompletedHCInMonth] = useState<number>(0);
+    const [totalHCEachMonth, setTotalHCEachMonth] = useState<number[]>([]);
+    const [totalHCEachSlot, setTotalHCEachSlot] = useState<number[]>([]);
+
+    const currentMonth = new Date().getMonth();
+
     const doughnutData = {
         datasets: [
             {
-                data: [50, 36],
-                backgroundColor: ["rgba(54, 162, 235, 0.2)", "rgba(255, 99, 132, 0.2)"],
-                borderColor: ["rgba(54, 162, 235, 1)", "rgba(255, 99, 132, 1)"],
+                data: [
+                    completedHealthCheckQuantity,
+                    bookedHealthCheckQuantity,
+                    cancelledHealthCheckQuantity,
+                ],
+                backgroundColor: [
+                    "rgba(75, 192, 192, 0.2)",
+                    "rgba(54, 162, 235, 0.2)",
+                    "rgba(255, 99, 132, 0.2)",
+                ],
+                borderColor: [
+                    "rgba(75, 192, 192, 1)",
+                    "rgba(54, 162, 235, 1)",
+                    "rgba(255, 99, 132, 1)",
+                ],
                 borderWidth: 1,
             },
         ],
-        labels: ["Nam", "Nữ"],
+        labels: ["Thành công", "Chưa tiến hành", "Đã hủy"],
     };
 
     const lineData = {
@@ -25,7 +59,7 @@ const Dashboard: React.FC = () => {
         datasets: [
             {
                 label: "buổi tư vấn",
-                data: [12, 19, 13, 35, 29, 37, 25, 36, 15, 45, 12, 20],
+                data: totalHCEachMonth,
                 fill: false,
                 backgroundColor: "rgb(255, 99, 132)",
                 borderColor: "rgba(255, 99, 132, 0.2)",
@@ -50,7 +84,7 @@ const Dashboard: React.FC = () => {
         datasets: [
             {
                 label: "buổi tư vấn",
-                data: [12, 19, 13, 15, 20, 23, 19, 13, 15, 18, 10],
+                data: totalHCEachSlot,
                 backgroundColor: "rgba(75, 192, 192, 0.2)",
                 borderColor: "rgba(75, 192, 192, 1)",
                 borderWidth: 1,
@@ -63,8 +97,8 @@ const Dashboard: React.FC = () => {
     const doughnutOptions = {
         plugins: {
             legend: {
-                display: true,
-                position: "bottom" as "bottom",
+                display: false,
+                // position: "bottom" as "bottom",
             },
         },
     };
@@ -77,11 +111,119 @@ const Dashboard: React.FC = () => {
         },
     };
 
+    const getDoctorByEmail = useCallback(async () => {
+        try {
+            const user = LocalStorageUtil.getUser();
+            const email = user.email;
+
+            const service = new DoctorService<Doctor>();
+            const response = await service.getDoctorByEmail(email);
+
+            if (response.status === 200) {
+                setDoctor(response.data);
+            }
+        } catch (error) {
+            // eslint-disable-next-line no-console
+            console.log(error);
+        }
+    }, []);
+
+    const init = useCallback(async (doctorId) => {
+        try {
+            const service = new HealthCheckService<HealthCheck>();
+            const response = await service.getAllByDoctorId(doctorId, 100, 1);
+
+            if (response.status === 200) {
+                setHealthChecks(response.data.content);
+            }
+        } catch (error) {
+            // eslint-disable-next-line no-console
+            console.log(error);
+        }
+    }, []);
+
+    const countHealthCheckByStatus = useCallback(() => {
+        let countCompleted = 0;
+        let countBooked = 0;
+        let countCancelled = 0;
+        let upcomingHealthChecks: HealthCheck[] = [];
+
+        healthChecks.forEach((healthCheck) => {
+            if (healthCheck.status === "COMPLETED") {
+                countCompleted++;
+            }
+            if (healthCheck.status === "BOOKED") {
+                countBooked++;
+                upcomingHealthChecks.push(healthCheck);
+            }
+            if (healthCheck.status === "CANCELED") {
+                countCancelled++;
+            }
+        });
+
+        setCompletedHealthCheckQuantity(countCompleted);
+        setBookedHealthCheckQuantity(countBooked);
+        setCancelledHealthCheckQuantity(countCancelled);
+
+        setNextAppointment(upcomingHealthChecks.shift());
+        setUpcomingAppointments(upcomingHealthChecks);
+    }, [healthChecks]);
+
+    const countTotalHealthChecksInCurrentMonth = useCallback(() => {
+        let countTotal = 0;
+        let countCompleted = 0;
+
+        healthChecks.forEach((item) => {
+            const assignedDate = new Date(item.slots[0].assignedDate);
+
+            if (assignedDate.getMonth() === currentMonth) {
+                countTotal++;
+                if (item.status === "COMPLETED") {
+                    countCompleted++;
+                }
+            }
+        });
+
+        setTotalHCInMonth(countTotal);
+        setCompletedHCInMonth(countCompleted);
+    }, [healthChecks, currentMonth]);
+
+    const calDataForLineAndBarChart = useCallback(() => {
+        const lineChartData: number[] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        const barChartData: number[] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+
+        healthChecks.forEach((item) => {
+            const assignedDate = new Date(item.slots[0].assignedDate);
+            lineChartData[assignedDate.getMonth()]++;
+
+            const startTime = +item.slots[0].startTime.slice(0, 2);
+            barChartData[startTime - 8]++;
+        });
+
+        setTotalHCEachMonth(lineChartData);
+        setTotalHCEachSlot(barChartData);
+    }, [healthChecks]);
+
+    useEffect(() => {
+        getDoctorByEmail();
+    }, [getDoctorByEmail]);
+
+    useEffect(() => {
+        // getDoctorByEmail();
+        init(doctor?.id);
+    }, [init, doctor]);
+
+    useEffect(() => {
+        countHealthCheckByStatus();
+        countTotalHealthChecksInCurrentMonth();
+        calDataForLineAndBarChart();
+    }, [countHealthCheckByStatus, countTotalHealthChecksInCurrentMonth, calDataForLineAndBarChart]);
+
     return (
         <Grid container spacing={2}>
             <Grid container item lg={8} spacing={2}>
                 <Grid item lg={6}>
-                    <NextAppointment />
+                    <NextAppointment healthCheck={nextAppointment} />
                 </Grid>
                 {/* Statistic of the number of appointments */}
                 <Grid item lg={3}>
@@ -91,16 +233,50 @@ const Dashboard: React.FC = () => {
                             titleTypographyProps={{ variant: "h6" }}
                         />
                         <CardContent>
-                            <Doughnut data={doughnutData} options={doughnutOptions} />
+                            {healthChecks.length === 0 ? (
+                                <Typography component="div" align="center">
+                                    <Box sx={{ p: 1, fontSize: 18 }}>Chưa có dữ liệu</Box>
+                                </Typography>
+                            ) : (
+                                <React.Fragment>
+                                    <Doughnut data={doughnutData} options={doughnutOptions} />
+                                    <Stack spacing={1} sx={{ pt: 3 }}>
+                                        <ChartLabel
+                                            height={15}
+                                            width={45}
+                                            backgroundColor="rgba(75, 192, 192, 0.2)"
+                                            border="1px solid rgba(75, 192, 192, 1)"
+                                            lableText="Đã thành công"
+                                        />
+                                        <ChartLabel
+                                            height={15}
+                                            width={45}
+                                            backgroundColor="rgba(54, 162, 235, 0.2)"
+                                            border="1px solid rgba(54, 162, 235, 1)"
+                                            lableText="Chưa tiến hành"
+                                        />
+                                        <ChartLabel
+                                            height={15}
+                                            width={45}
+                                            backgroundColor="rgba(255, 99, 132, 0.2)"
+                                            border="1px solid rgba(255, 99, 132, 1)"
+                                            lableText="Đã hủy"
+                                        />
+                                    </Stack>
+                                </React.Fragment>
+                            )}
                         </CardContent>
                     </Card>
                 </Grid>
                 <Grid container item lg={3} spacing={2}>
                     <Grid item xs={12}>
-                        <TotalAppointments title="Trong tháng 10" value={60} />
+                        <TotalAppointments
+                            title={`Trong tháng ${currentMonth + 1}`}
+                            value={totalHCInMonth}
+                        />
                     </Grid>
                     <Grid item xs={12}>
-                        <TotalAppointments title="Đã hoàn thành" value={45} />
+                        <TotalAppointments title="Đã hoàn thành" value={completedHCInMonth} />
                     </Grid>
                 </Grid>
                 <Grid item lg={6}>
@@ -129,7 +305,7 @@ const Dashboard: React.FC = () => {
                 </Grid>
             </Grid>
             <Grid item lg={4}>
-                <UpcomingAppointments />
+                <UpcomingAppointments healthChecks={upcomingAppointments} />
             </Grid>
         </Grid>
     );

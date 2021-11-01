@@ -15,14 +15,14 @@ export type HealthCheck = {
     createdTime: string;
     canceledTime: string;
     patient: Patient;
-    healthCheckDiseases: HealthCheckDiseases[];
-    prescriptions: Prescriptions[];
-    slot: Slots[];
-    symptomHealthChecks: SymptomHealthChecks[];
+    healthCheckDiseases: HealthCheckDiseas[];
+    prescriptions: Prescription[];
+    slots: Slot[];
+    symptomHealthChecks: SymptomHealthCheck[];
     status: string;
 };
 
-export type HealthCheckDiseases = {
+export type HealthCheckDiseas = {
     id?: number;
     healthCheckId?: number;
     diseaseId?: number;
@@ -46,7 +46,7 @@ export type DiseaseGroup = {
     isActive: boolean;
 };
 
-export type Prescriptions = {
+export type Prescription = {
     id?: number;
     healthCheckId: number;
     startDate: string;
@@ -79,7 +79,7 @@ export type DrugType = {
     isActive: boolean;
 };
 
-export type Slots = {
+export type Slot = {
     id?: number;
     assignedDate: string;
     doctorId?: string;
@@ -89,7 +89,7 @@ export type Slots = {
     doctor: Doctor;
 };
 
-export type SymptomHealthChecks = {
+export type SymptomHealthCheck = {
     id?: number;
     symptomId?: number;
     healthCheckId?: number;
