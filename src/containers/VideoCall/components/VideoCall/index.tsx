@@ -12,6 +12,7 @@ import { NotificationCM } from "src/components/AppBar";
 import CustomizeAutocomplete from "src/components/CustomizeAutocomplete";
 import useSnackbar from "src/components/Snackbar/useSnackbar";
 
+import useChangeStatusHealthCheck from "../../hooks/useChangeStatusHealthCheck";
 import useGetDoctorListByEmail from "../../hooks/useGetDoctorListByEmail";
 import useUpdateHealthCheck from "../../hooks/useUpdateHealthCheck";
 import { HealthCheck } from "../../models/VideoCall.model";
@@ -180,8 +181,18 @@ export const VideoCall: React.FC<VideoCallProps> = (props: VideoCallProps) => {
             setValue(`prescriptions.${number}.drugId`, Number(value["id"]));
         }
     };
+    const { mutate: changeStatus } = useChangeStatusHealthCheck();
 
-    const { mutate } = useUpdateHealthCheck();
+    const endCall = () => {
+        leaveChannel();
+        changeStatus({
+            id: props.healthCheck?.id || 0,
+            reasonCancel: "",
+            status: "COMPLETED",
+        });
+    };
+
+    const { mutate } = useUpdateHealthCheck(endCall);
 
     const submitHandle: SubmitHandler<IUpdateHealthCheck> = (data: IUpdateHealthCheck) => {
         // eslint-disable-next-line no-console
@@ -287,10 +298,33 @@ export const VideoCall: React.FC<VideoCallProps> = (props: VideoCallProps) => {
             <React.Fragment>
                 <Grid container sx={{ mt: 3 }}>
                     <Grid item xs={10}>
-                        <TextField disabled value={window.location.href} size="small" fullWidth />
+                        <TextField
+                            disabled
+                            value={window.location.host + "/guest/" + (props.healthCheck?.id || 0)}
+                            size="small"
+                            fullWidth
+                        />
                     </Grid>
                     <Grid item xs={2} display="flex" alignItems="center" justifyContent="center">
-                        <IconButton>
+                        <IconButton
+                            onClick={() => {
+                                navigator.clipboard.writeText(
+                                    window.location.host + "/guest/" + (props.healthCheck?.id || 0)
+                                );
+                                showSnackbar(
+                                    {
+                                        children: "Lưu thành công!",
+                                        severity: "info",
+                                    },
+                                    {
+                                        anchorOrigin: {
+                                            horizontal: "left",
+                                            vertical: "bottom",
+                                        },
+                                    }
+                                );
+                            }}
+                        >
                             <ContentCopy />
                         </IconButton>
                     </Grid>

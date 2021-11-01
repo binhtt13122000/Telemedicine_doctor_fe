@@ -4,7 +4,7 @@ import axios from "src/axios";
 
 import { IUpdateHealthCheck } from "../components/VideoCall/IUpdateHealthCheck.model";
 
-const useUpdateHealthCheck = () => {
+const useUpdateHealthCheck = (endCall: () => void) => {
     const result = useMutation<unknown, Error, IUpdateHealthCheck, unknown>(
         ["useAcceptRequest"],
         async (variable) => {
@@ -15,7 +15,9 @@ const useUpdateHealthCheck = () => {
             return result.data;
         },
         {
-            onSuccess: () => {},
+            onSuccess: () => {
+                endCall();
+            },
         }
     );
     return result;

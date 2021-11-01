@@ -37,11 +37,11 @@ export const publicRoutes = [
         name: "waiting-screen",
         component: WaitingScreen,
     },
-    {
-        path: "/guest/:id",
-        name: "Guest",
-        component: Guest,
-    },
+    // {
+    //     path: "/guest/:id",
+    //     name: "Guest",
+    //     component: Guest,
+    // },
 ];
 export const privateRoutes = [
     {
@@ -90,6 +90,7 @@ const RouteComponent = () => {
                     component={route.component}
                 />
             ))}
+            <Route path="/guest/:id?" exact component={Guest}></Route>
             <Route path="/call/:path?" exact>
                 {privateWithNoLayouts.map((route) => (
                     <PrivateRoute
