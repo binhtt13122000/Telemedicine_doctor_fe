@@ -1,41 +1,37 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import moment from "moment";
 
+import { Doctor } from "../../DoctorProfile/models/Doctor.model";
 import useGetAccount from "../hooks/useGetAccount";
 import { Account, AccountUpdate } from "../models/Account.model";
 import AccountService from "../services/Account.service";
+import DoctorService from "../services/Doctor.service";
 import ProfileForm from "./ProfileForm";
 
-import {
-    Avatar,
-    Card,
-    CircularProgress,
-    Icon,
-    IconButton,
-    Rating,
-    Stack,
-    Typography,
-} from "@mui/material";
+import { Avatar, Card, Icon, IconButton, Rating, Stack, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import LocalStorageUtil from "src/utils/LocalStorageUtil";
 
-export interface IProfile {
-    email?: string;
-}
-
 const Profile: React.FC = () => {
     const user = LocalStorageUtil.getItem("user") as Account;
-    const { data, isLoading, isError } = useGetAccount(user.email);
-    const [value] = React.useState<number | null>(4);
+    const { data } = useGetAccount(user.email);
+    const [value, setValue] = React.useState<number | null>(4);
     const [open, setOpen] = useState<boolean>(false);
     const [account, setAccount] = useState<Account>();
-    if (isError) {
-        return <div>error</div>;
-    }
-    if (isLoading) {
-        return <CircularProgress />;
-    }
+
+    const fetchDoctor = async () => {
+        try {
+            let doctorService = new DoctorService<Doctor>();
+            const response = await doctorService.getDoctorByEmail(user.email);
+            if (response.status === 200) {
+                // setDoctor(response.data);
+                const doctorRating: Doctor = response.data;
+                setValue(doctorRating.rating);
+            }
+        } catch (error) {}
+    };
+
     const handleOpenModal = () => {
         setOpen(true);
         data && setAccount(data);
@@ -72,6 +68,11 @@ const Profile: React.FC = () => {
             console.log(e);
         }
     };
+
+    useEffect(() => {
+        fetchDoctor();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const handleClose = (
         type: "SAVE" | "CANCEL",
@@ -124,7 +125,7 @@ const Profile: React.FC = () => {
                             ml: 17,
                         }}
                     >
-                        <Rating name="simple-controlled" value={value} />
+                        <Rating name="simple-controlled" disabled value={value} />
                     </Box>
                 </Box>
                 <Box sx={{ mt: 2 }} />
