@@ -24,7 +24,7 @@ export interface VideoCallWithLayout2 {
     };
     anotherTrackVideos: Record<string, boolean>;
     anotherTrackAudios: Record<string, boolean>;
-    healthCheck: HealthCheck;
+    healthCheck?: HealthCheck;
 }
 const VideoCallWithLayout2: React.FC<VideoCallWithLayout2> = (props: VideoCallWithLayout2) => {
     const { users, tracks, trackState, anotherTrackVideos, anotherTrackAudios, healthCheck } =

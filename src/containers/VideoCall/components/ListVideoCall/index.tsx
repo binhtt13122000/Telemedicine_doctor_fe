@@ -27,7 +27,7 @@ export interface ListVideoCallProps {
     };
     anotherTrackVideos: Record<string, boolean>;
     anotherTrackAudios: Record<string, boolean>;
-    healthCheck: HealthCheck;
+    healthCheck?: HealthCheck;
     uid?: number;
     userNames?: DocumentData;
 }

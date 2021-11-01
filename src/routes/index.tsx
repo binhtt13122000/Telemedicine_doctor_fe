@@ -10,6 +10,7 @@ import DashboardSchedule from "src/containers/DashboardSchedule";
 import DashboardVer2 from "src/containers/DashboardVer2";
 import DoctorForm from "src/containers/DoctorForm";
 import DoctorProfile from "src/containers/DoctorProfile";
+import Guest from "src/containers/Guest";
 import HealthCheckListing from "src/containers/HealthCheckList";
 import Layout from "src/containers/Layout";
 import Login from "src/containers/Login";
@@ -35,6 +36,11 @@ export const publicRoutes = [
         path: "/waiting-screen",
         name: "waiting-screen",
         component: WaitingScreen,
+    },
+    {
+        path: "/guest/:id",
+        name: "Guest",
+        component: Guest,
     },
 ];
 export const privateRoutes = [

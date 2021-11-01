@@ -63,7 +63,7 @@ export interface VideoCallProps {
     users: IAgoraRTCRemoteUser[];
     ready: boolean;
     tracks: [IMicrophoneAudioTrack, ICameraVideoTrack] | null;
-    healthCheck: HealthCheck;
+    healthCheck?: HealthCheck;
     anotherTrackVideos: Record<string, boolean>;
     anotherTrackAudios: Record<string, boolean>;
     uid?: number;
@@ -196,7 +196,7 @@ export const VideoCall: React.FC<VideoCallProps> = (props: VideoCallProps) => {
                         Chiều cao: {props.users?.length}
                     </Grid>
                     <Grid item xs={8}>
-                        {props.healthCheck?.height / 100 || 0}m
+                        {(props.healthCheck?.height || 0) / 100 || 0}m
                     </Grid>
                 </Grid>
                 <Grid container>
@@ -334,7 +334,7 @@ export const VideoCall: React.FC<VideoCallProps> = (props: VideoCallProps) => {
                                                 Chiều cao:
                                             </Grid>
                                             <Grid item xs={8}>
-                                                {props.healthCheck?.height / 100 || 0}m
+                                                {(props.healthCheck?.height || 0) / 100 || 0}m
                                             </Grid>
                                         </Grid>
                                         <Grid container>

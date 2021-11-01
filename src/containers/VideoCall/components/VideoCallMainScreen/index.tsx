@@ -14,7 +14,7 @@ export interface VideoCallMainScreenProps {
     appId: string;
     token: string;
     channel: string;
-    healthCheck: HealthCheck;
+    healthCheck?: HealthCheck;
     uid?: number;
     users?: DocumentData;
 }
