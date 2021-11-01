@@ -22,7 +22,7 @@ const SnackbarProvider: React.FC = ({ children }) => {
     const showSnackbar = (
         newAlert: AlertBaseProps,
         snackbarBase?: SnackbarBaseProps,
-        time: number | undefined = undefined
+        time: number | undefined = 5000
     ) => {
         setAlert({
             variant: "filled",

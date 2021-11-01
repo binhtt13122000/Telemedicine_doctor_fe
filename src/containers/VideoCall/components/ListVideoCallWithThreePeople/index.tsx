@@ -25,7 +25,7 @@ export interface ListVideoCallProps {
     };
     anotherTrackVideos: Record<string, boolean>;
     anotherTrackAudios: Record<string, boolean>;
-    healthCheck: HealthCheck;
+    healthCheck?: HealthCheck;
 }
 
 const ListVideoCallWithThreePeople: React.FC<ListVideoCallProps> = (props: ListVideoCallProps) => {

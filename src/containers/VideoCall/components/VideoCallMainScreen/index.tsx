@@ -1,26 +1,25 @@
 import React, { useEffect, useState } from "react";
 
 import { IAgoraRTCRemoteUser } from "agora-rtc-react";
+import { DocumentData } from "firebase/firestore";
 
 import { HealthCheck } from "../../models/VideoCall.model";
 import { useClient, useMicrophoneAndCameraTracks } from "../../setting";
 import VideoCall from "../VideoCall";
 
-import { Account } from "src/common/models/Account.model";
-import LocalStorageUtil from "src/utils/LocalStorageUtil";
-
 export interface VideoCallMainScreenProps {
     appId: string;
     token: string;
     channel: string;
-    healthCheck: HealthCheck;
+    healthCheck?: HealthCheck;
+    uid?: number;
+    users?: DocumentData;
 }
 
 const VideoCallMainScreen: React.FC<VideoCallMainScreenProps> = (
     props: VideoCallMainScreenProps
 ) => {
-    const { appId, channel, token, healthCheck } = props;
-    const user = LocalStorageUtil.getItem("user") as Account;
+    const { appId, channel, token, healthCheck, uid } = props;
 
     const [users, setUsers] = useState<IAgoraRTCRemoteUser[]>([]);
     const [start, setStart] = useState(false);
@@ -106,7 +105,7 @@ const VideoCallMainScreen: React.FC<VideoCallMainScreenProps> = (
             });
 
             try {
-                await client.join(appId, name, token, user.id);
+                await client.join(appId, name, token, uid || null);
             } catch (error) {
                 // eslint-disable-next-line no-console
                 console.log("error");
@@ -124,7 +123,7 @@ const VideoCallMainScreen: React.FC<VideoCallMainScreenProps> = (
                 console.log(error);
             }
         }
-    }, [channel, appId, token, client, ready, tracks, user]);
+    }, [channel, appId, token, client, ready, tracks, uid]);
 
     useEffect(() => {
         // eslint-disable-next-line no-console
@@ -157,6 +156,8 @@ const VideoCallMainScreen: React.FC<VideoCallMainScreenProps> = (
                 healthCheck={healthCheck}
                 anotherTrackVideos={anotherTrackVideos}
                 anotherTrackAudios={anotherTrackAudios}
+                uid={uid}
+                userNames={props.users}
             />
         </React.Fragment>
     );

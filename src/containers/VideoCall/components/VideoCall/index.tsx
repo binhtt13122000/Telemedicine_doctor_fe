@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { IMicrophoneAudioTrack, ICameraVideoTrack, IAgoraRTCRemoteUser } from "agora-rtc-react";
 import { AxiosResponse } from "axios";
 import moment from "moment";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { useHistory } from "react-router";
 import axios from "src/axios";
 
@@ -11,13 +12,17 @@ import { NotificationCM } from "src/components/AppBar";
 import CustomizeAutocomplete from "src/components/CustomizeAutocomplete";
 import useSnackbar from "src/components/Snackbar/useSnackbar";
 
+import useChangeStatusHealthCheck from "../../hooks/useChangeStatusHealthCheck";
 import useGetDoctorListByEmail from "../../hooks/useGetDoctorListByEmail";
+import useUpdateHealthCheck from "../../hooks/useUpdateHealthCheck";
 import { HealthCheck } from "../../models/VideoCall.model";
 import { useClient } from "../../setting";
 import ListVideoCall from "../ListVideoCall";
 import ListVideoCallWithThreePeople from "../ListVideoCallWithThreePeople";
 import VideoCallWithLayout2 from "../VideoCallWithLayout2";
+import { IDrug, IUpdateHealthCheck } from "./IUpdateHealthCheck.model";
 
+import { DocumentData } from "@firebase/firestore";
 // import VideoCallWithLayout2 from "../VideoCallWithLayout2";
 // import VideoCallWithLayout3 from "../VideoCallWithLayout3";
 import {
@@ -25,6 +30,7 @@ import {
     AddCircle,
     BrandingWatermark,
     CalendarViewWeek,
+    Cancel,
     ContentCopy,
     DashboardOutlined,
     InfoOutlined,
@@ -62,9 +68,11 @@ export interface VideoCallProps {
     users: IAgoraRTCRemoteUser[];
     ready: boolean;
     tracks: [IMicrophoneAudioTrack, ICameraVideoTrack] | null;
-    healthCheck: HealthCheck;
+    healthCheck?: HealthCheck;
     anotherTrackVideos: Record<string, boolean>;
     anotherTrackAudios: Record<string, boolean>;
+    uid?: number;
+    userNames?: DocumentData;
 }
 
 const steps = [
@@ -80,6 +88,8 @@ export const VideoCall: React.FC<VideoCallProps> = (props: VideoCallProps) => {
         checked: false,
         type: "",
     });
+    const [drugs, setDrugs] = useState<IDrug[]>([]);
+    const [number, setNumber] = useState(0);
     const [search, setSearch] = useState("");
 
     const showSnackbar = useSnackbar();
@@ -89,6 +99,15 @@ export const VideoCall: React.FC<VideoCallProps> = (props: VideoCallProps) => {
 
     const [activeStep, setActiveStep] = React.useState(0);
 
+    const { register, handleSubmit, setValue, clearErrors, getValues } =
+        useForm<IUpdateHealthCheck>({});
+
+    const add = () => {
+        drugs.push(getValues(`prescriptions.${number}`));
+        setDrugs(drugs);
+        setNumber((prev) => prev + 1);
+    };
+
     const handleNext = () => {
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
     };
@@ -96,6 +115,8 @@ export const VideoCall: React.FC<VideoCallProps> = (props: VideoCallProps) => {
     const handleBack = () => {
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
     };
+
+    const { ref: diseaseRef, ...diseaseRefProps } = register("healthCheckDiseases");
 
     const history = useHistory();
 
@@ -138,6 +159,52 @@ export const VideoCall: React.FC<VideoCallProps> = (props: VideoCallProps) => {
             // eslint-disable-next-line no-console
             console.log(ex);
         }
+    };
+
+    const changeValue = (value: number[] | number) => {
+        if (typeof value !== "number") {
+            setValue(
+                "healthCheckDiseases",
+                value.map((x) => {
+                    return {
+                        diseaseId: x,
+                    };
+                })
+            );
+            clearErrors("healthCheckDiseases");
+        }
+    };
+
+    const changeFullValue = (value: Record<string, string> | Record<string, string>[]) => {
+        if (!Array.isArray(value)) {
+            setValue(`prescriptions.${number}.drugName`, value["name"]);
+            setValue(`prescriptions.${number}.drugId`, Number(value["id"]));
+        }
+    };
+    const { mutate: changeStatus } = useChangeStatusHealthCheck();
+
+    const endCall = () => {
+        leaveChannel();
+        changeStatus({
+            id: props.healthCheck?.id || 0,
+            reasonCancel: "",
+            status: "COMPLETED",
+        });
+    };
+
+    const { mutate } = useUpdateHealthCheck(endCall);
+
+    const submitHandle: SubmitHandler<IUpdateHealthCheck> = (data: IUpdateHealthCheck) => {
+        // eslint-disable-next-line no-console
+        console.log(data);
+        data.prescriptions.splice(-1);
+
+        mutate({
+            ...data,
+            id: props.healthCheck?.id || 0,
+            rating: 0,
+            comment: "",
+        });
     };
 
     const mute = async (type: "audio" | "video") => {
@@ -190,10 +257,10 @@ export const VideoCall: React.FC<VideoCallProps> = (props: VideoCallProps) => {
                 </Grid>
                 <Grid container>
                     <Grid item xs={4}>
-                        Chiều cao: {props.users?.length}
+                        Chiều cao:
                     </Grid>
                     <Grid item xs={8}>
-                        {props.healthCheck?.height / 100 || 0}m
+                        {(props.healthCheck?.height || 0) / 100 || 0}m
                     </Grid>
                 </Grid>
                 <Grid container>
@@ -231,10 +298,33 @@ export const VideoCall: React.FC<VideoCallProps> = (props: VideoCallProps) => {
             <React.Fragment>
                 <Grid container sx={{ mt: 3 }}>
                     <Grid item xs={10}>
-                        <TextField disabled value={window.location.href} size="small" fullWidth />
+                        <TextField
+                            disabled
+                            value={window.location.host + "/guest/" + (props.healthCheck?.id || 0)}
+                            size="small"
+                            fullWidth
+                        />
                     </Grid>
                     <Grid item xs={2} display="flex" alignItems="center" justifyContent="center">
-                        <IconButton>
+                        <IconButton
+                            onClick={() => {
+                                navigator.clipboard.writeText(
+                                    window.location.host + "/guest/" + (props.healthCheck?.id || 0)
+                                );
+                                showSnackbar(
+                                    {
+                                        children: "Lưu thành công!",
+                                        severity: "info",
+                                    },
+                                    {
+                                        anchorOrigin: {
+                                            horizontal: "left",
+                                            vertical: "bottom",
+                                        },
+                                    }
+                                );
+                            }}
+                        >
                             <ContentCopy />
                         </IconButton>
                     </Grid>
@@ -302,172 +392,276 @@ export const VideoCall: React.FC<VideoCallProps> = (props: VideoCallProps) => {
     const dashboard = () => {
         return (
             <React.Fragment>
-                <Stepper activeStep={activeStep} orientation="vertical">
-                    {steps.map((step, index) => (
-                        <Step key={step.label}>
-                            <StepLabel>{step.label}</StepLabel>
-                            <StepContent>
-                                {index === 0 && (
-                                    <React.Fragment>
-                                        <Typography variant="h6">Chẩn đoán bệnh</Typography>
-                                        <Grid container>
-                                            <Grid item xs={4}>
-                                                Ngày hiện tại:
+                <form onSubmit={handleSubmit(submitHandle)}>
+                    <Stepper activeStep={activeStep} orientation="vertical">
+                        {steps.map((step, index) => (
+                            <Step key={step.label}>
+                                <StepLabel>{step.label}</StepLabel>
+                                <StepContent sx={{ overflow: "auto" }}>
+                                    {index === 0 && (
+                                        <React.Fragment>
+                                            <Typography variant="h6">Chẩn đoán bệnh</Typography>
+                                            <Grid container>
+                                                <Grid item xs={4}>
+                                                    Ngày hiện tại:
+                                                </Grid>
+                                                <Grid item xs={8}>
+                                                    {moment(new Date()).format("DD/MM/YYYY")}
+                                                </Grid>
                                             </Grid>
-                                            <Grid item xs={8}>
-                                                {moment(new Date()).format("DD/MM/YYYY")}
+                                            <Grid container>
+                                                <Grid item xs={4}>
+                                                    Bệnh nhân:
+                                                </Grid>
+                                                <Grid item xs={8}>
+                                                    {props.healthCheck?.patient?.name}
+                                                </Grid>
                                             </Grid>
-                                        </Grid>
-                                        <Grid container>
-                                            <Grid item xs={4}>
-                                                Bệnh nhân:
+                                            <Grid container>
+                                                <Grid item xs={4}>
+                                                    Chiều cao:
+                                                </Grid>
+                                                <Grid item xs={8}>
+                                                    {(props.healthCheck?.height || 0) / 100 || 0}m
+                                                </Grid>
                                             </Grid>
-                                            <Grid item xs={8}>
-                                                {props.healthCheck?.patient?.name}
+                                            <Grid container>
+                                                <Grid item xs={4}>
+                                                    Cân nặng:
+                                                </Grid>
+                                                <Grid item xs={8}>
+                                                    {props.healthCheck?.weight || 0}kg
+                                                </Grid>
                                             </Grid>
-                                        </Grid>
-                                        <Grid container>
-                                            <Grid item xs={4}>
-                                                Chiều cao:
+                                            <Typography variant="subtitle1" sx={{ marginTop: 4 }}>
+                                                Chẩn đoán:
+                                            </Typography>
+                                            <CustomizeAutocomplete
+                                                query="/diseases"
+                                                field="name"
+                                                searchField="name"
+                                                limit={10}
+                                                multiple
+                                                required
+                                                // errors={errors.drugTypeId}
+                                                // errorMessage={"Phân loại thuốc không được trống"}
+                                                inputRef={diseaseRef}
+                                                {...diseaseRefProps}
+                                                changeValue={changeValue}
+                                            />
+                                            <Typography variant="subtitle1" sx={{ marginTop: 4 }}>
+                                                Lời khuyên của bác sĩ:
+                                            </Typography>
+                                            <TextField
+                                                placeholder="Lời khuyên dành cho bệnh nhân"
+                                                fullWidth
+                                                multiline
+                                                minRows={3}
+                                                {...register("advice")}
+                                            />
+                                        </React.Fragment>
+                                    )}
+                                    {index === 1 && (
+                                        <React.Fragment>
+                                            <Typography variant="h6">Đơn thuốc</Typography>
+                                            {drugs.map((x) => {
+                                                return (
+                                                    <Box
+                                                        sx={{ mt: 1 }}
+                                                        key={x.drugId}
+                                                        width="100%"
+                                                        minHeight={70}
+                                                    >
+                                                        <Card
+                                                            elevation={7}
+                                                            sx={{
+                                                                minHeight: 70,
+                                                                display: "flex",
+                                                                alignItems: "center",
+                                                            }}
+                                                        >
+                                                            <Grid container alignItems="center">
+                                                                <Grid item sm={10}>
+                                                                    <Box sx={{ ml: 2 }}>
+                                                                        <Typography>
+                                                                            {x.drugName}
+                                                                        </Typography>
+                                                                        <Typography variant="caption">
+                                                                            {moment(
+                                                                                x.startDate
+                                                                            ).format("DD/MM/YYYY")}
+                                                                            -
+                                                                            {moment(
+                                                                                x.endDate
+                                                                            ).format("DD/MM/YYYY")}
+                                                                            )
+                                                                        </Typography>
+                                                                        <Divider variant="fullWidth"></Divider>
+                                                                        <Grid container>
+                                                                            <Grid item xs={4}>
+                                                                                Sáng:{" "}
+                                                                                {x.morningQuantity}
+                                                                            </Grid>
+                                                                            <Grid item xs={4}>
+                                                                                Trưa:{" "}
+                                                                                {
+                                                                                    x.afternoonQuantity
+                                                                                }
+                                                                            </Grid>
+                                                                            <Grid item xs={4}>
+                                                                                Chiều:{" "}
+                                                                                {x.eveningQuantity}
+                                                                            </Grid>
+                                                                        </Grid>
+                                                                    </Box>
+                                                                </Grid>
+                                                                <Grid
+                                                                    item
+                                                                    display="flex"
+                                                                    justifyContent="center"
+                                                                    alignItems="center"
+                                                                    sm={2}
+                                                                >
+                                                                    <Tooltip title="Xóa">
+                                                                        <IconButton>
+                                                                            <Cancel color="error" />
+                                                                        </IconButton>
+                                                                    </Tooltip>
+                                                                </Grid>
+                                                            </Grid>
+                                                        </Card>
+                                                    </Box>
+                                                );
+                                            })}
+                                            <Button
+                                                sx={{ my: 2 }}
+                                                variant="contained"
+                                                endIcon={<Add />}
+                                                onClick={() => add()}
+                                            >
+                                                THÊM
+                                            </Button>
+                                            <Divider></Divider>
+                                            <Grid container width="100%" sx={{ mb: 1 }}>
+                                                <Grid item xs={12}>
+                                                    <CustomizeAutocomplete
+                                                        query="/drugs"
+                                                        field="name"
+                                                        searchField="name"
+                                                        limit={10}
+                                                        fullField
+                                                        changeFullValue={changeFullValue}
+                                                        changeValue={() => {}}
+                                                        label="Tên thuốc"
+                                                        size="small"
+                                                    />
+                                                </Grid>
                                             </Grid>
-                                            <Grid item xs={8}>
-                                                {props.healthCheck?.height / 100 || 0}m
+                                            <Grid container width="100%" spacing={1} sx={{ mb: 1 }}>
+                                                <Grid item xs={12}>
+                                                    <TextField
+                                                        size="small"
+                                                        fullWidth
+                                                        type="date"
+                                                        {...register(
+                                                            `prescriptions.${number}.startDate`
+                                                        )}
+                                                    />
+                                                </Grid>
+                                                <Grid item xs={12}>
+                                                    <TextField
+                                                        size="small"
+                                                        fullWidth
+                                                        type="date"
+                                                        {...register(
+                                                            `prescriptions.${number}.endDate`
+                                                        )}
+                                                    />
+                                                </Grid>
                                             </Grid>
-                                        </Grid>
-                                        <Grid container>
-                                            <Grid item xs={4}>
-                                                Cân nặng:
+                                            <Grid container width="100%" spacing={1}>
+                                                <Grid item xs={4}>
+                                                    <TextField
+                                                        size="small"
+                                                        type="number"
+                                                        label="Sáng"
+                                                        fullWidth
+                                                        {...register(
+                                                            `prescriptions.${number}.morningQuantity`
+                                                        )}
+                                                    />
+                                                </Grid>
+                                                <Grid item xs={4}>
+                                                    <TextField
+                                                        size="small"
+                                                        type="number"
+                                                        label="Trưa"
+                                                        fullWidth
+                                                        {...register(
+                                                            `prescriptions.${number}.afternoonQuantity`
+                                                        )}
+                                                    />
+                                                </Grid>
+                                                <Grid item xs={4}>
+                                                    <TextField
+                                                        size="small"
+                                                        type="number"
+                                                        label="Chiều"
+                                                        fullWidth
+                                                        {...register(
+                                                            `prescriptions.${number}.eveningQuantity`
+                                                        )}
+                                                    />
+                                                </Grid>
                                             </Grid>
-                                            <Grid item xs={8}>
-                                                {props.healthCheck?.weight || 0}kg
+                                            <Grid container width="100%" sx={{ my: 1 }}>
+                                                <Grid item xs={12}>
+                                                    <TextField
+                                                        size="small"
+                                                        type="number"
+                                                        label="Ghi chú"
+                                                        fullWidth
+                                                        multiline
+                                                        minRows={2}
+                                                        {...register(
+                                                            `prescriptions.${number}.description`
+                                                        )}
+                                                    />
+                                                </Grid>
                                             </Grid>
-                                        </Grid>
-                                        <Typography variant="subtitle1" sx={{ marginTop: 4 }}>
-                                            Chẩn đoán:
-                                        </Typography>
-                                        <CustomizeAutocomplete
-                                            query="/diseases"
-                                            field="name"
-                                            searchField="name"
-                                            limit={10}
-                                            multiple
-                                            // errors={errors.drugTypeId}
-                                            // errorMessage={"Phân loại thuốc không được trống"}
-                                            // inputRef={drugTypeIdRef}
-                                            // {...drugTypeIdRefProps}
-                                            changeValue={() => {}}
-                                        />
-                                        <Typography variant="subtitle1" sx={{ marginTop: 4 }}>
-                                            Lời khuyên của bác sĩ:
-                                        </Typography>
-                                        <TextField
-                                            placeholder="Lời khuyên dành cho bệnh nhân"
-                                            fullWidth
-                                            multiline
-                                            minRows={3}
-                                        />
-                                    </React.Fragment>
-                                )}
-                                {index === 1 && (
-                                    <React.Fragment>
-                                        <Typography variant="h6">Đơn thuốc</Typography>
+                                        </React.Fragment>
+                                    )}
+                                    <Box sx={{ mb: 0, display: "flex" }}>
+                                        {index === steps.length - 1 ? (
+                                            <Button
+                                                type="submit"
+                                                variant="contained"
+                                                sx={{ mt: 1, mr: 1 }}
+                                            >
+                                                Hoàn thành
+                                            </Button>
+                                        ) : (
+                                            <Button
+                                                variant="contained"
+                                                onClick={handleNext}
+                                                sx={{ mt: 1, mr: 1 }}
+                                            >
+                                                Tiếp theo
+                                            </Button>
+                                        )}
                                         <Button
-                                            sx={{ my: 2 }}
-                                            variant="contained"
-                                            endIcon={<Add />}
+                                            disabled={index === 0}
+                                            onClick={handleBack}
+                                            sx={{ mt: 1, mr: 1 }}
                                         >
-                                            THÊM
+                                            Trở lại
                                         </Button>
-                                        <Divider></Divider>
-                                        <Grid container width="100%" sx={{ mb: 1 }}>
-                                            <Grid item xs={12}>
-                                                <CustomizeAutocomplete
-                                                    query="/drugs"
-                                                    field="name"
-                                                    searchField="name"
-                                                    limit={10}
-                                                    changeValue={() => {}}
-                                                    label="Tên thuốc"
-                                                    size="small"
-                                                />
-                                            </Grid>
-                                        </Grid>
-                                        <Grid container width="100%" spacing={1} sx={{ mb: 1 }}>
-                                            <Grid item xs={6}>
-                                                <TextField
-                                                    size="small"
-                                                    label="Ngày bắt đầu"
-                                                    fullWidth
-                                                />
-                                            </Grid>
-                                            <Grid item xs={6}>
-                                                <TextField
-                                                    size="small"
-                                                    label="Ngày kết thúc"
-                                                    fullWidth
-                                                />
-                                            </Grid>
-                                        </Grid>
-                                        <Grid container width="100%" spacing={1}>
-                                            <Grid item xs={4}>
-                                                <TextField
-                                                    size="small"
-                                                    type="number"
-                                                    label="Sáng"
-                                                    fullWidth
-                                                />
-                                            </Grid>
-                                            <Grid item xs={4}>
-                                                <TextField
-                                                    size="small"
-                                                    type="number"
-                                                    label="Trưa"
-                                                    fullWidth
-                                                />
-                                            </Grid>
-                                            <Grid item xs={4}>
-                                                <TextField
-                                                    size="small"
-                                                    type="number"
-                                                    label="Chiều"
-                                                    fullWidth
-                                                />
-                                            </Grid>
-                                        </Grid>
-                                        <Grid container width="100%" sx={{ my: 1 }}>
-                                            <Grid item xs={12}>
-                                                <TextField
-                                                    size="small"
-                                                    type="number"
-                                                    label="Ghi chú"
-                                                    fullWidth
-                                                    multiline
-                                                    minRows={2}
-                                                />
-                                            </Grid>
-                                        </Grid>
-                                    </React.Fragment>
-                                )}
-                                <Box sx={{ mb: 0, display: "flex" }}>
-                                    <Button
-                                        variant="contained"
-                                        onClick={handleNext}
-                                        sx={{ mt: 1, mr: 1 }}
-                                    >
-                                        {index === steps.length - 1 ? "Hoàn thành" : "Tiếp theo"}
-                                    </Button>
-                                    <Button
-                                        disabled={index === 0}
-                                        onClick={handleBack}
-                                        sx={{ mt: 1, mr: 1 }}
-                                    >
-                                        Trở lại
-                                    </Button>
-                                </Box>
-                            </StepContent>
-                        </Step>
-                    ))}
-                </Stepper>
+                                    </Box>
+                                </StepContent>
+                            </Step>
+                        ))}
+                    </Stepper>
+                </form>
             </React.Fragment>
         );
     };
@@ -553,6 +747,8 @@ export const VideoCall: React.FC<VideoCallProps> = (props: VideoCallProps) => {
                                 tracks={props.tracks}
                                 healthCheck={props.healthCheck}
                                 anotherTrackAudios={props.anotherTrackAudios}
+                                uid={props.uid}
+                                userNames={props.userNames}
                             />
                         )}
                     {props.ready &&
@@ -609,6 +805,7 @@ export const VideoCall: React.FC<VideoCallProps> = (props: VideoCallProps) => {
                                 height: "100%",
                                 margin: 1,
                                 borderRadius: 2,
+                                overflowY: "auto",
                             }}
                         >
                             <CardContent>

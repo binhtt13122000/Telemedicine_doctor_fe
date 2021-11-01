@@ -18,8 +18,11 @@ export interface ICustomizeAuto<T> {
     inputRef?: React.Ref<HTMLInputElement>;
     errorMessage?: string;
     changeValue: (newValue: number | number[]) => void;
+    changeFullValue?: (newValue: T | T[]) => void;
     multiple?: boolean;
     size?: "medium" | "small";
+    required?: boolean;
+    fullField?: boolean;
 }
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
@@ -34,8 +37,11 @@ const CustomizeAutocomplete = <T extends Record<string, string>>(props: ICustomi
         inputRef,
         errorMessage,
         changeValue,
+        changeFullValue,
         multiple,
         size,
+        fullField,
+        required,
     } = props;
     const [search, setSearch] = useState("");
     const [loading, setLoading] = useState<boolean>(false);
@@ -95,13 +101,25 @@ const CustomizeAutocomplete = <T extends Record<string, string>>(props: ICustomi
             }
             loading={loading}
             onChange={(_, newValue) => {
-                if (multiple) {
-                    if (newValue) {
-                        changeValue((newValue as T[]).map((x) => Number(x["id"])));
+                if (fullField) {
+                    if (multiple) {
+                        if (newValue) {
+                            changeFullValue && changeFullValue(newValue as T[]);
+                        }
+                    } else {
+                        if (newValue) {
+                            changeFullValue && changeFullValue(newValue as T);
+                        }
                     }
                 } else {
-                    if (newValue) {
-                        changeValue(Number((newValue as T)["id"]));
+                    if (multiple) {
+                        if (newValue) {
+                            changeValue((newValue as T[]).map((x) => Number(x["id"])));
+                        }
+                    } else {
+                        if (newValue) {
+                            changeValue(Number((newValue as T)["id"]));
+                        }
                     }
                 }
             }}
@@ -115,6 +133,7 @@ const CustomizeAutocomplete = <T extends Record<string, string>>(props: ICustomi
                     inputRef={inputRef}
                     helperText={errors && errorMessage}
                     error={!!errors}
+                    required={required}
                 />
             )}
         />
