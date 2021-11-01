@@ -33,7 +33,7 @@ const UpcomingAppointments: React.FC<IUpcomingAppointments> = (props: IUpcomingA
     );
 
     return (
-        <Card sx={{ width: "100%", height: 670, overflow: "auto" }}>
+        <Card sx={{ width: "100%", overflow: "auto" }}>
             <CardHeader title="Lịch tư vấn sắp tới" titleTypographyProps={{ variant: "h6" }} />
             <Divider />
             <CardContent>
