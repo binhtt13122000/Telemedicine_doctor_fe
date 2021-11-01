@@ -2,13 +2,24 @@ import React, { useCallback, useEffect, useState } from "react";
 
 import { SubmitHandler, useForm } from "react-hook-form";
 
+import { Switch } from "@material-ui/core";
+
 import { AccountUpdate } from "../models/Account.model";
 import AddressService from "../services/Address.service";
 
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import DesktopDatePicker from "@mui/lab/DesktopDatePicker";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
-import { Autocomplete, Button, Card, Grid, Modal, TextField, Typography } from "@mui/material";
+import {
+    Autocomplete,
+    Button,
+    Card,
+    Grid,
+    Modal,
+    TextField,
+    Typography,
+    Stack,
+} from "@mui/material";
 import { Box } from "@mui/system";
 
 interface Area {
@@ -36,21 +47,13 @@ export interface IProfileForm {
     handleClose: (
         type: "SAVE" | "CANCEL",
         dataProfile?: AccountUpdate,
-
         callback?: Function
     ) => void;
 }
 
 const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
-    const initDictrict: District = {
-        name: "Huyện Thới Bình",
-        code: 1,
-        codename: "string",
-        division_type: "string",
-        province_code: 1,
-        wards: [],
-    };
     const { dataProfile } = props;
+    const [checked, setChecked] = React.useState<boolean>(dataProfile.isMale);
     const [date, setDate] = React.useState<Date | null>();
     const [provinces, setProvinces] = useState<Province[]>([]);
     const [districts, setDistricts] = useState<District[]>([]);
@@ -60,7 +63,7 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
     const [valueProvince, setValueProvince] = useState<Province>();
     const [valueDistrict, setValueDistrict] = useState<District>();
     const [valueWard, setValueWard] = useState<Ward>();
-    const [file, setFile] = React.useState<Blob | null>();
+    // const [file, setFile] = React.useState<Blob | null>();
     const {
         register,
         handleSubmit,
@@ -83,14 +86,25 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
         setValue("postalCode", dataProfile.postalCode);
         setValue("phone", dataProfile.phone);
         setValue("dob", dataProfile.dob);
-
-        console.log("dataProfile", dataProfile);
+        setValue("isMale", dataProfile.isMale);
+        setChecked(dataProfile.isMale);
     }, [dataProfile, setValue]);
 
+    const handleChangeGender = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setChecked(event.target.checked);
+        // eslint-disable-next-line no-console
+        console.log(event.target.checked); //true
+        if (event.target.checked === true) {
+            setValue("isMale", true);
+        } else if (event.target.checked === false) {
+            setValue("isMale", false);
+        } else {
+            // eslint-disable-next-line no-console
+            console.log(event.target.checked);
+        }
+    };
     const submitHandler: SubmitHandler<AccountUpdate> = (dataProfile: AccountUpdate) => {
-        console.log("profile form", dataProfile);
         if (dataProfile) {
-            console.log("form");
             props.handleClose("SAVE", dataProfile, clearErrors);
         }
     };
@@ -176,8 +190,7 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
     useEffect(() => {
         provinces.map((item) => {
             if (item.name === dataProfile.city) {
-                console.log("province", item.code);
-                let number = item.code;
+                // let number = item.code;
                 setValueProvince(item);
             }
         });
@@ -236,7 +249,6 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
                 <Box
                     component="form"
                     encType="multipart/form-data"
-                    // onSubmit={handleSubmit(onSubmit)}
                     sx={{
                         "& > :not(style)": {
                             m: 2,
@@ -245,26 +257,22 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
                         },
                     }}
                 >
-                    <Grid container columnSpacing={1}>
-                        <TextField
-                            id="id"
-                            label="id*"
-                            variant="outlined"
-                            {...register("id", { required: true })}
-                        />
-                        <Grid item xs={3}>
+                    <Grid container spacing={2}>
+                        <Grid item xs={12} md={5} lg={6}>
                             <TextField
                                 id="firstName"
+                                fullWidth
                                 label="Tên*"
                                 variant="outlined"
-                                // error={!!errors.firstName}
-                                // helperText={errors.firstName && "Tên là bắt buộc"}
+                                error={!!errors.firstName}
+                                helperText={errors.firstName && "Tên là bắt buộc"}
                                 {...register("firstName", { required: true })}
                             />
                         </Grid>
-                        <Grid item xs={4}>
+                        <Grid item xs={12} md={5} lg={5}>
                             <TextField
                                 id="lastName"
+                                fullWidth
                                 label="Họ*"
                                 variant="outlined"
                                 // error={!!errors.lastName}
@@ -272,7 +280,19 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
                                 {...register("lastName", { required: true })}
                             />
                         </Grid>
-                        <Grid item xs={4}>
+                    </Grid>
+
+                    <Grid container spacing={2}>
+                        <Grid item xs={12} md={5} lg={6}>
+                            <TextField
+                                id="phone"
+                                fullWidth
+                                label="Số điện thoại*"
+                                variant="outlined"
+                                {...register("phone", { required: true })}
+                            />
+                        </Grid>
+                        <Grid item xs={12} md={5} lg={5}>
                             <LocalizationProvider dateAdapter={AdapterDateFns}>
                                 <DesktopDatePicker
                                     inputFormat="dd/MM/yyyy"
@@ -281,6 +301,7 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
                                     renderInput={(params) => (
                                         <TextField
                                             {...params}
+                                            fullWidth
                                             error={!!errors.dob}
                                             helperText={errors.dob && "Vui lòng nhập ngày cấp"}
                                             {...register("dob", { required: true })}
@@ -291,56 +312,18 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
                             </LocalizationProvider>
                         </Grid>
                     </Grid>
-                    <Grid container columnSpacing={1}>
-                        {/* <Grid item xs={4}>
-                            <TextField
-                                id="email"
-                                label="Email*"
-                                variant="outlined"
-                                {...register("email", { required: true })}
-                            />
-                        </Grid> */}
-                        <Grid item xs={4}>
-                            <TextField
-                                id="phone"
-                                label="Số điện thoại*"
-                                variant="outlined"
-                                {...register("phone", { required: true })}
-                            />
-                        </Grid>
-                        {/* <Grid item xs={3}>
-                            <TextField
-                                id="isMale"
-                                label="Giới tính*"
-                                disabled
-                                variant="outlined"
-                                {...register("isMale", { required: false })}
-                            />
-                        </Grid> */}
-                    </Grid>
-                    <Grid container spacing={1}>
-                        <Grid item xs={5}>
+
+                    <Grid container spacing={2}>
+                        <Grid item xs={12} md={5} lg={6}>
                             <TextField
                                 id="streetAddress"
+                                fullWidth
                                 label="Địa chỉ đường phố*"
                                 variant="outlined"
                                 {...register("streetAddress", { required: true })}
                             />
                         </Grid>
-                        <Grid item xs={7}>
-                            <TextField
-                                id="postalCode"
-                                label="Mã bưu điện*"
-                                variant="outlined"
-                                // disabled
-                                // error={!!errors.postalCode}
-                                // helperText={errors.postalCode && "Mã bưu điện là bắt buộc"}
-                                {...register("postalCode", { required: true })}
-                            />
-                        </Grid>
-                    </Grid>
-                    <Grid container columnSpacing={1}>
-                        <Grid item xs={3}>
+                        <Grid item xs={12} md={5} lg={5}>
                             <Autocomplete
                                 options={provinces}
                                 getOptionLabel={(province: Province) => province.name}
@@ -351,6 +334,7 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
                                     <TextField
                                         {...params}
                                         id="city"
+                                        fullWidth
                                         variant="outlined"
                                         placeholder="Tỉnh/Thành phố"
                                         error={!!errors.city}
@@ -362,7 +346,9 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
                                 )}
                             />
                         </Grid>
-                        <Grid item xs={4}>
+                    </Grid>
+                    <Grid container spacing={2}>
+                        <Grid item xs={12} md={5} lg={6}>
                             <Autocomplete
                                 disabled={disableDistrict}
                                 options={districts}
@@ -373,6 +359,7 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
                                 renderInput={(params) => (
                                     <TextField
                                         {...params}
+                                        fullWidth
                                         id="locality"
                                         variant="outlined"
                                         placeholder="Quận/Huyện"
@@ -383,7 +370,7 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
                                 )}
                             />
                         </Grid>
-                        <Grid item xs={4}>
+                        <Grid item xs={12} md={5} lg={5}>
                             <Autocomplete
                                 disabled={disableWard}
                                 options={wards}
@@ -399,6 +386,7 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
                                     <TextField
                                         {...params}
                                         id="ward"
+                                        fullWidth
                                         variant="outlined"
                                         placeholder="Phường/Xã"
                                         // error={!!errors.locality}
@@ -409,13 +397,46 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
                             />
                         </Grid>
                     </Grid>
+                    <Grid container spacing={2}>
+                        <Grid item xs={12} md={5} lg={6}>
+                            <Stack>
+                                <Typography
+                                    sx={{
+                                        // mx: "auto",
+                                        p: 1,
+                                        //
+                                        // "& > :not(style)": { m: 1 },
+                                    }}
+                                >
+                                    Giới tính
+                                    <Switch
+                                        color="secondary"
+                                        checked={checked}
+                                        onChange={handleChangeGender}
+                                        inputProps={{ "aria-label": "controlled" }}
+                                    />
+                                </Typography>
+                            </Stack>
+                        </Grid>
+                        <Grid item xs={12} md={5} lg={5}>
+                            <TextField
+                                id="postalCode"
+                                label="Mã bưu điện*"
+                                variant="outlined"
+                                fullWidth
+                                disabled
+                                error={!!errors.postalCode}
+                                helperText={errors.postalCode && "Mã bưu điện là bắt buộc"}
+                                {...register("postalCode", { required: true })}
+                            />
+                        </Grid>
+                    </Grid>
                     <Box
                         sx={{
                             justifyContent: "center",
                             mx: "auto",
                             p: 1,
                             m: 1,
-                            "& > :not(style)": { m: 1 },
                         }}
                     >
                         <Button

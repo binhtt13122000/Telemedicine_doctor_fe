@@ -34,7 +34,6 @@ const HealthCheckListing: React.FC = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [dataHealth, setDataHealth] = useState<HealthCheck[]>([]);
     const [order, setOrder] = useState<Order>("desc");
-    const [orderBy, setOrderBy] = useState<boolean>(true);
     const filtering = "string";
     const statusStr = "BOOKED";
     const [selectedHealthCheck, setSelectedHealthCheck] = useState<HealthCheck>();

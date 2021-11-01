@@ -25,19 +25,6 @@ export interface IProfile {
 }
 
 const Profile: React.FC = () => {
-    const initAccount: AccountUpdate = {
-        id: 1,
-        firstName: "",
-        lastName: "",
-        ward: "",
-        streetAddress: "",
-        locality: "",
-        city: "",
-        postalCode: "",
-        phone: "",
-        avatar: "",
-        dob: "",
-    };
     const user = LocalStorageUtil.getItem("user") as Account;
     const { data, isLoading, isError } = useGetAccount(user.email);
     const [value] = React.useState<number | null>(4);
@@ -54,9 +41,9 @@ const Profile: React.FC = () => {
         data && setAccount(data);
     };
 
-    // const refreshPage = () => {
-    //     window.location.reload();
-    // };
+    const refreshPage = () => {
+        window.location.reload();
+    };
 
     const updateAccount = async (data: AccountUpdate) => {
         try {
@@ -72,16 +59,13 @@ const Profile: React.FC = () => {
             formData.append("PostalCode", data.postalCode);
             formData.append("Phone", data.phone);
             formData.append("Dob", data.dob);
-            // formData.append("IsMale", data.isMale.toString());
+            formData.append("IsMale", JSON.stringify(data.isMale));
             const service = new AccountService<AccountUpdate>();
             const response = await service.updateFormData(formData);
             if (response.status === 200) {
                 // eslint-disable-next-line no-console
                 console.log(response.data);
-            }
-            if (response.status === 201) {
-                // eslint-disable-next-line no-console
-                console.log(response.data);
+                refreshPage();
             }
         } catch (e) {
             // eslint-disable-next-line no-console
@@ -94,8 +78,6 @@ const Profile: React.FC = () => {
         dataProfile?: AccountUpdate,
         clearErrors?: Function
     ) => {
-        console.log("save");
-        console.log("data", dataProfile);
         if (type === "SAVE") {
             if (dataProfile) {
                 updateAccount(dataProfile);

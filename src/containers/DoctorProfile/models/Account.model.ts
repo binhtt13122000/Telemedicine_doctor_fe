@@ -31,5 +31,5 @@ export type AccountUpdate = {
     phone: string;
     avatar: string;
     dob: string;
-    // isMale: boolean;
+    isMale: boolean;
 };
