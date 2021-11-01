@@ -72,8 +72,10 @@ const HospitalProfile: React.FC = () => {
         if (clearErrors) {
             clearErrors();
         }
+        if (type === "SAVE") {
+            refreshPage();
+        }
         setOpen(false);
-        refreshPage();
     };
     const createHospital = async (data: DoctorFromAdd) => {
         try {
@@ -98,9 +100,10 @@ const HospitalProfile: React.FC = () => {
             formData.append("MajorDoctors", JSON.stringify(data.majorDoctors));
             const service = new DoctorService<Doctor>();
             const response = await service.updateFormData(formData);
-            if (response.status === 201) {
+            if (response.status === 200) {
                 // eslint-disable-next-line no-console
                 console.log(response.data);
+                refreshPage();
             }
         } catch (e) {
             // eslint-disable-next-line no-console
@@ -114,23 +117,12 @@ const HospitalProfile: React.FC = () => {
     ) => {
         if (type === "SAVE") {
             if (dataHospital) {
-                // const res = {
-                //     ...dataHospital,
-                //     id: data?.id,
-                //     email: data?.email,
-                //     certificateCode: data?.certificateCode,
-                //     placeOfCertificate: data?.placeOfCertificate,
-                //     dateOfCertificate: data?.dateOfCertificate,
-                //     scopeOfPractice: data?.scopeOfPractice,
-                //     isActive: data?.isActive,
-                // };
                 createHospital(dataHospital);
             }
         }
         if (clearErrors) {
             clearErrors();
         }
-        refreshPage();
         setOpenAdd(false);
     };
     const handleOpen = async (hos: Hospital) => {

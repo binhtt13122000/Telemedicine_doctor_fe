@@ -134,13 +134,6 @@ const CeritificateProfile: React.FC = () => {
     return (
         <React.Fragment>
             <CertificationForm dataCeti={ab} open={open} handleClose={handleClose} />
-            {/* {data && (
-                <CertificationFormAdd
-                    dataCetificationAdd={cetificationAdd}
-                    open={openAdd}
-                    handleClose={handleCloseFormAdd}
-                />
-            )} */}
 
             <Card sx={{ height: 400, borderRadius: 5 }}>
                 <Box sx={{ ml: 2 }}>

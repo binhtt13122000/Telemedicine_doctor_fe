@@ -2,10 +2,24 @@ import React, { useCallback, useEffect, useState } from "react";
 
 import { SubmitHandler, useForm } from "react-hook-form";
 
-import { Account } from "../models/Account.model";
+import { Switch } from "@material-ui/core";
+
+import { AccountUpdate } from "../models/Account.model";
 import AddressService from "../services/Address.service";
 
-import { Autocomplete, Button, Card, Grid, Modal, TextField, Typography } from "@mui/material";
+import AdapterDateFns from "@mui/lab/AdapterDateFns";
+import DesktopDatePicker from "@mui/lab/DesktopDatePicker";
+import LocalizationProvider from "@mui/lab/LocalizationProvider";
+import {
+    Autocomplete,
+    Button,
+    Card,
+    Grid,
+    Modal,
+    TextField,
+    Typography,
+    Stack,
+} from "@mui/material";
 import { Box } from "@mui/system";
 
 interface Area {
@@ -28,19 +42,19 @@ interface Ward extends Area {
     district_code: number;
 }
 export interface IProfileForm {
-    dataProfile: Account;
+    dataProfile: AccountUpdate;
     open: boolean;
     handleClose: (
         type: "SAVE" | "CANCEL",
-        dataProfile?: Account,
-        file?: Blob,
+        dataProfile?: AccountUpdate,
         callback?: Function
     ) => void;
 }
 
 const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
     const { dataProfile } = props;
-    const [checked, setChecked] = useState<boolean>(dataProfile.active);
+    const [checked, setChecked] = React.useState<boolean>(dataProfile.isMale);
+    const [date, setDate] = React.useState<Date | null>();
     const [provinces, setProvinces] = useState<Province[]>([]);
     const [districts, setDistricts] = useState<District[]>([]);
     const [wards, setWards] = useState<Ward[]>([]);
@@ -49,47 +63,55 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
     const [valueProvince, setValueProvince] = useState<Province>();
     const [valueDistrict, setValueDistrict] = useState<District>();
     const [valueWard, setValueWard] = useState<Ward>();
-    const [file, setFile] = React.useState<Blob>();
+    // const [file, setFile] = React.useState<Blob | null>();
     const {
         register,
         handleSubmit,
         formState: { errors },
-        getValues,
         setValue,
         clearErrors,
-    } = useForm<Account>({});
+    } = useForm<AccountUpdate>({});
 
     React.useEffect(() => {
         setValue("id", dataProfile.id);
-        setValue("email", dataProfile.email);
         setValue("firstName", dataProfile.firstName);
         setValue("lastName", dataProfile.lastName);
+        // setValue("avatar", dataProfile.avatar);
         setValue("ward", dataProfile.ward);
         setValue("streetAddress", dataProfile.streetAddress);
         setValue("locality", dataProfile.locality);
+        // console.log("locality", dataProfile.locality);
+        // setValue("locality", "Huyện Thới Bình");
         setValue("city", dataProfile.city);
         setValue("postalCode", dataProfile.postalCode);
         setValue("phone", dataProfile.phone);
         setValue("dob", dataProfile.dob);
         setValue("isMale", dataProfile.isMale);
-        setValue("active", dataProfile.active);
-        setChecked(dataProfile.active);
-    }, [dataProfile, setValue, setChecked]);
+        setChecked(dataProfile.isMale);
+    }, [dataProfile, setValue]);
 
-    const submitHandler: SubmitHandler<Account> = (dataProfile: Account) => {
+    const handleChangeGender = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setChecked(event.target.checked);
         // eslint-disable-next-line no-console
-        // console.log(dataProfile);
-        if (dataProfile && file) {
-            props.handleClose("SAVE", dataProfile, file, clearErrors);
+        console.log(event.target.checked); //true
+        if (event.target.checked === true) {
+            setValue("isMale", true);
+        } else if (event.target.checked === false) {
+            setValue("isMale", false);
+        } else {
+            // eslint-disable-next-line no-console
+            console.log(event.target.checked);
+        }
+    };
+    const submitHandler: SubmitHandler<AccountUpdate> = (dataProfile: AccountUpdate) => {
+        if (dataProfile) {
+            props.handleClose("SAVE", dataProfile, clearErrors);
         }
     };
     const onChangeProvince = (newProvince: Province | null) => {
-        // if (dataProfile.city) {
-        //     setValue("city", dataProfile.city);
-        //     console.log("City 1", dataProfile.city);
-        // }
         if (newProvince) {
             setValue("city", newProvince.name);
+            // console.log("city", newProvince.name);
             fetchDistricts(newProvince.code);
             setDisableDistrict(false);
         } else {
@@ -118,13 +140,20 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
             const service = new AddressService<Province[]>();
             const response = await service.getProvinces();
             if (response.status === 200) {
-                console.log("Province", response.data);
                 setProvinces(response.data);
+                // provinces.map((item) => {
+                //     if (item.name === dataProfile.city) {
+                //         console.log("province", item.code);
+                //         let number = item.code;
+                //         setValueProvince(item);
+                //         // fetchDistricts(number);
+                //     }
+                // });
             }
         } catch (_) {}
     }, []);
 
-    const fetchDistricts = async (provinceCode: number) => {
+    const fetchDistricts = useCallback(async (provinceCode: number) => {
         try {
             const service = new AddressService<Province>();
             const response = await service.getDistricts(provinceCode);
@@ -132,7 +161,7 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
                 setDistricts(response.data.districts);
             }
         } catch (_) {}
-    };
+    }, []);
 
     const fetchWards = async (districtCode: number) => {
         try {
@@ -144,12 +173,15 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
         } catch (_) {}
     };
 
-    const { ref: city, ...cityProps } = register("city", {
-        min: {
-            value: 1,
-            message: "Mã dịch bệnh không được để trống",
-        },
-    });
+    // const { ref: city, ...cityProps } = register("city", {
+    //     min: {
+    //         value: 1,
+    //         message: "Thành phố không được để trống",
+    //     },
+    // });
+    const handleChange = (newDate: Date | null) => {
+        setDate(newDate);
+    };
 
     useEffect(() => {
         fetchProvinces();
@@ -158,23 +190,42 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
     useEffect(() => {
         provinces.map((item) => {
             if (item.name === dataProfile.city) {
-                console.log("item ", item);
+                // let number = item.code;
                 setValueProvince(item);
             }
         });
-        wards.map((item) => {
-            if (item.name === dataProfile.ward) {
-                console.log("item ", item);
-                setValueWard(item);
-            }
-        });
-        districts.map((item) => {
-            if (item.name === dataProfile.locality) {
-                console.log("item ", item);
-                setValueDistrict(item);
-            }
-        });
-    }, [provinces, dataProfile.city, wards, dataProfile.ward, districts, dataProfile.locality]);
+
+        // console.log("District", valueDistrict);
+        // districts.map((item) => {
+        //     if (item.name === dataProfile.locality) {
+        //         console.log("districts", item.name);
+        //         setValueDistrict(item);
+        //         fetchWards(item.code);
+        //     }
+        // });
+        // console.log("District", valueDistrict);
+
+        // wards.map((item) => {
+        //     if (item.name === dataProfile.ward) {
+        //         console.log("ward");
+        //         console.log("ward", item.name);
+        //         setValueWard(item);
+        //     }
+        // });
+        // console.log("Ward", valueWard);
+    }, [
+        // fetchDistricts,
+        valueWard,
+        valueDistrict,
+
+        dataProfile.city,
+        wards,
+        dataProfile.ward,
+        districts,
+        provinces,
+        dataProfile.locality,
+        valueProvince?.code,
+    ]);
     return (
         <Modal open={props.open}>
             <Card
@@ -197,6 +248,7 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
                 </Box>
                 <Box
                     component="form"
+                    encType="multipart/form-data"
                     sx={{
                         "& > :not(style)": {
                             m: 2,
@@ -205,20 +257,22 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
                         },
                     }}
                 >
-                    <Grid container columnSpacing={1}>
-                        <Grid item xs={3}>
+                    <Grid container spacing={2}>
+                        <Grid item xs={12} md={5} lg={6}>
                             <TextField
                                 id="firstName"
+                                fullWidth
                                 label="Tên*"
                                 variant="outlined"
-                                // error={!!errors.firstName}
-                                // helperText={errors.firstName && "Tên là bắt buộc"}
+                                error={!!errors.firstName}
+                                helperText={errors.firstName && "Tên là bắt buộc"}
                                 {...register("firstName", { required: true })}
                             />
                         </Grid>
-                        <Grid item xs={4}>
+                        <Grid item xs={12} md={5} lg={5}>
                             <TextField
                                 id="lastName"
+                                fullWidth
                                 label="Họ*"
                                 variant="outlined"
                                 // error={!!errors.lastName}
@@ -226,75 +280,50 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
                                 {...register("lastName", { required: true })}
                             />
                         </Grid>
-                        <Grid item xs={4}>
-                            <TextField
-                                id="dob"
-                                label="Ngày sinh*"
-                                variant="outlined"
-                                // error={!!errors.dob}
-                                // helperText={errors.dob && "Ngày sinh là bắt buộc"}
-                                {...register("dob", { required: true })}
-                            />
-                        </Grid>
                     </Grid>
-                    <Grid container columnSpacing={1}>
-                        <Grid item xs={4}>
-                            <TextField
-                                id="email"
-                                label="Email*"
-                                variant="outlined"
-                                // error={!!errors.email}
-                                // helperText={errors.email && "Email là bắt buộc"}
-                                {...register("email", { required: true })}
-                            />
-                        </Grid>
-                        <Grid item xs={4}>
+
+                    <Grid container spacing={2}>
+                        <Grid item xs={12} md={5} lg={6}>
                             <TextField
                                 id="phone"
+                                fullWidth
                                 label="Số điện thoại*"
                                 variant="outlined"
-                                // error={!!errors.phone}
-                                // helperText={errors.phone && "Số điện thoại đường phố là bắt buộc"}
                                 {...register("phone", { required: true })}
                             />
                         </Grid>
-                        <Grid item xs={3}>
-                            <TextField
-                                id="isMale"
-                                label="Giới tính*"
-                                disabled
-                                variant="outlined"
-                                // error={!!errors.isMale}
-                                // helperText={errors.isMale && "Giới tính là bắt buộc"}
-                                {...register("isMale", { required: true })}
-                            />
+                        <Grid item xs={12} md={5} lg={5}>
+                            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                <DesktopDatePicker
+                                    inputFormat="dd/MM/yyyy"
+                                    value={date}
+                                    onChange={handleChange}
+                                    renderInput={(params) => (
+                                        <TextField
+                                            {...params}
+                                            fullWidth
+                                            error={!!errors.dob}
+                                            helperText={errors.dob && "Vui lòng nhập ngày cấp"}
+                                            {...register("dob", { required: true })}
+                                            sx={{ width: "90%" }}
+                                        />
+                                    )}
+                                />
+                            </LocalizationProvider>
                         </Grid>
                     </Grid>
-                    <Grid container spacing={1}>
-                        <Grid item xs={5}>
+
+                    <Grid container spacing={2}>
+                        <Grid item xs={12} md={5} lg={6}>
                             <TextField
                                 id="streetAddress"
+                                fullWidth
                                 label="Địa chỉ đường phố*"
                                 variant="outlined"
-                                // error={!!errors.streetAddress}
-                                // helperText={errors.streetAddress && "Địa chỉ đường phố là bắt buộc"}
                                 {...register("streetAddress", { required: true })}
                             />
                         </Grid>
-                        <Grid item xs={7}>
-                            <TextField
-                                id="postalCode"
-                                label="Mã bưu điện*"
-                                variant="outlined"
-                                disabled
-                                // error={!!errors.postalCode}
-                                // helperText={errors.postalCode && "Mã bưu điện là bắt buộc"}
-                                {...register("postalCode", { required: true })}
-                            />
-                        </Grid>
-                    </Grid>
-                    <Grid container columnSpacing={1}>
-                        <Grid item xs={3}>
+                        <Grid item xs={12} md={5} lg={5}>
                             <Autocomplete
                                 options={provinces}
                                 getOptionLabel={(province: Province) => province.name}
@@ -305,6 +334,7 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
                                     <TextField
                                         {...params}
                                         id="city"
+                                        fullWidth
                                         variant="outlined"
                                         placeholder="Tỉnh/Thành phố"
                                         error={!!errors.city}
@@ -316,7 +346,9 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
                                 )}
                             />
                         </Grid>
-                        <Grid item xs={4}>
+                    </Grid>
+                    <Grid container spacing={2}>
+                        <Grid item xs={12} md={5} lg={6}>
                             <Autocomplete
                                 disabled={disableDistrict}
                                 options={districts}
@@ -327,17 +359,18 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
                                 renderInput={(params) => (
                                     <TextField
                                         {...params}
-                                        id="ward"
+                                        fullWidth
+                                        id="locality"
                                         variant="outlined"
                                         placeholder="Quận/Huyện"
                                         // error={!!errors.ward}
                                         // helperText={errors.ward && "Vui lòng chọn Quận/Huyện"}
-                                        {...register("ward", { required: true })}
+                                        {...register("locality", { required: true })}
                                     />
                                 )}
                             />
                         </Grid>
-                        <Grid item xs={4}>
+                        <Grid item xs={12} md={5} lg={5}>
                             <Autocomplete
                                 disabled={disableWard}
                                 options={wards}
@@ -346,54 +379,69 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
                                 isOptionEqualToValue={(option, value) => option.name === value.name}
                                 onChange={(_, newWard) => {
                                     if (newWard) {
-                                        setValue("locality", newWard.name);
+                                        setValue("ward", newWard.name);
                                     }
                                 }}
                                 renderInput={(params) => (
                                     <TextField
                                         {...params}
-                                        id="locality"
+                                        id="ward"
+                                        fullWidth
                                         variant="outlined"
                                         placeholder="Phường/Xã"
                                         // error={!!errors.locality}
                                         // helperText={errors.locality && "Vui lòng chọn Phường/Xã"}
-                                        {...register("locality", { required: true })}
+                                        {...register("ward", { required: true })}
                                     />
                                 )}
                             />
                         </Grid>
                     </Grid>
-                    {/* <Stack direction="row" spacing={0}>
-                        <Typography
-                            sx={{
-                                // mx: "auto",
-                                p: 1,
-                                //
-                                // "& > :not(style)": { m: 1 },
-                            }}
-                        >
-                            Trạng thái:
-                        </Typography>
-                        <Switch
-                            checked={checked}
-                            onChange={handleChange}
-                            inputProps={{ "aria-label": "controlled" }}
-                        />
-                    </Stack> */}
+                    <Grid container spacing={2}>
+                        <Grid item xs={12} md={5} lg={6}>
+                            <Stack>
+                                <Typography
+                                    sx={{
+                                        // mx: "auto",
+                                        p: 1,
+                                        //
+                                        // "& > :not(style)": { m: 1 },
+                                    }}
+                                >
+                                    Giới tính
+                                    <Switch
+                                        color="secondary"
+                                        checked={checked}
+                                        onChange={handleChangeGender}
+                                        inputProps={{ "aria-label": "controlled" }}
+                                    />
+                                </Typography>
+                            </Stack>
+                        </Grid>
+                        <Grid item xs={12} md={5} lg={5}>
+                            <TextField
+                                id="postalCode"
+                                label="Mã bưu điện*"
+                                variant="outlined"
+                                fullWidth
+                                disabled
+                                error={!!errors.postalCode}
+                                helperText={errors.postalCode && "Mã bưu điện là bắt buộc"}
+                                {...register("postalCode", { required: true })}
+                            />
+                        </Grid>
+                    </Grid>
                     <Box
                         sx={{
                             justifyContent: "center",
                             mx: "auto",
                             p: 1,
                             m: 1,
-                            "& > :not(style)": { m: 1 },
                         }}
                     >
                         <Button
                             variant="outlined"
-                            onClick={() =>
-                                props.handleClose("CANCEL", undefined, file, clearErrors)
-                            }
+                            onClick={() => props.handleClose("CANCEL", undefined, clearErrors)}
                         >
                             Hủy
                         </Button>

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 import moment from "moment";
 
@@ -12,6 +12,7 @@ import HealthCheckService from "./services/HealthCheck.service";
 
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import {
     Avatar,
     Card,
@@ -29,18 +30,15 @@ import {
 import { Box } from "@mui/system";
 
 const HealthCheckListing: React.FC = () => {
-    const { data, isLoading, isError } = useGetHealthCheck();
+    const { isLoading, isError } = useGetHealthCheck();
     const [searchTerm, setSearchTerm] = useState("");
-    const typingTimeoutRef = useRef();
     const [dataHealth, setDataHealth] = useState<HealthCheck[]>([]);
     const [order, setOrder] = useState<Order>("desc");
-    const [orderBy, setOrderBy] = useState<boolean>(true);
     const filtering = "string";
-    // const order = "asc";
     const statusStr = "BOOKED";
     const [selectedHealthCheck, setSelectedHealthCheck] = useState<HealthCheck>();
     const [selectedPatientAccount, setSelectedPatientAccount] = useState<Account>();
-
+    const [arrow, setArrow] = useState<boolean>(false);
     const getHealthCheck = useCallback(
         async (
             limit: number,
@@ -57,32 +55,12 @@ const HealthCheckListing: React.FC = () => {
                 order,
                 filtering
             );
-            //     await axios.get(`${API_ROOT_URL}/health-checks?order-type=${order}&filtering=${filtering}
-            // &page-offset=${offset}&limit=${limit}`);
             if (response.status === 200) {
-                // const dataH: IPagingSupport<T> = response.data;
-                console.log("healthcheck", response.data);
                 setDataHealth(response.data.content);
             }
         },
         []
     );
-
-    const onHandleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = e.currentTarget.value;
-        setSearchTerm(value);
-    };
-
-    const handlerChangeOrder = () => {
-        if (orderBy === true) {
-            console.log(orderBy);
-            setOrderBy(false);
-            setOrder("asc");
-        } else {
-            setOrderBy(true);
-            setOrder("desc");
-        }
-    };
 
     const handleSearchTermChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
@@ -122,15 +100,22 @@ const HealthCheckListing: React.FC = () => {
         <Grid container spacing={2}>
             <Grid item xs={6}>
                 <Card sx={{ overflow: "auto", height: 640 }}>
-                    <Box sx={{ display: "flex", mb: 5, mt: 1 }}>
+                    <Box sx={{ display: "flex", mb: 5, mt: 1, justifyContent: "space-between" }}>
                         <Box>
-                            <Typography variant="h6" component="div">
-                                Danh sách lịch khám
-                            </Typography>
+                            <Typography variant="h6">Danh sách lịch khám</Typography>
                         </Box>
-                        <Box sx={{ ml: "10rem", display: "flex" }}>
-                            <IconButton onClick={() => handlerChangeOrder}>
-                                <ArrowDownwardIcon />
+                        <Box sx={{ display: "flex" }}>
+                            <IconButton
+                                onClick={() => {
+                                    setArrow(!arrow);
+                                    if (arrow) {
+                                        setOrder("desc");
+                                    } else {
+                                        setOrder("asc");
+                                    }
+                                }}
+                            >
+                                {arrow ? <ArrowDownwardIcon /> : <ArrowUpwardIcon />}
                             </IconButton>
                             <form>
                                 <TextField

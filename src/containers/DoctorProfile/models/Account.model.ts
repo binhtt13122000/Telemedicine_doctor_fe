@@ -18,3 +18,18 @@ export type Account = {
     registerTime?: string;
     role?: Role;
 };
+
+export type AccountUpdate = {
+    id?: number;
+    firstName: string;
+    lastName: string;
+    ward: string;
+    streetAddress: string;
+    locality: string;
+    city: string;
+    postalCode: string;
+    phone: string;
+    avatar: string;
+    dob: string;
+    isMale: boolean;
+};

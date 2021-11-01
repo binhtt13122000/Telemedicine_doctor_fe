@@ -32,8 +32,6 @@ const MajorProfile: React.FC = () => {
     const { mutate } = usePutMajor();
     const [open, setOpen] = useState<boolean>(false);
     const [openAdd, setOpenAdd] = useState<boolean>(false);
-    const [reload, setReload] = useState<Function>(() => {});
-    // const [loading, setLoading] = useState<boolean>(false);
     const [major, setMajor] = useState<Major>(initCetification);
     if (isError) {
         return <div> Error</div>;
@@ -64,9 +62,10 @@ const MajorProfile: React.FC = () => {
             formData.append("MajorDoctors", JSON.stringify(data.majorDoctors));
             const service = new DoctorService<Doctor>();
             const response = await service.updateFormData(formData);
-            if (response.status === 201) {
+            if (response.status === 200) {
                 // eslint-disable-next-line no-console
                 console.log(response.data);
+                refreshPage();
             }
         } catch (e) {
             // eslint-disable-next-line no-console
@@ -74,18 +73,6 @@ const MajorProfile: React.FC = () => {
         }
     };
 
-    const editMajor = async (dataMajor?: Major) => {
-        if (dataMajor) {
-            if (dataMajor.id) {
-                const response = await mutate({
-                    id: dataMajor.id,
-                    name: dataMajor?.name,
-                    description: dataMajor?.description,
-                    isActive: dataMajor?.isActive,
-                });
-            }
-        }
-    };
     // Edit major
     const handleClose = (type: "SAVE" | "CANCEL", dataMajor?: Major, clearErrors?: Function) => {
         // setLoading(isLoading);
@@ -137,15 +124,10 @@ const MajorProfile: React.FC = () => {
         if (clearErrors) {
             clearErrors();
         }
-        refreshPage();
+
         setOpenAdd(false);
     };
 
-    // useEffect(() => {
-    //     data;
-    //     // eslint-disable-next-line no-console
-    // }, [data]);
-    //Add major
     return (
         <React.Fragment>
             {data && (
@@ -156,7 +138,7 @@ const MajorProfile: React.FC = () => {
                 />
             )}
             <MajorForm dataMajor={major} opened={open} handleClose={handleClose} />
-            <Card sx={{ height: "100%", borderRadius: 5 }}>
+            <Card sx={{ borderRadius: 5 }}>
                 <Box sx={{ ml: 2 }}>
                     <Typography sx={{ mt: 3 }} variant="h6" component="div">
                         Chuyên khoa
@@ -166,7 +148,8 @@ const MajorProfile: React.FC = () => {
                     <List
                         sx={{
                             width: "100%",
-                            maxWidth: 360,
+                            // maxWidth: 360,
+                            alignItems: "center",
                             bgcolor: "background.paper",
                             position: "relative",
                             overflow: "auto",

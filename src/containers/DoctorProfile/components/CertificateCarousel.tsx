@@ -4,8 +4,6 @@ import SwipeableViews from "react-swipeable-views";
 import { autoPlay } from "react-swipeable-views-utils";
 
 import useGetDoctor from "../hooks/useGetDoctor";
-import usePutCeritificate from "../hooks/usePutCeritificate";
-import { Cetification } from "../models/Cetification.model";
 import { CetificationAdd, Doctor } from "../models/Doctor.model";
 import DoctorService from "../services/Doctor.service";
 import CertificationFormAdd from "./CeritificateFormAdd";
@@ -18,17 +16,12 @@ import { CircularProgress, Icon, IconButton, Typography } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import MobileStepper from "@mui/material/MobileStepper";
-import Paper from "@mui/material/Paper";
+// import Paper from "@mui/material/Paper";
 import { useTheme } from "@mui/material/styles";
 
 const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
 
 const CertificateCarousel: React.FC = () => {
-    const initCetification: Cetification = {
-        name: "",
-        description: "",
-        isActive: true,
-    };
     const initCetificationAdd: CetificationAdd = {
         certificationId: 0,
         evidence: "",
@@ -37,13 +30,8 @@ const CertificateCarousel: React.FC = () => {
     const theme = useTheme();
     const [activeStep, setActiveStep] = React.useState(0);
     const { data, isLoading, isError } = useGetDoctor();
-    // const maxSteps = data?.certificationDoctors.length;
-    const { mutate } = usePutCeritificate();
-    const [open, setOpen] = React.useState<boolean>(false);
     const [openAdd, setOpenAdd] = React.useState<boolean>(false);
-    const [ab, setAb] = React.useState<Cetification>(initCetification);
-    const [cetificationAdd, setCeficationAdd] =
-        React.useState<CetificationAdd>(initCetificationAdd);
+    const [cetificationAdd] = React.useState<CetificationAdd>(initCetificationAdd);
     const handleNext = () => {
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
     };
@@ -58,23 +46,20 @@ const CertificateCarousel: React.FC = () => {
     const createCetificate = async (dataCeti: CetificationAdd, file: Blob, id: number) => {
         try {
             let formData = new FormData();
-            console.log("evidence", dataCeti.evidence);
             formData.append("CertificationId", JSON.stringify(dataCeti.certificationId));
             formData.append("Evidence", file);
             formData.append("DateOfIssue ", dataCeti.dateOfIssue);
             const service = new DoctorService<Doctor>();
             const response = await service.createFormData(id, formData);
-            if (response.status === 201) {
+            if (response.status === 200) {
                 // eslint-disable-next-line no-console
                 console.log(response.data);
+                refreshPage();
             }
         } catch (error) {
+            // eslint-disable-next-line no-console
             console.log(error);
         }
-    };
-    const handleOpen = async (ceti: Cetification) => {
-        setOpen(true);
-        setAb(ceti);
     };
     const handleCloseFormAdd = (
         type: "SAVE" | "CANCEL",
@@ -84,13 +69,14 @@ const CertificateCarousel: React.FC = () => {
     ) => {
         if (type === "SAVE") {
             if (dataCetificationAdd && file) {
-                data?.id && createCetificate(dataCetificationAdd, file, data?.id);
+                if (data?.id) {
+                    createCetificate(dataCetificationAdd, file, data?.id);
+                }
             }
         }
         if (clearErrors) {
             clearErrors();
         }
-        refreshPage();
         setOpenAdd(false);
     };
     if (isError) {
@@ -105,6 +91,7 @@ const CertificateCarousel: React.FC = () => {
     const handleCreate = () => {
         setOpenAdd(true);
     };
+
     return (
         <React.Fragment>
             {data && (
@@ -114,8 +101,8 @@ const CertificateCarousel: React.FC = () => {
                     handleClose={handleCloseFormAdd}
                 />
             )}
-            <Box sx={{ minWidth: 500, flexGrow: 1 }}>
-                <Paper
+            <Box sx={{}}>
+                {/* <Paper
                     square
                     elevation={0}
                     sx={{
@@ -126,18 +113,23 @@ const CertificateCarousel: React.FC = () => {
                         bgcolor: "background.default",
                     }}
                 >
-                    {/* {data?.certificationDoctors?.map((step, index) => (
-                <Typography>{images[activeStep].label}</Typography>
-                ))} */}
+                </Paper> */}
+                <Box
+                    sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        bgcolor: "background.default",
+                    }}
+                >
                     <Typography variant="h6" component="div">
                         Chứng chỉ
                     </Typography>
-                    <Box sx={{ ml: "30rem" }}>
+                    <Box>
                         <IconButton onClick={() => handleCreate()}>
                             <Icon>add_circle</Icon>
                         </IconButton>
                     </Box>
-                </Paper>
+                </Box>
                 <AutoPlaySwipeableViews
                     axis={theme.direction === "rtl" ? "x-reverse" : "x"}
                     index={activeStep}
@@ -147,13 +139,6 @@ const CertificateCarousel: React.FC = () => {
                     {data?.certificationDoctors?.map((step, index) => (
                         <div key={step?.certification?.name}>
                             <Box sx={{ display: "flex" }}>
-                                {/* <Box
-                                    sx={{
-                                        ml: "5rem",
-                                        alignItems: "left",
-                                        justifyContent: "left",
-                                    }}
-                                ></Box> */}
                                 <Box sx={{ ml: "3rem", display: "flex" }}>
                                     <Typography variant="h6" component="div">
                                         {step?.certification?.name}
@@ -167,12 +152,6 @@ const CertificateCarousel: React.FC = () => {
                                             <BlockIcon color="error" />
                                         </IconButton>
                                     )}
-
-                                    {/* <Typography variant="h6" component="h5">
-                                        <IconButton onClick={() => handleOpen(step?.certification)}>
-                                            <Icon>edit</Icon>
-                                        </IconButton>
-                                    </Typography> */}
                                 </Box>
                             </Box>
                             {Math.abs(activeStep - index) <= 2 ? (

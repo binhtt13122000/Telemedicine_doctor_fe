@@ -60,10 +60,6 @@ const HospitalFormAdd: React.FC<IHospitalForm> = (props: IHospitalForm) => {
         validate: (value) => !!value.length,
     });
 
-    const changeValue = (value: number) => {
-        setValue("id", value);
-        clearErrors("id");
-    };
     return (
         <Modal open={props.opened}>
             <Card
