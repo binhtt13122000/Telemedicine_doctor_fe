@@ -1,4 +1,4 @@
-import { Switch } from "react-router";
+import { Route, Switch } from "react-router";
 
 import WaitingScreen from "src/containers/DoctorForm/components/WaitingScreen";
 
@@ -84,16 +84,8 @@ const RouteComponent = () => {
                     component={route.component}
                 />
             ))}
-            {privateWithNoLayouts.map((route) => (
-                <PrivateRoute
-                    exact={true}
-                    key={route.name}
-                    path={route.path}
-                    component={route.component}
-                />
-            ))}
-            <Layout>
-                {privateRoutes.map((route) => (
+            <Route path="/call/:path?" exact>
+                {privateWithNoLayouts.map((route) => (
                     <PrivateRoute
                         exact={true}
                         key={route.name}
@@ -101,7 +93,21 @@ const RouteComponent = () => {
                         component={route.component}
                     />
                 ))}
-            </Layout>
+            </Route>
+            <Route>
+                <Layout>
+                    <Switch>
+                        {privateRoutes.map((route) => (
+                            <PrivateRoute
+                                exact={true}
+                                key={route.name}
+                                path={route.path}
+                                component={route.component}
+                            />
+                        ))}
+                    </Switch>
+                </Layout>
+            </Route>
         </Switch>
     );
 };
