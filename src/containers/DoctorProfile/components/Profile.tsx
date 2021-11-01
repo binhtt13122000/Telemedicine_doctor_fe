@@ -135,13 +135,6 @@ const Profile: React.FC = () => {
                         flexDirection: "column",
                     }}
                 >
-                    {/* <Avatar
-                            src={data?.avatar}
-                            sx={{
-                                height: 100,
-                                width: 100,
-                            }}
-                        /> */}
                     <Stack direction="row" spacing={1}>
                         <Typography variant="subtitle1" component="div">
                             {data?.isMale ? "Bà" : "Ông"}{" "}

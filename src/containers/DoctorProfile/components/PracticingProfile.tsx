@@ -262,21 +262,12 @@ const PracticingProfile: React.FC = () => {
 
                                 <Typography variant="body2" component="h5">
                                     {data?.numberOfConsultants}
-                                    {/* <Chip icon={<PersonIcon />} label={data?.numberOfConsultants} /> */}
                                 </Typography>
                             </Stack>
 
                             <Box sx={{ mt: 1 }} />
 
                             <Stack direction="row" spacing={1} sx={{ mt: 2 }}>
-                                {/* <Typography
-                                    variant="body2"
-                                    component="div"
-                                    sx={{ fontWeight: "bold" }}
-                                >
-                                    Tình trạng:
-                                </Typography> */}
-
                                 <Typography variant="body2" component="h5">
                                     {data?.isVerify ? (
                                         <Chip

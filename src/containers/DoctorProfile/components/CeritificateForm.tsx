@@ -108,10 +108,7 @@ const CertificationForm: React.FC<ICertificationForm> = (props: ICertificationFo
                         <Stack direction="row" spacing={0}>
                             <Typography
                                 sx={{
-                                    // mx: "auto",
                                     p: 1,
-                                    //
-                                    // "& > :not(style)": { m: 1 },
                                 }}
                             >
                                 Trạng thái:

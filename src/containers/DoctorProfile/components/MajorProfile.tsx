@@ -128,11 +128,6 @@ const MajorProfile: React.FC = () => {
         setOpenAdd(false);
     };
 
-    // useEffect(() => {
-    //     data;
-    //     // eslint-disable-next-line no-console
-    // }, [data]);
-    //Add major
     return (
         <React.Fragment>
             {data && (

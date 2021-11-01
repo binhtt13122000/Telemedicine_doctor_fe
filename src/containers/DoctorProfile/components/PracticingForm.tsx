@@ -173,9 +173,6 @@ const PracticingForm: React.FC<IPracticingForm> = (props: IPracticingForm) => {
                                     {...register("practisingCertificate")}
                                     onChange={uploadedFile}
                                 />
-                                {/* <Button variant="contained" component="span">
-                                    Upload hình ảnh
-                                </Button> */}
 
                                 <IconButton
                                     color="primary"
