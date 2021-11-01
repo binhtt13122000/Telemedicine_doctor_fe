@@ -62,9 +62,10 @@ const MajorProfile: React.FC = () => {
             formData.append("MajorDoctors", JSON.stringify(data.majorDoctors));
             const service = new DoctorService<Doctor>();
             const response = await service.updateFormData(formData);
-            if (response.status === 201) {
+            if (response.status === 200) {
                 // eslint-disable-next-line no-console
                 console.log(response.data);
+                refreshPage();
             }
         } catch (e) {
             // eslint-disable-next-line no-console
@@ -123,7 +124,7 @@ const MajorProfile: React.FC = () => {
         if (clearErrors) {
             clearErrors();
         }
-        refreshPage();
+
         setOpenAdd(false);
     };
 
@@ -142,7 +143,7 @@ const MajorProfile: React.FC = () => {
                 />
             )}
             <MajorForm dataMajor={major} opened={open} handleClose={handleClose} />
-            <Card sx={{ height: "100%", width: "100%", borderRadius: 5 }}>
+            <Card sx={{ borderRadius: 5 }}>
                 <Box sx={{ ml: 2 }}>
                     <Typography sx={{ mt: 3 }} variant="h6" component="div">
                         Chuyên khoa

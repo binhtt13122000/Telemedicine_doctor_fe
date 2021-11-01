@@ -45,7 +45,7 @@ const HospitalForm: React.FC<IHospitalForm> = (props: IHospitalForm) => {
         setValue("address", dataHospital.address);
         setValue("description", dataHospital.description);
         setValue("isActive", dataHospital.isActive);
-        // setChecked(dataHospital.isActive);
+        setChecked(dataHospital.isActive);
     }, [dataHospital, setValue, setChecked]);
     const submitHandler: SubmitHandler<Hospital> = (dataHospital: Hospital) => {
         // eslint-disable-next-line no-console

@@ -16,7 +16,7 @@ import { CircularProgress, Icon, IconButton, Typography } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import MobileStepper from "@mui/material/MobileStepper";
-import Paper from "@mui/material/Paper";
+// import Paper from "@mui/material/Paper";
 import { useTheme } from "@mui/material/styles";
 
 const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
@@ -51,7 +51,7 @@ const CertificateCarousel: React.FC = () => {
             formData.append("DateOfIssue ", dataCeti.dateOfIssue);
             const service = new DoctorService<Doctor>();
             const response = await service.createFormData(id, formData);
-            if (response.status === 201) {
+            if (response.status === 200) {
                 // eslint-disable-next-line no-console
                 console.log(response.data);
                 refreshPage();
@@ -61,10 +61,6 @@ const CertificateCarousel: React.FC = () => {
             console.log(error);
         }
     };
-    // const handleOpen = async (ceti: Cetification) => {
-    //     setOpen(true);
-    //     setAb(ceti);
-    // };
     const handleCloseFormAdd = (
         type: "SAVE" | "CANCEL",
         dataCetificationAdd?: CetificationAdd,
@@ -81,11 +77,7 @@ const CertificateCarousel: React.FC = () => {
         if (clearErrors) {
             clearErrors();
         }
-
         setOpenAdd(false);
-        // if (type === "SAVE") {
-        //     refreshPage();
-        // }
     };
     if (isError) {
         return <div> Error</div>;
@@ -109,8 +101,8 @@ const CertificateCarousel: React.FC = () => {
                     handleClose={handleCloseFormAdd}
                 />
             )}
-            <Box sx={{ minWidth: "50%", flexGrow: 1 }}>
-                <Paper
+            <Box sx={{}}>
+                {/* <Paper
                     square
                     elevation={0}
                     sx={{
@@ -121,18 +113,23 @@ const CertificateCarousel: React.FC = () => {
                         bgcolor: "background.default",
                     }}
                 >
-                    {/* {data?.certificationDoctors?.map((step, index) => (
-                <Typography>{images[activeStep].label}</Typography>
-                ))} */}
+                </Paper> */}
+                <Box
+                    sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        bgcolor: "background.default",
+                    }}
+                >
                     <Typography variant="h6" component="div">
                         Chứng chỉ
                     </Typography>
-                    <Box sx={{ ml: "30rem" }}>
+                    <Box>
                         <IconButton onClick={() => handleCreate()}>
                             <Icon>add_circle</Icon>
                         </IconButton>
                     </Box>
-                </Paper>
+                </Box>
                 <AutoPlaySwipeableViews
                     axis={theme.direction === "rtl" ? "x-reverse" : "x"}
                     index={activeStep}

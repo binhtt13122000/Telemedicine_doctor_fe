@@ -5,10 +5,11 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import logo from "../../../assets/logo.png";
 import { Doctor } from "../models/Doctor.model";
 
+import { PhotoCamera } from "@mui/icons-material";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import DesktopDatePicker from "@mui/lab/DesktopDatePicker";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
-import { Button, Card, Grid, Modal, TextField, Typography } from "@mui/material";
+import { Button, Card, Grid, IconButton, Modal, TextField, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { Box } from "@mui/system";
 
@@ -56,6 +57,7 @@ const PracticingForm: React.FC<IPracticingForm> = (props: IPracticingForm) => {
         setValue("scopeOfPractice", dataPracticing.scopeOfPractice);
         setValue("description", dataPracticing.description);
         setValue("isActive", dataPracticing.isActive);
+        setImgLink(dataPracticing.practisingCertificate);
     }, [dataPracticing, setValue]);
     const submitHandler: SubmitHandler<Doctor> = (dataPracticing: Doctor) => {
         if (dataPracticing && file) {
@@ -171,9 +173,17 @@ const PracticingForm: React.FC<IPracticingForm> = (props: IPracticingForm) => {
                                     {...register("practisingCertificate")}
                                     onChange={uploadedFile}
                                 />
-                                <Button variant="contained" component="span">
+                                {/* <Button variant="contained" component="span">
                                     Upload hình ảnh
-                                </Button>
+                                </Button> */}
+
+                                <IconButton
+                                    color="primary"
+                                    aria-label="upload picture"
+                                    component="span"
+                                >
+                                    <PhotoCamera />
+                                </IconButton>
                             </label>
                         </Grid>
                     </Grid>
