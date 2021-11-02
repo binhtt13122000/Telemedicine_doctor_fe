@@ -4,6 +4,7 @@ import SwipeableViews from "react-swipeable-views";
 import { autoPlay } from "react-swipeable-views-utils";
 
 import useGetDoctor from "../hooks/useGetDoctor";
+import { Account } from "../models/Account.model";
 import { CetificationAdd, Doctor } from "../models/Doctor.model";
 import DoctorService from "../services/Doctor.service";
 import CertificationFormAdd from "./CeritificateFormAdd";
@@ -18,6 +19,7 @@ import Button from "@mui/material/Button";
 import MobileStepper from "@mui/material/MobileStepper";
 // import Paper from "@mui/material/Paper";
 import { useTheme } from "@mui/material/styles";
+import LocalStorageUtil from "src/utils/LocalStorageUtil";
 
 const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
 
@@ -27,9 +29,10 @@ const CertificateCarousel: React.FC = () => {
         evidence: "",
         dateOfIssue: "2021-10-20T15:58:02.973Z",
     };
+    const user = LocalStorageUtil.getItem("user") as Account;
     const theme = useTheme();
     const [activeStep, setActiveStep] = React.useState(0);
-    const { data, isLoading, isError } = useGetDoctor();
+    const { data, isLoading, isError } = useGetDoctor(user.email);
     const [openAdd, setOpenAdd] = React.useState<boolean>(false);
     const [cetificationAdd] = React.useState<CetificationAdd>(initCetificationAdd);
     const handleNext = () => {
