@@ -61,8 +61,8 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
     const [disableDistrict, setDisableDistrict] = useState<boolean>(true);
     const [disableWard, setDisableWard] = useState<boolean>(true);
     const [valueProvince, setValueProvince] = useState<Province>();
-    const [valueDistrict, setValueDistrict] = useState<District>();
-    const [valueWard, setValueWard] = useState<Ward>();
+    const [valueDistrict] = useState<District>();
+    const [valueWard] = useState<Ward>();
     // const [file, setFile] = React.useState<Blob | null>();
     const {
         register,
@@ -146,14 +146,14 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
                 //         console.log("province", item.code);
                 //         let number = item.code;
                 //         setValueProvince(item);
-                //         // fetchDistricts(number);
+                //         fetchDistricts(number);
                 //     }
                 // });
             }
         } catch (_) {}
     }, []);
 
-    const fetchDistricts = useCallback(async (provinceCode: number) => {
+    const fetchDistricts = async (provinceCode: number) => {
         try {
             const service = new AddressService<Province>();
             const response = await service.getDistricts(provinceCode);
@@ -161,7 +161,7 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
                 setDistricts(response.data.districts);
             }
         } catch (_) {}
-    }, []);
+    };
 
     const fetchWards = async (districtCode: number) => {
         try {
@@ -173,12 +173,6 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
         } catch (_) {}
     };
 
-    // const { ref: city, ...cityProps } = register("city", {
-    //     min: {
-    //         value: 1,
-    //         message: "Thành phố không được để trống",
-    //     },
-    // });
     const handleChange = (newDate: Date | null) => {
         setDate(newDate);
     };
@@ -190,20 +184,18 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
     useEffect(() => {
         provinces.map((item) => {
             if (item.name === dataProfile.city) {
-                // let number = item.code;
+                let number = item.code;
+                fetchDistricts(number);
                 setValueProvince(item);
+                // districts.map((item1) => {
+                //     if (item1.name === dataProfile.locality) {
+                //         console.log("districts", item1.name);
+                //         setValueDistrict(item1);
+                //         fetchWards(item1.code);
+                //     }
+                // });
             }
         });
-
-        // console.log("District", valueDistrict);
-        // districts.map((item) => {
-        //     if (item.name === dataProfile.locality) {
-        //         console.log("districts", item.name);
-        //         setValueDistrict(item);
-        //         fetchWards(item.code);
-        //     }
-        // });
-        // console.log("District", valueDistrict);
 
         // wards.map((item) => {
         //     if (item.name === dataProfile.ward) {
@@ -214,10 +206,8 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
         // });
         // console.log("Ward", valueWard);
     }, [
-        // fetchDistricts,
         valueWard,
         valueDistrict,
-
         dataProfile.city,
         wards,
         dataProfile.ward,
@@ -253,7 +243,6 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
                         "& > :not(style)": {
                             m: 2,
                             display: "flex",
-                            // justifyContent: "center",
                         },
                     }}
                 >
@@ -275,8 +264,6 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
                                 fullWidth
                                 label="Họ*"
                                 variant="outlined"
-                                // error={!!errors.lastName}
-                                // helperText={errors.lastName && "Họ là bắt buộc"}
                                 {...register("lastName", { required: true })}
                             />
                         </Grid>
@@ -339,8 +326,6 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
                                         placeholder="Tỉnh/Thành phố"
                                         error={!!errors.city}
                                         helperText={errors.city && "Vui lòng chọn Tỉnh/Thành phố"}
-                                        // inputRef={city}
-                                        // {...cityProps}
                                         {...register("city", { required: true })}
                                     />
                                 )}
@@ -363,8 +348,6 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
                                         id="locality"
                                         variant="outlined"
                                         placeholder="Quận/Huyện"
-                                        // error={!!errors.ward}
-                                        // helperText={errors.ward && "Vui lòng chọn Quận/Huyện"}
                                         {...register("locality", { required: true })}
                                     />
                                 )}
@@ -389,8 +372,6 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
                                         fullWidth
                                         variant="outlined"
                                         placeholder="Phường/Xã"
-                                        // error={!!errors.locality}
-                                        // helperText={errors.locality && "Vui lòng chọn Phường/Xã"}
                                         {...register("ward", { required: true })}
                                     />
                                 )}

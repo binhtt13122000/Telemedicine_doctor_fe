@@ -20,14 +20,6 @@ const DoctorProfile: React.FC = () => {
                 }}
             >
                 <Container maxWidth="lg">
-                    {/* <Grid container>
-                        <img
-                            alt="Welcome"
-                            width="100%"
-                            height="100"
-                            src="https://images.all-free-download.com/images/graphiclarge/beach_cloud_dawn_horizon_horizontal_landscape_ocean_601821.jpg"
-                        />
-                    </Grid> */}
                     <Box sx={{ mt: 2 }} />
                     <Grid container spacing={4}>
                         <Grid item xs={12} md={5}>
@@ -53,11 +45,6 @@ const DoctorProfile: React.FC = () => {
                         </Grid>
                     </Grid>
                     <Box sx={{ mt: 2 }} />
-                    <Grid container spacing={3}>
-                        {/* <Grid item lg={12} md={6} xs={12}>
-                            <CeritificateProfile />
-                        </Grid> */}
-                    </Grid>
                 </Container>
             </Box>
         </React.Fragment>

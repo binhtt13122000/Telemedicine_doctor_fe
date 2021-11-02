@@ -101,19 +101,7 @@ const CertificateCarousel: React.FC = () => {
                     handleClose={handleCloseFormAdd}
                 />
             )}
-            <Box sx={{}}>
-                {/* <Paper
-                    square
-                    elevation={0}
-                    sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        height: 60,
-                        pl: 2,
-                        bgcolor: "background.default",
-                    }}
-                >
-                </Paper> */}
+            <Box>
                 <Box
                     sx={{
                         display: "flex",

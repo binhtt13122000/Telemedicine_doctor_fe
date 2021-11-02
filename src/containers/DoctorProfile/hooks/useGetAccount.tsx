@@ -11,6 +11,7 @@ export enum AccountStateKeysEnum {
 
 const useGetAccount = (email: string) => {
     let accountService = new AccountService<Account>();
+
     const result = useQuery<Account, Error>([AccountStateKeysEnum.Accounts, email], async () => {
         const result = await accountService.getAccountByEmail(email);
         return result.data;
