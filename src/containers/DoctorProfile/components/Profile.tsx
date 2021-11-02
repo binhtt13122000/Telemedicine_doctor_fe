@@ -117,7 +117,7 @@ const Profile: React.FC = () => {
                             sx={{ borderRadius: 10, width: 150, height: 150 }}
                             variant="square"
                             alt="Remy Sharp"
-                            src="https://taimuihongsg.com/wp-content/uploads/2018/05/Kim-Bun-ThuongE-01.jpg"
+                            src={data?.avatar}
                         />
                     </Box>
                     <Box
