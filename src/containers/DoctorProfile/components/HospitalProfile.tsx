@@ -2,6 +2,7 @@ import React, { useState } from "react";
 
 import useGetDoctor from "../hooks/useGetDoctor";
 import usePutHospital from "../hooks/usePutHospital";
+import { Account } from "../models/Account.model";
 import { Doctor, DoctorFromAdd } from "../models/Doctor.model";
 import { Hospital } from "../models/Hospital.model";
 import DoctorService from "../services/Doctor.service";
@@ -22,6 +23,7 @@ import {
     Typography,
 } from "@mui/material";
 import { Box } from "@mui/system";
+import LocalStorageUtil from "src/utils/LocalStorageUtil";
 
 const HospitalProfile: React.FC = () => {
     const initHospital: Hospital = {
@@ -33,7 +35,8 @@ const HospitalProfile: React.FC = () => {
         long: 0,
         isActive: true,
     };
-    const { data, isLoading, isError } = useGetDoctor();
+    const user = LocalStorageUtil.getItem("user") as Account;
+    const { data, isLoading, isError } = useGetDoctor(user.email);
     const { mutate } = usePutHospital();
     const [open, setOpen] = useState<boolean>(false);
     const [openAdd, setOpenAdd] = useState<boolean>(false);

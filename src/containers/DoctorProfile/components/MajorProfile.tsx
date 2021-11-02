@@ -2,6 +2,7 @@ import React, { useState } from "react";
 
 import useGetDoctor from "../hooks/useGetDoctor";
 import usePutMajor from "../hooks/usePutMajor";
+import { Account } from "../models/Account.model";
 import { Doctor, DoctorFromAdd } from "../models/Doctor.model";
 import { Major } from "../models/Major.model";
 import DoctorService from "../services/Doctor.service";
@@ -21,6 +22,7 @@ import {
     Typography,
 } from "@mui/material";
 import { Box } from "@mui/system";
+import LocalStorageUtil from "src/utils/LocalStorageUtil";
 
 const MajorProfile: React.FC = () => {
     const initCetification: Major = {
@@ -28,7 +30,8 @@ const MajorProfile: React.FC = () => {
         description: "",
         isActive: true,
     };
-    const { data, isLoading, isError } = useGetDoctor();
+    const user = LocalStorageUtil.getItem("user") as Account;
+    const { data, isLoading, isError } = useGetDoctor(user.email);
     const { mutate } = usePutMajor();
     const [open, setOpen] = useState<boolean>(false);
     const [openAdd, setOpenAdd] = useState<boolean>(false);
