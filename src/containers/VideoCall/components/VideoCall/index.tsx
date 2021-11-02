@@ -764,6 +764,8 @@ export const VideoCall: React.FC<VideoCallProps> = (props: VideoCallProps) => {
                                 tracks={props.tracks}
                                 healthCheck={props.healthCheck}
                                 anotherTrackAudios={props.anotherTrackAudios}
+                                uid={props.uid}
+                                userNames={props.userNames}
                             />
                         )}
                     {props.ready && props.start && props.tracks && layoutType === 1 && (
@@ -774,6 +776,8 @@ export const VideoCall: React.FC<VideoCallProps> = (props: VideoCallProps) => {
                             tracks={props.tracks}
                             healthCheck={props.healthCheck}
                             anotherTrackAudios={props.anotherTrackAudios}
+                            uid={props.uid}
+                            userNames={props.userNames}
                         />
                     )}
                     {props.ready &&

@@ -6,13 +6,14 @@ import {
     AgoraVideoPlayer,
     IAgoraRTCRemoteUser,
 } from "agora-rtc-react";
+import { DocumentData } from "firebase/firestore";
 
 import { HealthCheck } from "../../models/VideoCall.model";
 import "./index.scss";
 
 import { MicOffOutlined } from "@mui/icons-material";
 import MicNoneIcon from "@mui/icons-material/MicNoneRounded";
-import { Avatar, Box, Grid } from "@mui/material";
+import { Avatar, Box, Grid, Typography } from "@mui/material";
 import { deepOrange } from "@mui/material/colors";
 
 export interface VideoCallWithLayout2 {
@@ -25,6 +26,8 @@ export interface VideoCallWithLayout2 {
     anotherTrackVideos: Record<string, boolean>;
     anotherTrackAudios: Record<string, boolean>;
     healthCheck?: HealthCheck;
+    uid?: number;
+    userNames?: DocumentData;
 }
 const VideoCallWithLayout2: React.FC<VideoCallWithLayout2> = (props: VideoCallWithLayout2) => {
     const { users, tracks, trackState, anotherTrackVideos, anotherTrackAudios, healthCheck } =
@@ -104,6 +107,10 @@ const VideoCallWithLayout2: React.FC<VideoCallWithLayout2> = (props: VideoCallWi
                                                 ) : (
                                                     <MicOffOutlined sx={{ color: "white" }} />
                                                 )}
+                                                <Typography color="white" variant="subtitle1">
+                                                    {props.userNames &&
+                                                        props.userNames[`${props.uid}` || "0"]}
+                                                </Typography>
                                                 {/* <Typography color="white" variant="subtitle1">
                                                     Bs.{" "}
                                                     {healthCheck?.slots &&
@@ -155,6 +162,10 @@ const VideoCallWithLayout2: React.FC<VideoCallWithLayout2> = (props: VideoCallWi
                                             ) : (
                                                 <MicOffOutlined sx={{ color: "white" }} />
                                             )}
+                                            <Typography color="white" variant="subtitle1">
+                                                {props.userNames &&
+                                                    props.userNames[`${props.uid}` || "0"]}
+                                            </Typography>
                                             {/* <Typography color="white" variant="subtitle1">
                                                 Bs.{" "}
                                                 {healthCheck?.slots &&
@@ -223,6 +234,15 @@ const VideoCallWithLayout2: React.FC<VideoCallWithLayout2> = (props: VideoCallWi
                                                                     sx={{ color: "white" }}
                                                                 />
                                                             )}
+                                                            <Typography
+                                                                color="white"
+                                                                variant="subtitle1"
+                                                            >
+                                                                {props.userNames &&
+                                                                    props.userNames[
+                                                                        `${user.uid}` || "0"
+                                                                    ]}
+                                                            </Typography>
                                                             {/* <Typography
                                                                 color="white"
                                                                 variant="subtitle1"
@@ -268,6 +288,15 @@ const VideoCallWithLayout2: React.FC<VideoCallWithLayout2> = (props: VideoCallWi
                                                                 sx={{ color: "white" }}
                                                             />
                                                         )}
+                                                        <Typography
+                                                            color="white"
+                                                            variant="subtitle1"
+                                                        >
+                                                            {props.userNames &&
+                                                                props.userNames[
+                                                                    `${user.uid}` || "0"
+                                                                ]}
+                                                        </Typography>
                                                         {/* <Typography
                                                             color="white"
                                                             variant="subtitle1"
@@ -329,6 +358,10 @@ const VideoCallWithLayout2: React.FC<VideoCallWithLayout2> = (props: VideoCallWi
                                                     ) : (
                                                         <MicOffOutlined sx={{ color: "white" }} />
                                                     )}
+                                                    <Typography color="white" variant="subtitle1">
+                                                        {props.userNames &&
+                                                            props.userNames[`${user.uid}` || "0"]}
+                                                    </Typography>
                                                     {/* <Typography color="white" variant="subtitle1">
                                                         {healthCheck?.patient?.name}
                                                     </Typography> */}
