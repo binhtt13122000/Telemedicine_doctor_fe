@@ -9,7 +9,7 @@ export enum DoctorStateKeysEnum {
     UpdatePracticing = "updatePracticing",
 }
 
-const useGetDoctor = (email: string = "nhanlt16235@gmail.com") => {
+const useGetDoctor = (email: string) => {
     let doctorService = new DoctorService<Doctor>();
     const result = useQuery<Doctor, Error>([DoctorStateKeysEnum.Doctors, email], async () => {
         const result = await doctorService.getDoctorByEmail(email);

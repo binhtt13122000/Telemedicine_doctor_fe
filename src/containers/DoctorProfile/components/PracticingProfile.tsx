@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import moment from "moment";
 
 import useGetDoctor from "../hooks/useGetDoctor";
+import { Account } from "../models/Account.model";
 import { Doctor, DoctorFromAdd, DoctorPraticing } from "../models/Doctor.model";
 import DoctorService from "../services/Doctor.service";
 import PracticingForm from "./PracticingForm";
@@ -23,6 +24,7 @@ import {
 } from "@mui/material";
 import Link from "@mui/material/Link";
 import { Box, BoxProps } from "@mui/system";
+import LocalStorageUtil from "src/utils/LocalStorageUtil";
 
 function Item(props: BoxProps) {
     const { sx, ...other } = props;
@@ -46,7 +48,8 @@ function Item(props: BoxProps) {
 }
 
 const PracticingProfile: React.FC = () => {
-    const { data, isLoading, isError } = useGetDoctor();
+    const user = LocalStorageUtil.getItem("user") as Account;
+    const { data, isLoading, isError } = useGetDoctor(user.email);
     const [openModal, setOpenModal] = useState<boolean>(false);
     const [open, setOpen] = useState(false);
     const [doctorPracticing, setDoctorPracticing] = useState<DoctorPraticing>();

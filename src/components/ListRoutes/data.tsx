@@ -1,6 +1,6 @@
+import appointment from "../../assets/appointment.png";
 import dashboard from "../../assets/dashboard.png";
 import healthCheck from "../../assets/health-check.png";
-import patient from "../../assets/patient.png";
 import user from "../../assets/user.png";
 
 export const routes = [
@@ -14,7 +14,7 @@ export const routes = [
         id: 3,
         name: "Lịch hẹn",
         path: "/schedule",
-        icon: healthCheck,
+        icon: appointment,
     },
     {
         id: 3,
@@ -22,14 +22,14 @@ export const routes = [
         path: "/health-checks",
         icon: healthCheck,
     },
+    // {
+    //     id: 4,
+    //     name: "Bệnh nhân",
+    //     path: "/patients",
+    //     icon: patient,
+    // },
     {
         id: 4,
-        name: "Bệnh nhân",
-        path: "/patients",
-        icon: patient,
-    },
-    {
-        id: 5,
         name: "Thông tin cá nhân",
         path: "/doctors",
         icon: user,
