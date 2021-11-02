@@ -37,11 +37,16 @@ const VideoCallApp: React.FC<{ uid: number | undefined }> = (props) => {
     const [users, setUsers] = useState<DocumentData | undefined>(undefined);
     useEffect(() => {
         onSnapshot(doc(db, "healthcheck", id), (doc) => {
-            // eslint-disable-next-line no-console
-            console.log("Current data: ", doc.data());
-            setUsers(doc.data());
+            if (doc.exists()) {
+                // eslint-disable-next-line no-console
+                console.log("Current data: ", doc.data());
+                setUsers(doc.data());
+            } else {
+                history.push("/");
+                window.location.reload();
+            }
         });
-    }, [id]);
+    }, [id, history]);
     if (isLoading) {
         return (
             <Box
