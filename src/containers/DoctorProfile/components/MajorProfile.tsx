@@ -141,7 +141,7 @@ const MajorProfile: React.FC = () => {
                 />
             )}
             <MajorForm dataMajor={major} opened={open} handleClose={handleClose} />
-            <Card sx={{ borderRadius: 5 }}>
+            <Card sx={{ borderRadius: 5, minHeight: "100%" }}>
                 <Box sx={{ ml: 2 }}>
                     <Typography sx={{ mt: 3 }} variant="h6" component="div">
                         Chuyên khoa
@@ -160,49 +160,59 @@ const MajorProfile: React.FC = () => {
                             "& ul": { padding: 0 },
                         }}
                     >
-                        {data?.majorDoctors?.map((item) => (
-                            <>
-                                <ListItem key={item?.id}>
-                                    <Box
-                                        sx={{
-                                            display: "flex",
-                                            borderRadius: 5,
-                                            bgcolor: "#fafafa",
-                                        }}
-                                    >
-                                        <Box sx={{ display: "block" }}>
-                                            <Typography variant="h6" component="h5">
-                                                {item?.major?.name}
-                                                {item?.major?.name ? (
-                                                    <Tooltip title="Còn hoạt động">
-                                                        <IconButton>
-                                                            <CheckCircleOutlineIcon color="success" />
+                        {data?.majorDoctors.length === 0 ? (
+                            <Typography component="div" align="center">
+                                <Box sx={{ p: 1, fontSize: 18 }}>Chưa có dữ liệu</Box>
+                            </Typography>
+                        ) : (
+                            <React.Fragment>
+                                {data?.majorDoctors?.map((item) => (
+                                    <>
+                                        <ListItem key={item?.id}>
+                                            <Box
+                                                sx={{
+                                                    display: "flex",
+                                                    borderRadius: 5,
+                                                    bgcolor: "#fafafa",
+                                                }}
+                                            >
+                                                <Box sx={{ display: "block" }}>
+                                                    <Typography variant="h6" component="h5">
+                                                        {item?.major?.name}
+                                                        {item?.major?.name ? (
+                                                            <Tooltip title="Còn hoạt động">
+                                                                <IconButton>
+                                                                    <CheckCircleOutlineIcon color="success" />
+                                                                </IconButton>
+                                                            </Tooltip>
+                                                        ) : (
+                                                            <Tooltip title="Không hoạt động">
+                                                                <IconButton>
+                                                                    <CheckCircleOutlineIcon color="error" />
+                                                                </IconButton>
+                                                            </Tooltip>
+                                                        )}
+                                                    </Typography>
+                                                    <Typography variant="body2" component="h5">
+                                                        Mô tả: Chuyên chữa trị các bệnh nội ngoại
+                                                        tiết {item?.major?.description}
+                                                    </Typography>
+                                                </Box>
+                                                <Box sx={{ display: "flex", ml: 4 }}>
+                                                    <Typography variant="h6" component="div">
+                                                        <IconButton
+                                                            onClick={() => handleOpen(item?.major)}
+                                                        >
+                                                            <Icon>edit</Icon>
                                                         </IconButton>
-                                                    </Tooltip>
-                                                ) : (
-                                                    <Tooltip title="Không hoạt động">
-                                                        <IconButton>
-                                                            <CheckCircleOutlineIcon color="error" />
-                                                        </IconButton>
-                                                    </Tooltip>
-                                                )}
-                                            </Typography>
-                                            <Typography variant="body2" component="h5">
-                                                Mô tả: Chuyên chữa trị các bệnh nội ngoại tiết{" "}
-                                                {item?.major?.description}
-                                            </Typography>
-                                        </Box>
-                                        <Box sx={{ display: "flex", ml: 4 }}>
-                                            <Typography variant="h6" component="div">
-                                                <IconButton onClick={() => handleOpen(item?.major)}>
-                                                    <Icon>edit</Icon>
-                                                </IconButton>
-                                            </Typography>
-                                        </Box>
-                                    </Box>
-                                </ListItem>
-                            </>
-                        ))}
+                                                    </Typography>
+                                                </Box>
+                                            </Box>
+                                        </ListItem>
+                                    </>
+                                ))}
+                            </React.Fragment>
+                        )}
                     </List>
                     <Box sx={{ mb: 2 }} />
                     <Box sx={{ textAlign: "center" }}>

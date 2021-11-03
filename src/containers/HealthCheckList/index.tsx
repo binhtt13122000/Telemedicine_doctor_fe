@@ -93,7 +93,7 @@ const HealthCheckListing: React.FC = () => {
             <Grid item xs={6}>
                 <Card sx={{ overflow: "auto", height: 640 }}>
                     <Box sx={{ display: "flex", mb: 5, mt: 1, justifyContent: "space-between" }}>
-                        <Box>
+                        <Box sx={{ ml: 2 }}>
                             <Typography variant="h6">Danh sách lịch khám</Typography>
                         </Box>
                         <Box sx={{ display: "flex" }}>

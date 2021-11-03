@@ -126,7 +126,7 @@ const PracticingProfile: React.FC = () => {
             {data && doctorPracticing && (
                 <PracticingForm dataPracticing={data} open={openModal} handleClose={handleClose} />
             )}
-            <Card sx={{ borderRadius: 5 }}>
+            <Card sx={{ borderRadius: 5, minHeight: "100%" }}>
                 <Box sx={{ ml: 2, display: "flex", justifyContent: "space-between" }}>
                     <Box>
                         <Typography sx={{ mt: 3 }} variant="h6" component="div">
