@@ -14,8 +14,6 @@ import "./index.scss";
 import { MicOffOutlined } from "@mui/icons-material";
 import MicNoneIcon from "@mui/icons-material/MicNoneRounded";
 import { Avatar, Box, Grid, Typography } from "@mui/material";
-import { Account } from "src/common/models/Account.model";
-import LocalStorageUtil from "src/utils/LocalStorageUtil";
 
 export interface ListVideoCallProps {
     users: IAgoraRTCRemoteUser[];
@@ -32,9 +30,7 @@ export interface ListVideoCallProps {
 }
 
 const ListVideoCallWithThreePeople: React.FC<ListVideoCallProps> = (props: ListVideoCallProps) => {
-    const user = LocalStorageUtil.getItem("user") as Account;
-    const { users, tracks, trackState, anotherTrackVideos, anotherTrackAudios, healthCheck } =
-        props;
+    const { users, tracks, trackState, anotherTrackVideos, anotherTrackAudios } = props;
 
     return (
         <React.Fragment>
@@ -125,14 +121,7 @@ const ListVideoCallWithThreePeople: React.FC<ListVideoCallProps> = (props: ListV
                                                 height: 200,
                                             }}
                                             src={
-                                                user.email === healthCheck?.patient?.email
-                                                    ? healthCheck?.patient?.avatar
-                                                    : healthCheck?.slots &&
-                                                      healthCheck?.slots.length > 0 &&
-                                                      healthCheck?.slots[0].doctor?.email ===
-                                                          user.email
-                                                    ? healthCheck?.slots[0].doctor?.avatar
-                                                    : "https://e7.pngegg.com/pngimages/340/946/png-clipart-avatar-user-computer-icons-software-developer-avatar-child-face-thumbnail.png"
+                                                "https://e7.pngegg.com/pngimages/340/946/png-clipart-avatar-user-computer-icons-software-developer-avatar-child-face-thumbnail.png"
                                             }
                                         >
                                             {/* <Typography fontSize={100}>B</Typography> */}
@@ -280,17 +269,7 @@ const ListVideoCallWithThreePeople: React.FC<ListVideoCallProps> = (props: ListV
                                                                 height: 200,
                                                             }}
                                                             src={
-                                                                user.uid ===
-                                                                healthCheck?.patient?.email
-                                                                    ? healthCheck?.patient?.avatar
-                                                                    : healthCheck?.slots &&
-                                                                      healthCheck?.slots.length >
-                                                                          0 &&
-                                                                      healthCheck?.slots[0].doctor
-                                                                          ?.email === user.uid
-                                                                    ? healthCheck?.slots[0].doctor
-                                                                          ?.avatar
-                                                                    : "https://e7.pngegg.com/pngimages/340/946/png-clipart-avatar-user-computer-icons-software-developer-avatar-child-face-thumbnail.png"
+                                                                "https://e7.pngegg.com/pngimages/340/946/png-clipart-avatar-user-computer-icons-software-developer-avatar-child-face-thumbnail.png"
                                                             }
                                                         ></Avatar>
                                                         <Box
@@ -375,15 +354,7 @@ const ListVideoCallWithThreePeople: React.FC<ListVideoCallProps> = (props: ListV
                                                             height: 200,
                                                         }}
                                                         src={
-                                                            user.uid === healthCheck?.patient?.email
-                                                                ? healthCheck?.patient?.avatar
-                                                                : healthCheck?.slots &&
-                                                                  healthCheck?.slots.length > 0 &&
-                                                                  healthCheck?.slots[0].doctor
-                                                                      ?.email === user.uid
-                                                                ? healthCheck?.slots[0].doctor
-                                                                      ?.avatar
-                                                                : "https://e7.pngegg.com/pngimages/340/946/png-clipart-avatar-user-computer-icons-software-developer-avatar-child-face-thumbnail.png"
+                                                            "https://e7.pngegg.com/pngimages/340/946/png-clipart-avatar-user-computer-icons-software-developer-avatar-child-face-thumbnail.png"
                                                         }
                                                     ></Avatar>
                                                     <Box
@@ -543,17 +514,7 @@ const ListVideoCallWithThreePeople: React.FC<ListVideoCallProps> = (props: ListV
                                                                 height: 200,
                                                             }}
                                                             src={
-                                                                user.uid ===
-                                                                healthCheck?.patient?.email
-                                                                    ? healthCheck?.patient?.avatar
-                                                                    : healthCheck?.slots &&
-                                                                      healthCheck?.slots.length >
-                                                                          0 &&
-                                                                      healthCheck?.slots[0].doctor
-                                                                          ?.email === user.uid
-                                                                    ? healthCheck?.slots[0].doctor
-                                                                          ?.avatar
-                                                                    : "https://e7.pngegg.com/pngimages/340/946/png-clipart-avatar-user-computer-icons-software-developer-avatar-child-face-thumbnail.png"
+                                                                "https://e7.pngegg.com/pngimages/340/946/png-clipart-avatar-user-computer-icons-software-developer-avatar-child-face-thumbnail.png"
                                                             }
                                                         ></Avatar>
                                                         <Box
@@ -638,15 +599,7 @@ const ListVideoCallWithThreePeople: React.FC<ListVideoCallProps> = (props: ListV
                                                             height: 200,
                                                         }}
                                                         src={
-                                                            user.uid === healthCheck?.patient?.email
-                                                                ? healthCheck?.patient?.avatar
-                                                                : healthCheck?.slots &&
-                                                                  healthCheck?.slots.length > 0 &&
-                                                                  healthCheck?.slots[0].doctor
-                                                                      ?.email === user.uid
-                                                                ? healthCheck?.slots[0].doctor
-                                                                      ?.avatar
-                                                                : "https://e7.pngegg.com/pngimages/340/946/png-clipart-avatar-user-computer-icons-software-developer-avatar-child-face-thumbnail.png"
+                                                            "https://e7.pngegg.com/pngimages/340/946/png-clipart-avatar-user-computer-icons-software-developer-avatar-child-face-thumbnail.png"
                                                         }
                                                     ></Avatar>
                                                     <Box

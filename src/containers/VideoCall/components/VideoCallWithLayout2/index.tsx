@@ -30,8 +30,7 @@ export interface VideoCallWithLayout2 {
     userNames?: DocumentData;
 }
 const VideoCallWithLayout2: React.FC<VideoCallWithLayout2> = (props: VideoCallWithLayout2) => {
-    const { users, tracks, trackState, anotherTrackVideos, anotherTrackAudios, healthCheck } =
-        props;
+    const { users, tracks, trackState, anotherTrackVideos, anotherTrackAudios } = props;
 
     return (
         <Box
@@ -142,8 +141,7 @@ const VideoCallWithLayout2: React.FC<VideoCallWithLayout2> = (props: VideoCallWi
                                                 cursor: "pointer",
                                             }}
                                             src={
-                                                healthCheck?.slots &&
-                                                healthCheck?.slots[0].doctor?.avatar
+                                                "https://e7.pngegg.com/pngimages/340/946/png-clipart-avatar-user-computer-icons-software-developer-avatar-child-face-thumbnail.png"
                                             }
                                         >
                                             {/* <Typography fontSize={100}>B</Typography> */}
@@ -271,7 +269,9 @@ const VideoCallWithLayout2: React.FC<VideoCallWithLayout2> = (props: VideoCallWi
                                                             width: 200,
                                                             height: 200,
                                                         }}
-                                                        src={healthCheck?.patient?.avatar}
+                                                        src={
+                                                            "https://e7.pngegg.com/pngimages/340/946/png-clipart-avatar-user-computer-icons-software-developer-avatar-child-face-thumbnail.png"
+                                                        }
                                                     ></Avatar>
                                                     <Box
                                                         sx={{
@@ -343,7 +343,9 @@ const VideoCallWithLayout2: React.FC<VideoCallWithLayout2> = (props: VideoCallWi
                                                         width: 200,
                                                         height: 200,
                                                     }}
-                                                    src={healthCheck?.patient?.avatar}
+                                                    src={
+                                                        "https://e7.pngegg.com/pngimages/340/946/png-clipart-avatar-user-computer-icons-software-developer-avatar-child-face-thumbnail.png"
+                                                    }
                                                 ></Avatar>
                                                 <Box
                                                     sx={{
