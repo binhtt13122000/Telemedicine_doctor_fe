@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import { IMicrophoneAudioTrack, ICameraVideoTrack, IAgoraRTCRemoteUser } from "agora-rtc-react";
 import { AxiosResponse } from "axios";
@@ -6,6 +6,7 @@ import moment from "moment";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useHistory } from "react-router";
 import axios from "src/axios";
+import { API_KEY } from "src/configurations";
 
 import { CircularProgress } from "@material-ui/core";
 import { NotificationCM } from "src/components/AppBar";
@@ -99,6 +100,8 @@ export const VideoCall: React.FC<VideoCallProps> = (props: VideoCallProps) => {
 
     const [activeStep, setActiveStep] = React.useState(0);
 
+    const [shortLink, setShortLink] = useState("");
+
     const { register, handleSubmit, setValue, clearErrors, getValues } =
         useForm<IUpdateHealthCheck>({});
 
@@ -115,6 +118,32 @@ export const VideoCall: React.FC<VideoCallProps> = (props: VideoCallProps) => {
     const handleBack = () => {
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
     };
+
+    useEffect(() => {
+        const fetchShortLink = async () => {
+            let link = window.location.pathname.split("/")[2];
+            const response = await fetch(
+                `https://firebasedynamiclinks.googleapis.com/v1/shortLinks?key=${API_KEY}`,
+                {
+                    method: "post",
+                    body: JSON.stringify({
+                        dynamicLinkInfo: {
+                            domainUriPrefix: "https://metacine.page.link",
+                            link: `https://telemedicine-doctor-121fb.web.app/guest/${link}?healthCheckID=${link}`,
+                            androidInfo: {
+                                androidPackageName: "com.example.telemedicine_mobile",
+                            },
+                        },
+                    }),
+                }
+            );
+            if (response.status === 200) {
+                let json = await response.json();
+                setShortLink(json.shortLink);
+            }
+        };
+        fetchShortLink();
+    }, []);
 
     const { ref: diseaseRef, ...diseaseRefProps } = register("healthCheckDiseases");
 
@@ -298,19 +327,12 @@ export const VideoCall: React.FC<VideoCallProps> = (props: VideoCallProps) => {
             <React.Fragment>
                 <Grid container sx={{ mt: 3 }}>
                     <Grid item xs={10}>
-                        <TextField
-                            disabled
-                            value={window.location.host + "/guest/" + (props.healthCheck?.id || 0)}
-                            size="small"
-                            fullWidth
-                        />
+                        <TextField disabled value={shortLink} size="small" fullWidth />
                     </Grid>
                     <Grid item xs={2} display="flex" alignItems="center" justifyContent="center">
                         <IconButton
                             onClick={() => {
-                                navigator.clipboard.writeText(
-                                    window.location.host + "/guest/" + (props.healthCheck?.id || 0)
-                                );
+                                navigator.clipboard.writeText(shortLink);
                                 showSnackbar(
                                     {
                                         children: "Lưu thành công!",
