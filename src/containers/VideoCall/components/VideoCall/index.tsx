@@ -13,6 +13,7 @@ import { NotificationCM } from "src/components/AppBar";
 import CustomizeAutocomplete from "src/components/CustomizeAutocomplete";
 import useSnackbar from "src/components/Snackbar/useSnackbar";
 
+import { IDrug, IUpdateHealthCheck } from "../../../Popup/IUpdateHealthCheck.model";
 import useChangeStatusHealthCheck from "../../hooks/useChangeStatusHealthCheck";
 import useGetDoctorListByEmail from "../../hooks/useGetDoctorListByEmail";
 import useUpdateHealthCheck from "../../hooks/useUpdateHealthCheck";
@@ -21,7 +22,6 @@ import { useClient } from "../../setting";
 import ListVideoCall from "../ListVideoCall";
 import ListVideoCallWithThreePeople from "../ListVideoCallWithThreePeople";
 import VideoCallWithLayout2 from "../VideoCallWithLayout2";
-import { IDrug, IUpdateHealthCheck } from "./IUpdateHealthCheck.model";
 
 import { DocumentData } from "@firebase/firestore";
 // import VideoCallWithLayout2 from "../VideoCallWithLayout2";
@@ -62,6 +62,7 @@ import {
 } from "@mui/material";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
+import PrescriptionPopup from "src/containers/Popup";
 
 export interface VideoCallProps {
     start: boolean;
@@ -89,6 +90,8 @@ export const VideoCall: React.FC<VideoCallProps> = (props: VideoCallProps) => {
         checked: false,
         type: "",
     });
+    const [openPrescription, setOpenScription] = useState<boolean>(false);
+    const [prescription, setPrescription] = useState<IUpdateHealthCheck>();
     const [drugs, setDrugs] = useState<IDrug[]>([]);
     const [number, setNumber] = useState(0);
     const [search, setSearch] = useState("");
@@ -220,20 +223,34 @@ export const VideoCall: React.FC<VideoCallProps> = (props: VideoCallProps) => {
             status: "COMPLETED",
         });
     };
-
+    const handleClose = (type: "CONFIRM" | "CANCEL", data?: IUpdateHealthCheck) => {
+        if (type === "CONFIRM") {
+            if (data) {
+                mutate({
+                    ...data,
+                    id: props.healthCheck?.id || 0,
+                    rating: 0,
+                    comment: "",
+                });
+            }
+        }
+        setOpenScription(false);
+    };
     const { mutate } = useUpdateHealthCheck(endCall);
 
     const submitHandle: SubmitHandler<IUpdateHealthCheck> = (data: IUpdateHealthCheck) => {
         // eslint-disable-next-line no-console
         console.log(data);
         data.prescriptions.splice(-1);
-
-        mutate({
-            ...data,
-            id: props.healthCheck?.id || 0,
-            rating: 0,
-            comment: "",
-        });
+        setPrescription(data);
+        setOpenScription(true);
+        // mutate({
+        //     ...data,
+        //     id: props.healthCheck?.id || 0,
+        //     rating: 0,
+        //     comment: "",
+        // });
+        // {
     };
 
     const mute = async (type: "audio" | "video") => {
@@ -688,347 +705,358 @@ export const VideoCall: React.FC<VideoCallProps> = (props: VideoCallProps) => {
         );
     };
     return (
-        <Box
-            sx={{
-                display: "flex",
-                flexDirection: "column",
-                minHeight: "100vh",
-                alignItems: "start",
-                backgroundColor: "#202124",
-            }}
-        >
-            <CssBaseline />
+        <React.Fragment>
+            {prescription && (
+                <PrescriptionPopup
+                    prescription={prescription}
+                    healthCheck={props.healthCheck}
+                    open={openPrescription}
+                    handleClose={handleClose}
+                />
+            )}
+
             <Box
-                height="50px"
                 sx={{
-                    width: "100%",
-                    backgroundColor: "#202124",
-                    overflow: "hidden",
                     display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
+                    flexDirection: "column",
+                    minHeight: "100vh",
+                    alignItems: "start",
+                    backgroundColor: "#202124",
                 }}
             >
-                <IconButton
-                    sx={{
-                        color: "white",
-                        "&:hover": {
-                            backgroundColor: "#3c4043",
-                            color: "white",
-                        },
-                    }}
-                    onClick={() => setLayoutType(0)}
-                >
-                    <CalendarViewWeek fontSize="medium" />
-                </IconButton>
-                <IconButton
-                    sx={{
-                        color: "white",
-                        "&:hover": {
-                            backgroundColor: "#3c4043",
-                            color: "white",
-                        },
-                    }}
-                    onClick={() => setLayoutType(1)}
-                >
-                    <BrandingWatermark fontSize="medium" />
-                </IconButton>
-                <IconButton
-                    sx={{
-                        color: "white",
-                        "&:hover": {
-                            backgroundColor: "#3c4043",
-                            color: "white",
-                        },
-                    }}
-                    onClick={() => setLayoutType(2)}
-                >
-                    <Splitscreen fontSize="medium" />
-                </IconButton>
-            </Box>
-            <Box
-                display="flex"
-                height="calc(100vh - 130px)"
-                width={1}
-                sx={{ backgroundColor: "#202124", overflow: "hidden" }}
-            >
+                <CssBaseline />
                 <Box
-                    height="100%"
-                    width={checkType.checked ? "75%" : "100%"}
-                    sx={{ backgroundColor: "#202124" }}
+                    height="50px"
+                    sx={{
+                        width: "100%",
+                        backgroundColor: "#202124",
+                        overflow: "hidden",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                    }}
                 >
-                    {props.ready &&
-                        props.start &&
-                        props.tracks &&
-                        layoutType === 0 &&
-                        props.users?.length < 2 && (
-                            <ListVideoCall
-                                anotherTrackVideos={props.anotherTrackVideos}
-                                trackState={trackState}
-                                users={props.users}
-                                tracks={props.tracks}
-                                healthCheck={props.healthCheck}
-                                anotherTrackAudios={props.anotherTrackAudios}
-                                uid={props.uid}
-                                userNames={props.userNames}
-                            />
-                        )}
-                    {props.ready &&
-                        props.start &&
-                        props.tracks &&
-                        layoutType === 0 &&
-                        props.users?.length < 4 &&
-                        props.users?.length > 1 && (
-                            <ListVideoCallWithThreePeople
-                                anotherTrackVideos={props.anotherTrackVideos}
-                                trackState={trackState}
-                                users={props.users}
-                                tracks={props.tracks}
-                                healthCheck={props.healthCheck}
-                                anotherTrackAudios={props.anotherTrackAudios}
-                                uid={props.uid}
-                                userNames={props.userNames}
-                            />
-                        )}
-                    {props.ready && props.start && props.tracks && layoutType === 1 && (
-                        <VideoCallWithLayout2
-                            anotherTrackVideos={props.anotherTrackVideos}
-                            trackState={trackState}
-                            users={props.users}
-                            tracks={props.tracks}
-                            healthCheck={props.healthCheck}
-                            anotherTrackAudios={props.anotherTrackAudios}
-                            uid={props.uid}
-                            userNames={props.userNames}
-                        />
-                    )}
-                    {props.ready &&
-                        props.start &&
-                        props.tracks &&
-                        layoutType === 2 &&
-                        // <VideoCallWithLayout3
-                        //     anotherTrackVideos={props.anotherTrackVideos}
-                        //     trackState={trackState}
-                        //     users={props.users}
-                        //     tracks={props.tracks}
-                        //     healthCheck={props.healthCheck}
-                        //     anotherTrackAudios={props.anotherTrackAudios}
-                        // />
-                        null}
+                    <IconButton
+                        sx={{
+                            color: "white",
+                            "&:hover": {
+                                backgroundColor: "#3c4043",
+                                color: "white",
+                            },
+                        }}
+                        onClick={() => setLayoutType(0)}
+                    >
+                        <CalendarViewWeek fontSize="medium" />
+                    </IconButton>
+                    <IconButton
+                        sx={{
+                            color: "white",
+                            "&:hover": {
+                                backgroundColor: "#3c4043",
+                                color: "white",
+                            },
+                        }}
+                        onClick={() => setLayoutType(1)}
+                    >
+                        <BrandingWatermark fontSize="medium" />
+                    </IconButton>
+                    <IconButton
+                        sx={{
+                            color: "white",
+                            "&:hover": {
+                                backgroundColor: "#3c4043",
+                                color: "white",
+                            },
+                        }}
+                        onClick={() => setLayoutType(2)}
+                    >
+                        <Splitscreen fontSize="medium" />
+                    </IconButton>
                 </Box>
-                <Slide direction="left" in={checkType.checked} mountOnEnter unmountOnExit>
+                <Box
+                    display="flex"
+                    height="calc(100vh - 130px)"
+                    width={1}
+                    sx={{ backgroundColor: "#202124", overflow: "hidden" }}
+                >
                     <Box
                         height="100%"
-                        display="flex"
-                        alignItems="center"
-                        justifyContent="flex-end"
-                        width="25%"
+                        width={checkType.checked ? "75%" : "100%"}
                         sx={{ backgroundColor: "#202124" }}
                     >
-                        <Card
-                            sx={{
-                                width: "100%",
-                                height: "100%",
-                                margin: 1,
-                                borderRadius: 2,
-                                overflowY: "auto",
-                            }}
-                        >
-                            <CardContent>
-                                {checkType.type === "info"
-                                    ? info()
-                                    : checkType.type === "dashboard"
-                                    ? dashboard()
-                                    : invite()}
-                            </CardContent>
-                        </Card>
+                        {props.ready &&
+                            props.start &&
+                            props.tracks &&
+                            layoutType === 0 &&
+                            props.users?.length < 2 && (
+                                <ListVideoCall
+                                    anotherTrackVideos={props.anotherTrackVideos}
+                                    trackState={trackState}
+                                    users={props.users}
+                                    tracks={props.tracks}
+                                    healthCheck={props.healthCheck}
+                                    anotherTrackAudios={props.anotherTrackAudios}
+                                    uid={props.uid}
+                                    userNames={props.userNames}
+                                />
+                            )}
+                        {props.ready &&
+                            props.start &&
+                            props.tracks &&
+                            layoutType === 0 &&
+                            props.users?.length < 4 &&
+                            props.users?.length > 1 && (
+                                <ListVideoCallWithThreePeople
+                                    anotherTrackVideos={props.anotherTrackVideos}
+                                    trackState={trackState}
+                                    users={props.users}
+                                    tracks={props.tracks}
+                                    healthCheck={props.healthCheck}
+                                    anotherTrackAudios={props.anotherTrackAudios}
+                                    uid={props.uid}
+                                    userNames={props.userNames}
+                                />
+                            )}
+                        {props.ready && props.start && props.tracks && layoutType === 1 && (
+                            <VideoCallWithLayout2
+                                anotherTrackVideos={props.anotherTrackVideos}
+                                trackState={trackState}
+                                users={props.users}
+                                tracks={props.tracks}
+                                healthCheck={props.healthCheck}
+                                anotherTrackAudios={props.anotherTrackAudios}
+                                uid={props.uid}
+                                userNames={props.userNames}
+                            />
+                        )}
+                        {props.ready &&
+                            props.start &&
+                            props.tracks &&
+                            layoutType === 2 &&
+                            // <VideoCallWithLayout3
+                            //     anotherTrackVideos={props.anotherTrackVideos}
+                            //     trackState={trackState}
+                            //     users={props.users}
+                            //     tracks={props.tracks}
+                            //     healthCheck={props.healthCheck}
+                            //     anotherTrackAudios={props.anotherTrackAudios}
+                            // />
+                            null}
                     </Box>
-                </Slide>
-            </Box>
-            {props.ready && props.start && props.tracks && (
-                <Box
-                    width={1}
-                    height={80}
-                    component="footer"
-                    sx={{
-                        mt: "auto",
-                        backgroundColor: "#202124",
-                    }}
-                >
-                    <Box
-                        height={80}
-                        sx={{ color: "white", width: "100%", paddingLeft: 4, paddingRight: 4 }}
-                        boxSizing="border-box"
-                    >
-                        <Grid
-                            height={80}
-                            container
+                    <Slide direction="left" in={checkType.checked} mountOnEnter unmountOnExit>
+                        <Box
+                            height="100%"
+                            display="flex"
                             alignItems="center"
-                            justifyContent="space-between"
+                            justifyContent="flex-end"
+                            width="25%"
+                            sx={{ backgroundColor: "#202124" }}
                         >
-                            <Grid
-                                item
+                            <Card
                                 sx={{
-                                    display: { xs: "none", lg: "block" },
+                                    width: "100%",
+                                    height: "100%",
+                                    margin: 1,
+                                    borderRadius: 2,
+                                    overflowY: "auto",
                                 }}
                             >
-                                <Typography variant="body1" fontSize={20}>
-                                    {moment(new Date()).format("LT")}
-                                </Typography>
-                            </Grid>
-                            <Grid item>
+                                <CardContent>
+                                    {checkType.type === "info"
+                                        ? info()
+                                        : checkType.type === "dashboard"
+                                        ? dashboard()
+                                        : invite()}
+                                </CardContent>
+                            </Card>
+                        </Box>
+                    </Slide>
+                </Box>
+                {props.ready && props.start && props.tracks && (
+                    <Box
+                        width={1}
+                        height={80}
+                        component="footer"
+                        sx={{
+                            mt: "auto",
+                            backgroundColor: "#202124",
+                        }}
+                    >
+                        <Box
+                            height={80}
+                            sx={{ color: "white", width: "100%", paddingLeft: 4, paddingRight: 4 }}
+                            boxSizing="border-box"
+                        >
+                            <Grid
+                                height={80}
+                                container
+                                alignItems="center"
+                                justifyContent="space-between"
+                            >
                                 <Grid
-                                    spacing={2}
+                                    item
                                     sx={{
-                                        height: 80,
+                                        display: { xs: "none", lg: "block" },
                                     }}
-                                    container
-                                    alignItems="center"
-                                    justifyContent="center"
                                 >
-                                    <Grid item>
-                                        <Tooltip title="Tắt micro">
-                                            <Fab
-                                                size="medium"
-                                                sx={{
-                                                    backgroundColor: trackState.audio
-                                                        ? "#3c4043"
-                                                        : "red",
-                                                    color: "white",
-                                                    "&:hover": {
+                                    <Typography variant="body1" fontSize={20}>
+                                        {moment(new Date()).format("LT")}
+                                    </Typography>
+                                </Grid>
+                                <Grid item>
+                                    <Grid
+                                        spacing={2}
+                                        sx={{
+                                            height: 80,
+                                        }}
+                                        container
+                                        alignItems="center"
+                                        justifyContent="center"
+                                    >
+                                        <Grid item>
+                                            <Tooltip title="Tắt micro">
+                                                <Fab
+                                                    size="medium"
+                                                    sx={{
                                                         backgroundColor: trackState.audio
                                                             ? "#3c4043"
                                                             : "red",
                                                         color: "white",
-                                                    },
-                                                }}
-                                                onClick={() => mute("audio")}
-                                            >
-                                                {trackState.audio ? (
-                                                    <MicNoneIcon />
-                                                ) : (
-                                                    <MicOffOutlined />
-                                                )}
-                                            </Fab>
-                                        </Tooltip>
-                                    </Grid>
-                                    <Grid item>
-                                        <Tooltip title="Tắt máy ảnh">
-                                            <Fab
-                                                size="medium"
-                                                sx={{
-                                                    backgroundColor: trackState.video
-                                                        ? "#3c4043"
-                                                        : "red",
-                                                    color: "white",
-                                                    "&:hover": {
+                                                        "&:hover": {
+                                                            backgroundColor: trackState.audio
+                                                                ? "#3c4043"
+                                                                : "red",
+                                                            color: "white",
+                                                        },
+                                                    }}
+                                                    onClick={() => mute("audio")}
+                                                >
+                                                    {trackState.audio ? (
+                                                        <MicNoneIcon />
+                                                    ) : (
+                                                        <MicOffOutlined />
+                                                    )}
+                                                </Fab>
+                                            </Tooltip>
+                                        </Grid>
+                                        <Grid item>
+                                            <Tooltip title="Tắt máy ảnh">
+                                                <Fab
+                                                    size="medium"
+                                                    sx={{
                                                         backgroundColor: trackState.video
                                                             ? "#3c4043"
                                                             : "red",
                                                         color: "white",
-                                                    },
-                                                }}
-                                                onClick={() => mute("video")}
-                                            >
-                                                {trackState.video ? (
-                                                    <VideocamIcon />
-                                                ) : (
-                                                    <VideocamOffOutlined />
-                                                )}
-                                            </Fab>
-                                        </Tooltip>
-                                    </Grid>
-                                    <Grid item>
-                                        <Tooltip title="Rời khỏi cuộc gọi">
-                                            <Fab
-                                                variant="extended"
-                                                sx={{
-                                                    width: 60,
-                                                    backgroundColor: "red",
-                                                    color: "white",
-                                                    "&:hover": {
+                                                        "&:hover": {
+                                                            backgroundColor: trackState.video
+                                                                ? "#3c4043"
+                                                                : "red",
+                                                            color: "white",
+                                                        },
+                                                    }}
+                                                    onClick={() => mute("video")}
+                                                >
+                                                    {trackState.video ? (
+                                                        <VideocamIcon />
+                                                    ) : (
+                                                        <VideocamOffOutlined />
+                                                    )}
+                                                </Fab>
+                                            </Tooltip>
+                                        </Grid>
+                                        <Grid item>
+                                            <Tooltip title="Rời khỏi cuộc gọi">
+                                                <Fab
+                                                    variant="extended"
+                                                    sx={{
+                                                        width: 60,
                                                         backgroundColor: "red",
                                                         color: "white",
-                                                    },
-                                                }}
-                                                onClick={() => leaveChannel()}
-                                            >
-                                                <CallEndIcon />
-                                            </Fab>
-                                        </Tooltip>
+                                                        "&:hover": {
+                                                            backgroundColor: "red",
+                                                            color: "white",
+                                                        },
+                                                    }}
+                                                    onClick={() => leaveChannel()}
+                                                >
+                                                    <CallEndIcon />
+                                                </Fab>
+                                            </Tooltip>
+                                        </Grid>
                                     </Grid>
                                 </Grid>
-                            </Grid>
-                            <Grid
-                                item
-                                sx={{
-                                    display: { xs: "none", lg: "block" },
-                                }}
-                            >
                                 <Grid
-                                    spacing={3}
+                                    item
                                     sx={{
-                                        height: 80,
+                                        display: { xs: "none", lg: "block" },
                                     }}
-                                    container
-                                    alignItems="center"
-                                    justifyContent="center"
                                 >
-                                    <Grid item>
-                                        <Tooltip title="Chi tiết về cuộc họp">
-                                            <IconButton
-                                                color="inherit"
-                                                sx={{
-                                                    "&:hover": {
-                                                        backgroundColor: "#3c4043",
-                                                        color: "white",
-                                                    },
-                                                }}
-                                                onClick={() => clickIcon("info")}
-                                            >
-                                                <InfoOutlined fontSize="medium" />
-                                            </IconButton>
-                                        </Tooltip>
-                                    </Grid>
-                                    <Grid item>
-                                        <Tooltip title="Mời thêm người">
-                                            <IconButton
-                                                color="inherit"
-                                                sx={{
-                                                    "&:hover": {
-                                                        backgroundColor: "#3c4043",
-                                                        color: "white",
-                                                    },
-                                                }}
-                                                onClick={() => clickIcon("invite")}
-                                            >
-                                                <AddCircle fontSize="medium" />
-                                            </IconButton>
-                                        </Tooltip>
-                                    </Grid>
-                                    <Grid item>
-                                        <Tooltip title="Mở trang quản lí cuộc hẹn">
-                                            <IconButton
-                                                color="inherit"
-                                                sx={{
-                                                    "&:hover": {
-                                                        backgroundColor: "#3c4043",
-                                                        color: "white",
-                                                    },
-                                                }}
-                                                onClick={() => clickIcon("dashboard")}
-                                            >
-                                                <DashboardOutlined fontSize="medium" />
-                                            </IconButton>
-                                        </Tooltip>
+                                    <Grid
+                                        spacing={3}
+                                        sx={{
+                                            height: 80,
+                                        }}
+                                        container
+                                        alignItems="center"
+                                        justifyContent="center"
+                                    >
+                                        <Grid item>
+                                            <Tooltip title="Chi tiết về cuộc họp">
+                                                <IconButton
+                                                    color="inherit"
+                                                    sx={{
+                                                        "&:hover": {
+                                                            backgroundColor: "#3c4043",
+                                                            color: "white",
+                                                        },
+                                                    }}
+                                                    onClick={() => clickIcon("info")}
+                                                >
+                                                    <InfoOutlined fontSize="medium" />
+                                                </IconButton>
+                                            </Tooltip>
+                                        </Grid>
+                                        <Grid item>
+                                            <Tooltip title="Mời thêm người">
+                                                <IconButton
+                                                    color="inherit"
+                                                    sx={{
+                                                        "&:hover": {
+                                                            backgroundColor: "#3c4043",
+                                                            color: "white",
+                                                        },
+                                                    }}
+                                                    onClick={() => clickIcon("invite")}
+                                                >
+                                                    <AddCircle fontSize="medium" />
+                                                </IconButton>
+                                            </Tooltip>
+                                        </Grid>
+                                        <Grid item>
+                                            <Tooltip title="Mở trang quản lí cuộc hẹn">
+                                                <IconButton
+                                                    color="inherit"
+                                                    sx={{
+                                                        "&:hover": {
+                                                            backgroundColor: "#3c4043",
+                                                            color: "white",
+                                                        },
+                                                    }}
+                                                    onClick={() => clickIcon("dashboard")}
+                                                >
+                                                    <DashboardOutlined fontSize="medium" />
+                                                </IconButton>
+                                            </Tooltip>
+                                        </Grid>
                                     </Grid>
                                 </Grid>
                             </Grid>
-                        </Grid>
+                        </Box>
                     </Box>
-                </Box>
-            )}
-        </Box>
+                )}
+            </Box>
+        </React.Fragment>
     );
 };
 
