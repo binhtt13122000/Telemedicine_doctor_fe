@@ -14,7 +14,16 @@ import { PhotoCamera } from "@mui/icons-material";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import DesktopDatePicker from "@mui/lab/DesktopDatePicker";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
-import { Button, Card, Grid, IconButton, InputLabel, TextField, Typography } from "@mui/material";
+import {
+    Button,
+    Card,
+    CardContent,
+    CardHeader,
+    Grid,
+    IconButton,
+    TextField,
+    Typography,
+} from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { Box } from "@mui/system";
 import LocalStorageUtil from "src/utils/LocalStorageUtil";
@@ -26,7 +35,7 @@ const Input = styled("input")({
 const DoctorForm: React.FC = () => {
     const showSnackBar = useSnackbar();
     const history = useHistory();
-    const [date, setDate] = useState<Date | null>(new Date("2000-01-01T21:11:54"));
+    const [date, setDate] = useState<Date>(new Date("2000-01-01T00:00:00"));
     const [maxDate, setMaxDate] = useState<Date>(new Date());
     const [imgLink, setImgLink] = useState<string>(defaultImg);
     const [file, setFile] = useState<string | Blob>("");
@@ -66,7 +75,11 @@ const DoctorForm: React.FC = () => {
     };
 
     const handleChange = (newDate: Date | null) => {
-        setDate(newDate);
+        if (!newDate) {
+            setDate(new Date("2000-01-01T00:00:00"));
+        } else {
+            setDate(newDate);
+        }
     };
 
     const uploadedFile = (event?: React.ChangeEvent<HTMLInputElement>) => {
@@ -101,7 +114,11 @@ const DoctorForm: React.FC = () => {
     };
 
     const onSubmit: SubmitHandler<Doctor> = (data: Doctor) => {
-        const res = { ...data, email: LocalStorageUtil.getItem("email") };
+        const res = {
+            ...data,
+            email: LocalStorageUtil.getItem("email"),
+            dateOfCertificate: date.toDateString(),
+        };
         createDoctor(res);
     };
 
@@ -114,22 +131,17 @@ const DoctorForm: React.FC = () => {
     return (
         <Card
             sx={{
-                position: "absolute" as "absolute",
-                top: "50%",
-                left: "50%",
-                transform: "translate(-50%, -50%)",
                 width: "70%",
+                minWidth: 400,
                 p: 1,
-                m: 2,
+                m: "0 auto",
+                mt: 3,
+                mb: 3,
                 borderRadius: 1,
             }}
         >
-            <Box sx={{ display: "flex", justifyContent: "center", m: 3 }}>
-                <Typography variant="h5" component="h2">
-                    Thông tin chứng chỉ/chuyên ngành
-                </Typography>
-            </Box>
-            <Box
+            <CardHeader title="Thông tin chứng chỉ/chuyên ngành" sx={{ textAlign: "center" }} />
+            <CardContent
                 component="form"
                 encType="multipart/form-data"
                 onSubmit={handleSubmit(onSubmit)}
@@ -141,11 +153,9 @@ const DoctorForm: React.FC = () => {
                     },
                 }}
             >
-                <Grid container columnSpacing={5}>
+                <Grid container spacing={1}>
                     <Grid item xs={3}>
-                        <InputLabel>
-                            <Typography variant="h6">Nơi công tác</Typography>
-                        </InputLabel>
+                        <Typography sx={{ fontSize: 20 }}>Nơi công tác *</Typography>
                     </Grid>
                     <Grid item xs={9}>
                         <MultipleAutocomplete
@@ -162,12 +172,8 @@ const DoctorForm: React.FC = () => {
                             width="80%"
                         />
                     </Grid>
-                </Grid>
-                <Grid container columnSpacing={5}>
                     <Grid item xs={3}>
-                        <InputLabel>
-                            <Typography variant="h6">Chuyên ngành</Typography>
-                        </InputLabel>
+                        <Typography sx={{ fontSize: 20 }}>Chuyên ngành *</Typography>
                     </Grid>
                     <Grid item xs={9}>
                         <MultipleAutocomplete
@@ -184,12 +190,8 @@ const DoctorForm: React.FC = () => {
                             width="80%"
                         />
                     </Grid>
-                </Grid>
-                <Grid container columnSpacing={5}>
                     <Grid item xs={3}>
-                        <InputLabel>
-                            <Typography variant="h6">Chuyên khoa</Typography>
-                        </InputLabel>
+                        <Typography sx={{ fontSize: 20 }}>Chuyên khoa *</Typography>
                     </Grid>
                     <Grid item xs={9}>
                         <TextField
@@ -202,12 +204,8 @@ const DoctorForm: React.FC = () => {
                             sx={{ width: "80%" }}
                         />
                     </Grid>
-                </Grid>
-                <Grid container columnSpacing={5}>
                     <Grid item xs={3}>
-                        <InputLabel>
-                            <Typography variant="h6">Mã chứng chỉ hành nghề</Typography>
-                        </InputLabel>
+                        <Typography sx={{ fontSize: 20 }}>Mã chứng chỉ hành nghề *</Typography>
                     </Grid>
                     <Grid item xs={9}>
                         <TextField
@@ -220,12 +218,8 @@ const DoctorForm: React.FC = () => {
                             sx={{ width: "80%" }}
                         />
                     </Grid>
-                </Grid>
-                <Grid container columnSpacing={5}>
                     <Grid item xs={3}>
-                        <InputLabel>
-                            <Typography variant="h6">Nơi cấp</Typography>
-                        </InputLabel>
+                        <Typography sx={{ fontSize: 20 }}>Nơi cấp *</Typography>
                     </Grid>
                     <Grid item xs={9}>
                         <TextField
@@ -240,12 +234,8 @@ const DoctorForm: React.FC = () => {
                             sx={{ width: "80%" }}
                         />
                     </Grid>
-                </Grid>
-                <Grid container columnSpacing={5}>
                     <Grid item xs={3}>
-                        <InputLabel>
-                            <Typography variant="h6">Ngày cấp</Typography>
-                        </InputLabel>
+                        <Typography sx={{ fontSize: 20 }}>Ngày cấp *</Typography>
                     </Grid>
                     <Grid item xs={9}>
                         <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -268,12 +258,8 @@ const DoctorForm: React.FC = () => {
                             />
                         </LocalizationProvider>
                     </Grid>
-                </Grid>
-                <Grid container columnSpacing={5}>
                     <Grid item xs={3}>
-                        <InputLabel>
-                            <Typography variant="h6">Thông tin giới thiệu</Typography>
-                        </InputLabel>
+                        <Typography sx={{ fontSize: 20 }}>Thông tin giới thiệu</Typography>
                     </Grid>
                     <Grid item xs={5}>
                         <TextField
@@ -319,7 +305,7 @@ const DoctorForm: React.FC = () => {
                         Lưu thông tin
                     </Button>
                 </Box>
-            </Box>
+            </CardContent>
         </Card>
     );
 };
