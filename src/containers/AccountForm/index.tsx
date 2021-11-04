@@ -250,7 +250,7 @@ const AccountForm: React.FC = () => {
                 </Box>
                 <Grid container spacing={1}>
                     <Grid item xs={3}>
-                        <Typography sx={{ fontSize: 20 }}>Họ</Typography>
+                        <Typography sx={{ fontSize: 20 }}>Họ *</Typography>
                     </Grid>
                     <Grid item xs={9}>
                         <TextField
@@ -264,7 +264,7 @@ const AccountForm: React.FC = () => {
                         />
                     </Grid>
                     <Grid item xs={3}>
-                        <Typography sx={{ fontSize: 20 }}>Tên</Typography>
+                        <Typography sx={{ fontSize: 20 }}>Tên *</Typography>
                     </Grid>
                     <Grid item xs={9}>
                         <TextField
@@ -278,7 +278,7 @@ const AccountForm: React.FC = () => {
                         />
                     </Grid>
                     <Grid item xs={3}>
-                        <Typography sx={{ fontSize: 20 }}>Giới tính</Typography>
+                        <Typography sx={{ fontSize: 20 }}>Giới tính *</Typography>
                     </Grid>
                     <Grid item xs={9}>
                         <RadioGroup
@@ -313,7 +313,7 @@ const AccountForm: React.FC = () => {
                         </RadioGroup>
                     </Grid>
                     <Grid item xs={3}>
-                        <Typography sx={{ fontSize: 20 }}>Ngày sinh</Typography>
+                        <Typography sx={{ fontSize: 20 }}>Ngày sinh *</Typography>
                     </Grid>
                     <Grid item xs={9}>
                         <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -335,7 +335,7 @@ const AccountForm: React.FC = () => {
                         </LocalizationProvider>
                     </Grid>
                     <Grid item xs={3}>
-                        <Typography sx={{ fontSize: 20 }}>Email</Typography>
+                        <Typography sx={{ fontSize: 20 }}>Email *</Typography>
                     </Grid>
                     <Grid item xs={9}>
                         <TextField
@@ -347,7 +347,7 @@ const AccountForm: React.FC = () => {
                         />
                     </Grid>
                     <Grid item xs={3}>
-                        <Typography sx={{ fontSize: 20 }}>Số điện thoại</Typography>
+                        <Typography sx={{ fontSize: 20 }}>Số điện thoại *</Typography>
                     </Grid>
                     <Grid item xs={9}>
                         <TextField
@@ -361,7 +361,7 @@ const AccountForm: React.FC = () => {
                         />
                     </Grid>
                     <Grid item xs={3}>
-                        <Typography sx={{ fontSize: 20 }}>Địa chỉ</Typography>
+                        <Typography sx={{ fontSize: 20 }}>Địa chỉ *</Typography>
                     </Grid>
                     <Grid item xs={9}>
                         <TextField
