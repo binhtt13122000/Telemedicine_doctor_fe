@@ -6,6 +6,7 @@ import { PrivateRoute } from "./PrivateRoute";
 import PublicRoute from "./PublicRoute";
 
 import AccountForm from "src/containers/AccountForm";
+import AfterCallScreen from "src/containers/AfterCallScreen";
 import DashboardSchedule from "src/containers/DashboardSchedule";
 import DashboardVer2 from "src/containers/DashboardVer2";
 import DoctorForm from "src/containers/DoctorForm";
@@ -76,6 +77,11 @@ export const privateWithNoLayouts = [
         path: "/call/:id",
         name: "video-call",
         component: VideoCall,
+    },
+    {
+        path: "/after-call",
+        name: "after-call",
+        component: AfterCallScreen,
     },
 ];
 

@@ -277,7 +277,7 @@ export const VideoCall: React.FC<VideoCallProps> = (props: VideoCallProps) => {
             props.tracks[1].close();
         }
         props.setStart(false);
-        history.replace("/");
+        history.replace("/after-call");
         window.location.reload();
     };
 
