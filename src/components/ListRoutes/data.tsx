@@ -16,12 +16,12 @@ export const routes = [
         path: "/schedule",
         icon: appointment,
     },
-    {
-        id: 4,
-        name: "Lịch khám",
-        path: "/health-checks",
-        icon: healthCheck,
-    },
+    // {
+    //     id: 4,
+    //     name: "Lịch khám",
+    //     path: "/health-checks",
+    //     icon: healthCheck,
+    // },
     {
         id: 4,
         name: "Lịch khám",

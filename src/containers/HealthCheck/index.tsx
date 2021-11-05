@@ -44,7 +44,7 @@ const HealthCheckPatient: React.FC = () => {
     return (
         <React.Fragment>
             <Card>
-                <CardHeader title="Lịch sử đăng ký tư vấn khám chữa bệnh" />
+                <CardHeader title="Lịch sử khám chữa bệnh" />
                 <Divider />
                 <CardContent>
                     {dataHealth?.length === 0
@@ -53,7 +53,7 @@ const HealthCheckPatient: React.FC = () => {
                               <Card
                                   key={index}
                                   variant="outlined"
-                                  sx={{ display: "flex", flexDirection: "row", pr: 2 }}
+                                  sx={{ display: "flex", flexDirection: "row", pr: 3 }}
                               >
                                   <CardContent sx={{ display: "flex", flexWrap: "wrap", p: 2 }}>
                                       <Typography
@@ -61,10 +61,11 @@ const HealthCheckPatient: React.FC = () => {
                                           sx={{ mr: 1 }}
                                           color="text.secondary"
                                       >
-                                          Bác sĩ tư vấn
+                                          Bệnh nhân được tư vấn
                                       </Typography>
-                                      <Typography component="div" sx={{ mr: 3, width: 170 }}>
-                                          {item.slots[0].doctor.name}
+                                      <Typography component="div" sx={{ mr: 3, width: 200 }}>
+                                          {/* {item.slots[0].doctor.name} */}
+                                          {item.patient.name}
                                       </Typography>
                                       <Typography
                                           component="div"
@@ -78,7 +79,7 @@ const HealthCheckPatient: React.FC = () => {
                                       </Typography>
                                       <Box sx={{ display: "flex", alignItems: "center" }}>
                                           <Chip
-                                              sx={{ width: 85 }}
+                                              sx={{ width: 100 }}
                                               label={
                                                   item.status === "BOOKED"
                                                       ? "Đã đặt hẹn"
@@ -103,7 +104,7 @@ const HealthCheckPatient: React.FC = () => {
                                   </CardContent>
                                   <CardActions>
                                       <Button
-                                          size="small"
+                                          size="medium"
                                           onClick={() => history.push("/health-checks/" + item.id)}
                                       >
                                           Chi tiết

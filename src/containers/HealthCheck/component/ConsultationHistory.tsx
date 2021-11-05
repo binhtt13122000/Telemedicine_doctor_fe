@@ -51,7 +51,7 @@ const ConsultationHistory: React.FC<IConsultationHistory> = (props: IConsultatio
                                   <Typography component="div" sx={{ mr: 1 }} color="text.secondary">
                                       Bác sĩ tư vấn
                                   </Typography>
-                                  <Typography component="div" sx={{ mr: 3, width: 170 }}>
+                                  <Typography component="div" sx={{ mr: 3, width: 200 }}>
                                       {item.slots[0].doctor.name}
                                   </Typography>
                                   <Typography component="div" sx={{ mr: 1 }} color="text.secondary">

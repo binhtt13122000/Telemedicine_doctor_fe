@@ -104,7 +104,7 @@ const CertificateCarousel: React.FC = () => {
                     handleClose={handleCloseFormAdd}
                 />
             )}
-            <Box>
+            <Box sx={{ height: 400, mb: 5, maxWidth: "100%", mx: "auto" }}>
                 <Box
                     sx={{
                         display: "flex",
@@ -112,62 +112,86 @@ const CertificateCarousel: React.FC = () => {
                         bgcolor: "background.default",
                     }}
                 >
-                    <Typography variant="h6" component="div">
-                        Chứng chỉ
-                    </Typography>
-                    <Box>
+                    <Box sx={{ ml: 2, mt: 1 }}>
+                        <Typography variant="h6" component="div">
+                            Chứng chỉ
+                        </Typography>
+                    </Box>
+                    <Box sx={{ mt: 1 }}>
                         <IconButton onClick={() => handleCreate()}>
                             <Icon>add_circle</Icon>
                         </IconButton>
                     </Box>
                 </Box>
+
                 <AutoPlaySwipeableViews
                     axis={theme.direction === "rtl" ? "x-reverse" : "x"}
                     index={activeStep}
                     onChangeIndex={handleStepChange}
                     enableMouseEvents
                 >
-                    {data?.certificationDoctors?.map((step, index) => (
-                        <div key={step?.certification?.name}>
-                            <Box sx={{ display: "flex" }}>
-                                <Box sx={{ ml: "3rem", display: "flex" }}>
-                                    <Typography variant="h6" component="div">
-                                        {step?.certification?.name}
-                                    </Typography>
-                                    {step?.isActive ? (
-                                        <IconButton>
-                                            <VerifiedIcon color="success" />
-                                        </IconButton>
-                                    ) : (
-                                        <IconButton>
-                                            <BlockIcon color="error" />
-                                        </IconButton>
-                                    )}
-                                </Box>
-                            </Box>
-                            {Math.abs(activeStep - index) <= 2 ? (
-                                <Box
-                                    component="img"
-                                    sx={{
-                                        height: 400,
-                                        display: "block",
+                    {data?.certificationDoctors.length === 0 ? (
+                        <Box sx={{ minHeight: 350, bgcolor: "#fafafa" }}>
+                            <Typography component="div" align="center">
+                                <Box sx={{ p: 1, fontSize: 18 }}>Chưa có dữ liệu</Box>
+                            </Typography>
+                        </Box>
+                    ) : (
+                        <React.Fragment>
+                            {data?.certificationDoctors?.map((step, index) => (
+                                <div key={step?.certification?.name}>
+                                    <Box sx={{ display: "flex" }}>
+                                        <Box sx={{ ml: "3rem", display: "flex" }}>
+                                            <Typography variant="h6" component="div">
+                                                {step?.certification?.name}
+                                            </Typography>
+                                            {step?.isActive ? (
+                                                <IconButton>
+                                                    <VerifiedIcon color="success" />
+                                                </IconButton>
+                                            ) : (
+                                                <IconButton>
+                                                    <BlockIcon color="error" />
+                                                </IconButton>
+                                            )}
+                                        </Box>
+                                    </Box>
+                                    {Math.abs(activeStep - index) <= 2 ? (
+                                        <Box
+                                            component="img"
+                                            sx={{
+                                                height: 400,
+                                                display: "block",
 
-                                        overflow: "hidden",
-                                        width: "100%",
-                                    }}
-                                    src={step?.evidence}
-                                    alt={step?.certification?.name}
-                                />
-                            ) : null}
-                        </div>
-                    ))}
+                                                overflow: "hidden",
+                                                width: "100%",
+                                            }}
+                                            src={step?.evidence}
+                                            alt={step?.certification?.name}
+                                        />
+                                    ) : null}
+                                </div>
+                            ))}
+                        </React.Fragment>
+                    )}
                 </AutoPlaySwipeableViews>
                 <MobileStepper
-                    steps={10}
+                    steps={data?.certificationDoctors.length || 0}
                     position="static"
                     activeStep={activeStep}
                     nextButton={
-                        <Button size="small" onClick={handleNext} disabled={activeStep === 10 - 1}>
+                        <Button
+                            size="small"
+                            onClick={handleNext}
+                            disabled={
+                                activeStep ===
+                                (data?.certificationDoctors.length != 0 &&
+                                data?.certificationDoctors.length != undefined
+                                    ? data?.certificationDoctors.length
+                                    : 1) -
+                                    1
+                            }
+                        >
                             Next
                             {theme.direction === "rtl" ? (
                                 <KeyboardArrowLeft />
