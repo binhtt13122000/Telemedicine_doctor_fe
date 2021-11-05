@@ -18,10 +18,11 @@ import {
     Avatar,
     Button,
     Card,
+    CardContent,
+    CardHeader,
     FormControlLabel,
     Grid,
     IconButton,
-    InputLabel,
     Radio,
     RadioGroup,
     TextField,
@@ -56,7 +57,7 @@ const Input = styled("input")({
 });
 
 const AccountForm: React.FC = () => {
-    const [date, setDate] = useState<Date | null>(new Date("1990-01-01T21:11:54"));
+    const [inputDob, setInputDob] = useState<Date>(new Date("1990-01-01T00:00:00"));
     const [maxDate, setMaxDate] = useState<Date>(new Date());
     const [imgLink, setImgLink] = useState<string>();
     const [file, setFile] = useState<string | Blob>("");
@@ -65,11 +66,16 @@ const AccountForm: React.FC = () => {
     const [wards, setWards] = useState<Ward[]>([]);
     const [disableDistrict, setDisableDistrict] = useState<boolean>(true);
     const [disableWard, setDisableWard] = useState<boolean>(true);
+    const [errMsg, setErrMsg] = useState<string>("");
     const history = useHistory();
     const showSnackBar = useSnackbar();
 
     const handleChange = (newValue: Date | null) => {
-        setDate(newValue);
+        if (!newValue) {
+            setInputDob(new Date("1990-01-01T00:00:00"));
+        } else {
+            setInputDob(newValue);
+        }
     };
 
     const {
@@ -102,10 +108,16 @@ const AccountForm: React.FC = () => {
                 // console.log(response.data);
                 history.push("/doctor-form");
             }
+            if (response.status === 400) {
+                setErrMsg("Vui lòng chọn ảnh đại diện");
+            }
+            if (response.status === 500) {
+                setErrMsg("Hệ thống xảy ra lỗi. Vui lòng thử lại sau ít phút");
+            }
         } catch (_) {
             // console.log(e);
             showSnackBar({
-                children: "Vui lòng chọn ảnh đại diện",
+                children: errMsg,
                 variant: "filled",
                 severity: "error",
             });
@@ -118,7 +130,7 @@ const AccountForm: React.FC = () => {
         } else {
             data.isMale = false;
         }
-        const res: Account = { ...data, postalCode: "0", roleId: 1 };
+        const res: Account = { ...data, postalCode: "0", roleId: 1, dob: inputDob.toDateString() };
         createAccount(res);
     };
 
@@ -199,22 +211,17 @@ const AccountForm: React.FC = () => {
     return (
         <Card
             sx={{
-                position: "absolute" as "absolute",
-                top: "50%",
-                left: "50%",
-                transform: "translate(-50%, -50%)",
-                width: "80%",
+                width: "50%",
+                minWidth: 400,
                 p: 1,
-                m: 2,
+                m: "0 auto",
+                mt: 3,
+                mb: 3,
                 borderRadius: 1,
             }}
         >
-            <Box sx={{ display: "flex", justifyContent: "center", m: 3 }}>
-                <Typography variant="h5" component="h2">
-                    Thông tin tài khoản
-                </Typography>
-            </Box>
-            <Box
+            <CardHeader title="Thông tin tài khoản" sx={{ textAlign: "center" }} />
+            <CardContent
                 component="form"
                 encType="multipart/form-data"
                 onSubmit={handleSubmit(onSubmit)}
@@ -241,13 +248,11 @@ const AccountForm: React.FC = () => {
                         </IconButton>
                     </label>
                 </Box>
-                <Grid container columnSpacing={5}>
-                    <Grid item xs={2}>
-                        <InputLabel>
-                            <Typography variant="h6">Họ</Typography>
-                        </InputLabel>
+                <Grid container spacing={1}>
+                    <Grid item xs={3}>
+                        <Typography sx={{ fontSize: 20 }}>Họ *</Typography>
                     </Grid>
-                    <Grid item xs={4}>
+                    <Grid item xs={9}>
                         <TextField
                             id="last-name"
                             placeholder="Họ"
@@ -255,33 +260,49 @@ const AccountForm: React.FC = () => {
                             error={!!errors.lastName}
                             helperText={errors.lastName && "Họ không được trống"}
                             {...register("lastName", { required: true })}
+                            sx={{ width: "80%" }}
                         />
                     </Grid>
-                    <Grid item xs={2}>
-                        <InputLabel>
-                            <Typography variant="h6">Giới tính</Typography>
-                        </InputLabel>
+                    <Grid item xs={3}>
+                        <Typography sx={{ fontSize: 20 }}>Tên *</Typography>
                     </Grid>
-                    <Grid item xs={4}>
+                    <Grid item xs={9}>
+                        <TextField
+                            id="first-name"
+                            placeholder="Tên"
+                            variant="outlined"
+                            error={!!errors.firstName}
+                            helperText={errors.firstName && "Vui lòng nhập tên"}
+                            {...register("firstName", { required: true })}
+                            sx={{ width: "80%" }}
+                        />
+                    </Grid>
+                    <Grid item xs={3}>
+                        <Typography sx={{ fontSize: 20 }}>Giới tính *</Typography>
+                    </Grid>
+                    <Grid item xs={9}>
                         <RadioGroup
                             aria-label="isMale"
                             defaultValue="true"
                             name="radio-buttons-group"
-                            sx={{ display: "flex", flexDirection: "row" }}
+                            sx={{
+                                display: "flex",
+                                flexDirection: "row",
+                                justifyContent: "space-between",
+                                width: "80%",
+                            }}
                         >
                             <FormControlLabel
                                 {...register("isMale", { required: true })}
                                 value="true"
                                 control={<Radio />}
                                 label="Nam"
-                                sx={{ pr: 2 }}
                             />
                             <FormControlLabel
                                 {...register("isMale", { required: true })}
                                 value="false"
                                 control={<Radio />}
                                 label="Nữ"
-                                sx={{ pr: 2 }}
                             />
                             <FormControlLabel
                                 {...register("isMale", { required: true })}
@@ -291,63 +312,44 @@ const AccountForm: React.FC = () => {
                             />
                         </RadioGroup>
                     </Grid>
-                </Grid>
-                <Grid container columnSpacing={5}>
-                    <Grid item xs={2}>
-                        <InputLabel>
-                            <Typography variant="h6">Tên</Typography>
-                        </InputLabel>
+                    <Grid item xs={3}>
+                        <Typography sx={{ fontSize: 20 }}>Ngày sinh *</Typography>
                     </Grid>
-                    <Grid item xs={4}>
-                        <TextField
-                            id="first-name"
-                            placeholder="Tên"
-                            variant="outlined"
-                            error={!!errors.firstName}
-                            helperText={errors.firstName && "Vui lòng nhập tên"}
-                            {...register("firstName", { required: true })}
-                        />
-                    </Grid>
-                    <Grid item xs={2}>
-                        <InputLabel>
-                            <Typography variant="h6">Ngày sinh</Typography>
-                        </InputLabel>
-                    </Grid>
-                    <Grid item xs={4}>
+                    <Grid item xs={9}>
                         <LocalizationProvider dateAdapter={AdapterDateFns}>
                             <DesktopDatePicker
                                 inputFormat="dd/MM/yyyy"
-                                value={date}
+                                value={inputDob}
                                 maxDate={maxDate}
-                                onChange={handleChange}
+                                onChange={(newValue) => handleChange(newValue)}
                                 renderInput={(params) => (
                                     <TextField
                                         {...params}
-                                        sx={{ width: 210.4 }}
                                         error={!!errors.dob}
                                         helperText={errors.dob && "Vui lòng nhập ngày sinh"}
                                         {...register("dob", { required: true })}
+                                        sx={{ width: "80%" }}
                                     />
                                 )}
                             />
                         </LocalizationProvider>
                     </Grid>
-                </Grid>
-                <Grid container columnSpacing={5}>
-                    <Grid item xs={2}>
-                        <InputLabel>
-                            <Typography variant="h6">Email</Typography>
-                        </InputLabel>
+                    <Grid item xs={3}>
+                        <Typography sx={{ fontSize: 20 }}>Email *</Typography>
                     </Grid>
-                    <Grid item xs={4}>
-                        <TextField id="email" variant="outlined" disabled {...register("email")} />
+                    <Grid item xs={9}>
+                        <TextField
+                            id="email"
+                            variant="outlined"
+                            disabled
+                            {...register("email")}
+                            sx={{ width: "80%" }}
+                        />
                     </Grid>
-                    <Grid item xs={2}>
-                        <InputLabel>
-                            <Typography variant="h6">Số điện thoại</Typography>
-                        </InputLabel>
+                    <Grid item xs={3}>
+                        <Typography sx={{ fontSize: 20 }}>Số điện thoại *</Typography>
                     </Grid>
-                    <Grid item xs={4}>
+                    <Grid item xs={9}>
                         <TextField
                             id="phone"
                             variant="outlined"
@@ -355,16 +357,13 @@ const AccountForm: React.FC = () => {
                             error={!!errors.phone}
                             helperText={errors.phone && "Vui lòng nhập số điện thoại"}
                             {...register("phone", { required: true })}
+                            sx={{ width: "80%" }}
                         />
                     </Grid>
-                </Grid>
-                <Grid container columnSpacing={5}>
-                    <Grid item xs={2}>
-                        <InputLabel>
-                            <Typography variant="h6">Địa chỉ</Typography>
-                        </InputLabel>
+                    <Grid item xs={3}>
+                        <Typography sx={{ fontSize: 20 }}>Địa chỉ *</Typography>
                     </Grid>
-                    <Grid item xs={10}>
+                    <Grid item xs={9}>
                         <TextField
                             id="streetAddress"
                             variant="outlined"
@@ -372,13 +371,11 @@ const AccountForm: React.FC = () => {
                             error={!!errors.streetAddress}
                             helperText={errors.streetAddress && "Vui lòng nhập địa chỉ cụ thể"}
                             {...register("streetAddress", { required: true })}
-                            sx={{ width: "84%" }}
+                            sx={{ width: "80%" }}
                         />
                     </Grid>
-                </Grid>
-                <Grid container columnSpacing={5}>
-                    <Grid item xs={2}></Grid>
-                    <Grid item xs={3}>
+                    <Grid item xs={3}></Grid>
+                    <Grid item xs={9}>
                         <Autocomplete
                             options={provinces}
                             getOptionLabel={(province: Province) => province.name}
@@ -393,11 +390,13 @@ const AccountForm: React.FC = () => {
                                     error={!!errors.city}
                                     helperText={errors.city && "Vui lòng chọn Tỉnh/Thành phố"}
                                     {...register("city", { required: true })}
+                                    sx={{ width: "80%" }}
                                 />
                             )}
                         />
                     </Grid>
-                    <Grid item xs={3}>
+                    <Grid item xs={3}></Grid>
+                    <Grid item xs={9}>
                         <Autocomplete
                             disabled={disableDistrict}
                             options={districts}
@@ -413,11 +412,13 @@ const AccountForm: React.FC = () => {
                                     error={!!errors.ward}
                                     helperText={errors.ward && "Vui lòng chọn Quận/Huyện"}
                                     {...register("ward", { required: true })}
+                                    sx={{ width: "80%" }}
                                 />
                             )}
                         />
                     </Grid>
-                    <Grid item xs={3}>
+                    <Grid item xs={3}></Grid>
+                    <Grid item xs={9}>
                         <Autocomplete
                             disabled={disableWard}
                             options={wards}
@@ -438,17 +439,16 @@ const AccountForm: React.FC = () => {
                                     error={!!errors.locality}
                                     helperText={errors.locality && "Vui lòng chọn Phường/Xã"}
                                     {...register("locality", { required: true })}
+                                    sx={{ width: "80%" }}
                                 />
                             )}
                         />
                     </Grid>
                 </Grid>
+
                 <Box
                     sx={{
                         justifyContent: "center",
-                        mx: "auto",
-                        p: 1,
-                        m: 1,
                         "& > :not(style)": { m: 1 },
                     }}
                 >
@@ -464,7 +464,7 @@ const AccountForm: React.FC = () => {
                         Lưu
                     </Button>
                 </Box>
-            </Box>
+            </CardContent>
         </Card>
     );
 };

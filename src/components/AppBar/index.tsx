@@ -130,7 +130,7 @@ const AppBarWithDrawer: React.FC<IAppBarWithDrawer> = (props: IAppBarWithDrawer)
                     <MenuIcon />
                 </IconButton>
                 <Box sx={{ flexGrow: 1 }}>
-                    <img src={logo} alt="telemedicine-logo" width="198" height="47" />
+                    <img src={logo} alt="telemedicine-logo" width="145" height="36" />
                 </Box>
                 <IconButton
                     size="large"
