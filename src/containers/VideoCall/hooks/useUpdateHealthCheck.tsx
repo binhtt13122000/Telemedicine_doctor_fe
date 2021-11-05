@@ -2,7 +2,7 @@ import { AxiosResponse } from "axios";
 import { useMutation } from "react-query";
 import axios from "src/axios";
 
-import { IUpdateHealthCheck } from "../components/VideoCall/IUpdateHealthCheck.model";
+import { IUpdateHealthCheck } from "../../Popup/IUpdateHealthCheck.model";
 
 const useUpdateHealthCheck = (endCall: () => void) => {
     const result = useMutation<unknown, Error, IUpdateHealthCheck, unknown>(
