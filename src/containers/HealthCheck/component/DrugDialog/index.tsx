@@ -1,14 +1,15 @@
-import moment from "moment";
+import React from "react";
 
-import { CardActions } from "@material-ui/core";
+import moment from "moment";
 
 import { Prescriptions } from "../../models/HealthCheckDetail.model";
 
+import CloseIcon from "@mui/icons-material/Close";
 import {
-    Button,
     Card,
     CardContent,
     CardHeader,
+    IconButton,
     Modal,
     Table,
     TableBody,
@@ -18,6 +19,7 @@ import {
     TableRow,
     Typography,
 } from "@mui/material";
+import { Box } from "@mui/system";
 
 export interface IDrugDialog {
     open: boolean;
@@ -46,7 +48,22 @@ const DrugDialog: React.FC<IDrugDialog> = (props: IDrugDialog) => {
                     borderRadius: 1,
                 }}
             >
-                <CardHeader title={<Typography variant="h6">Đơn thuốc</Typography>} />
+                <CardHeader
+                    title={
+                        <React.Fragment>
+                            <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                                <Box>
+                                    <Typography variant="h6">Đơn thuốc </Typography>{" "}
+                                </Box>
+                                <Box sx={{ justifyContent: "flex-end" }}>
+                                    <IconButton onClick={() => handleClose()}>
+                                        <CloseIcon />
+                                    </IconButton>
+                                </Box>
+                            </Box>
+                        </React.Fragment>
+                    }
+                />
                 <CardContent>
                     <TableContainer>
                         <Table>
@@ -87,11 +104,13 @@ const DrugDialog: React.FC<IDrugDialog> = (props: IDrugDialog) => {
                         </Table>
                     </TableContainer>
                 </CardContent>
-                <CardActions>
-                    <Button variant="contained" onClick={() => handleClose()}>
-                        Thoát
-                    </Button>
-                </CardActions>
+                {/* <CardActions>
+                    <Box sx={{ justifyContent: "flex-end" }}>
+                        <Button variant="contained" onClick={() => handleClose()}>
+                            Thoát
+                        </Button>
+                    </Box>
+                </CardActions> */}
             </Card>
         </Modal>
     );

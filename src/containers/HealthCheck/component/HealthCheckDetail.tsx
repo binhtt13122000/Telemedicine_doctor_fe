@@ -7,7 +7,8 @@ import DrugDialog from "../component/DrugDialog";
 import {
     HealthCheck,
     HealthCheckDiseases,
-    Prescriptions, // Slots,
+    Prescriptions,
+    Slots, // Slots,
     SymptomHealthChecks,
 } from "../models/HealthCheckDetail.model";
 import { Patient } from "../models/Patient.model";
@@ -37,7 +38,7 @@ const HealthCheckDetailPatient: React.FC = () => {
     const [patient, setPatient] = useState<Patient>();
     const [healthCheckDiseases, setHealthCheckDiseases] = useState<HealthCheckDiseases[]>([]);
     const [prescription, setPrescription] = useState<Prescriptions[]>([]);
-    // const [slot, setSlot] = useState<Slots[]>([]);
+    const [slot, setSlot] = useState<Slots[]>([]);
     const [symptomHealthCheck, setSymptomHealthChecks] = useState<SymptomHealthChecks[]>([]);
     const [healthcheck, setHealthcheck] = useState<HealthCheck>();
     const params = useParams<{ id: string }>();
@@ -61,7 +62,7 @@ const HealthCheckDetailPatient: React.FC = () => {
                     // eslint-disable-next-line no-console
                     console.log(response.data);
                     setPrescription(response.data?.prescriptions);
-                    // setSlot(response.data?.slot);
+                    setSlot(response.data?.slots);
                     setSymptomHealthChecks(response.data?.symptomHealthChecks);
                 }
             } catch (_error) {
@@ -155,11 +156,11 @@ const HealthCheckDetailPatient: React.FC = () => {
                                         <Grid item lg={4} md={4} xs={12}>
                                             Thời gian tư vấn:
                                         </Grid>
-                                        {/* <Grid item lg={8} md={8} xs={12}>
+                                        <Grid item lg={8} md={8} xs={12}>
                                             {slot[0]?.startTime?.slice(0, 5)} {"- "}
                                             {slot[0]?.endTime?.slice(0, 5)}{" "}
                                             {moment(slot[0]?.assignedDate).format(`DD/MM/YYYY`)}
-                                        </Grid> */}
+                                        </Grid>
                                     </Grid>
                                     <Grid container minHeight={35}>
                                         <Grid item lg={4} md={4} xs={12}>
@@ -169,7 +170,7 @@ const HealthCheckDetailPatient: React.FC = () => {
                                             {patient?.name}{" "}
                                         </Grid>
                                         <Grid item lg={4} md={4} xs={12}>
-                                            <Button
+                                            {/* <Button
                                                 onClick={() => {
                                                     const win = window.open(
                                                         `/patients/${patient?.email}`,
@@ -180,16 +181,16 @@ const HealthCheckDetailPatient: React.FC = () => {
                                                 size="small"
                                             >
                                                 CHI TIẾT
-                                            </Button>
+                                            </Button> */}
                                         </Grid>
                                     </Grid>
                                     <Grid container minHeight={35}>
                                         <Grid item lg={4} md={4} xs={12}>
                                             Bác sĩ:
                                         </Grid>
-                                        {/* <Grid item lg={4} md={4} xs={12}>
+                                        <Grid item lg={4} md={4} xs={12}>
                                             {slot[0]?.doctor?.name}{" "}
-                                        </Grid> */}
+                                        </Grid>
                                         <Grid item lg={4} md={4} xs={12}>
                                             {/* <Button
                                                 onClick={() => {
@@ -244,13 +245,13 @@ const HealthCheckDetailPatient: React.FC = () => {
                                                 <Grid item lg={4} md={4} xs={12}>
                                                     Thời gian tư vấn:
                                                 </Grid>
-                                                {/* <Grid item lg={8} md={8} xs={12}>
+                                                <Grid item lg={8} md={8} xs={12}>
                                                     {slot[0]?.startTime?.slice(0, 5)} {"- "}
                                                     {slot[0]?.endTime?.slice(0, 5)}{" "}
                                                     {moment(slot[0]?.assignedDate).format(
                                                         `DD/MM/YYYY`
                                                     )}
-                                                </Grid> */}
+                                                </Grid>
                                             </Grid>
                                             <Grid container minHeight={35}>
                                                 <Grid item lg={4} md={4} xs={12}>
@@ -260,7 +261,7 @@ const HealthCheckDetailPatient: React.FC = () => {
                                                     {patient?.name}{" "}
                                                 </Grid>
                                                 <Grid item lg={4} md={4} xs={12}>
-                                                    <Button
+                                                    {/* <Button
                                                         onClick={() => {
                                                             const win = window.open(
                                                                 `/patients/${patient?.email}`,
@@ -271,18 +272,18 @@ const HealthCheckDetailPatient: React.FC = () => {
                                                         size="small"
                                                     >
                                                         CHI TIẾT
-                                                    </Button>
+                                                    </Button> */}
                                                 </Grid>
                                             </Grid>
                                             <Grid container minHeight={35}>
                                                 <Grid item lg={4} md={4} xs={12}>
                                                     Bác sĩ:
                                                 </Grid>
-                                                {/* <Grid item lg={4} md={4} xs={12}>
+                                                <Grid item lg={4} md={4} xs={12}>
                                                     {slot[0]?.doctor?.name}{" "}
                                                 </Grid>
                                                 <Grid item lg={4} md={4} xs={12}>
-                                                    <Button
+                                                    {/* <Button
                                                         onClick={() => {
                                                             const win = window.open(
                                                                 `/doctors/${slot[0]?.doctor?.email}`,
@@ -293,8 +294,8 @@ const HealthCheckDetailPatient: React.FC = () => {
                                                         size="small"
                                                     >
                                                         CHI TIẾT
-                                                    </Button>
-                                                </Grid> */}
+                                                    </Button> */}
+                                                </Grid>
                                             </Grid>
                                         </CardContent>
                                     </Card>

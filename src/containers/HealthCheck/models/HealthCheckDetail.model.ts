@@ -20,7 +20,7 @@ export type HealthCheck = {
     patient: Patient;
     healthCheckDiseases: HealthCheckDiseases[];
     prescriptions: Prescriptions[];
-    slot: Slots[];
+    slots: Slots[];
     symptomHealthChecks: SymptomHealthChecks[];
     status: string;
 };
