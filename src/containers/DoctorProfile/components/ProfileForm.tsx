@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 
+import moment from "moment";
 import { SubmitHandler, useForm } from "react-hook-form";
 
 import { Switch } from "@material-ui/core";
@@ -54,7 +55,8 @@ export interface IProfileForm {
 const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
     const { dataProfile } = props;
     const [checked, setChecked] = React.useState<boolean>(dataProfile.isMale);
-    const [date, setDate] = React.useState<Date | null>();
+    const [maxDate] = useState<Date>(new Date());
+    const [date, setDate] = React.useState<string | null>();
     const [provinces, setProvinces] = useState<Province[]>([]);
     const [districts, setDistricts] = useState<District[]>([]);
     const [wards, setWards] = useState<Ward[]>([]);
@@ -80,8 +82,6 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
         setValue("ward", dataProfile.ward);
         setValue("streetAddress", dataProfile.streetAddress);
         setValue("locality", dataProfile.locality);
-        // console.log("locality", dataProfile.locality);
-        // setValue("locality", "Huyện Thới Bình");
         setValue("city", dataProfile.city);
         setValue("postalCode", dataProfile.postalCode);
         setValue("phone", dataProfile.phone);
@@ -174,7 +174,8 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
     };
 
     const handleChange = (newDate: Date | null) => {
-        setDate(newDate);
+        setDate(moment(newDate).format("YYYY/MM/DD"));
+        setValue("dob", moment(newDate).format("YYYY/MM/DD"));
     };
 
     useEffect(() => {
@@ -184,27 +185,9 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
     useEffect(() => {
         provinces.map((item) => {
             if (item.name === dataProfile.city) {
-                let number = item.code;
-                fetchDistricts(number);
                 setValueProvince(item);
-                // districts.map((item1) => {
-                //     if (item1.name === dataProfile.locality) {
-                //         console.log("districts", item1.name);
-                //         setValueDistrict(item1);
-                //         fetchWards(item1.code);
-                //     }
-                // });
             }
         });
-
-        // wards.map((item) => {
-        //     if (item.name === dataProfile.ward) {
-        //         console.log("ward");
-        //         console.log("ward", item.name);
-        //         setValueWard(item);
-        //     }
-        // });
-        // console.log("Ward", valueWard);
     }, [
         valueWard,
         valueDistrict,
@@ -283,12 +266,12 @@ const ProfileForm: React.FC<IProfileForm> = (props: IProfileForm) => {
                             <LocalizationProvider dateAdapter={AdapterDateFns}>
                                 <DesktopDatePicker
                                     inputFormat="dd/MM/yyyy"
-                                    value={date}
+                                    value={date && Date.parse(date)}
+                                    maxDate={maxDate}
                                     onChange={handleChange}
                                     renderInput={(params) => (
                                         <TextField
                                             {...params}
-                                            fullWidth
                                             error={!!errors.dob}
                                             helperText={errors.dob && "Vui lòng nhập ngày cấp"}
                                             {...register("dob", { required: true })}
