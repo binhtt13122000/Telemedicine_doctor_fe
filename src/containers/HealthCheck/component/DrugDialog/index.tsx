@@ -41,7 +41,7 @@ const DrugDialog: React.FC<IDrugDialog> = (props: IDrugDialog) => {
                     left: "50%",
                     transform: "translate(-50%, -50%)",
                     width: "50%",
-                    minWidth: 600,
+                    minWidth: "70%",
                     mx: "auto",
                     p: 1,
                     m: 2,
@@ -70,34 +70,40 @@ const DrugDialog: React.FC<IDrugDialog> = (props: IDrugDialog) => {
                             <TableHead>
                                 <TableRow>
                                     <TableCell width={200}>Tên thuốc</TableCell>
-                                    <TableCell width={600}>Thời gian</TableCell>
-                                    <TableCell width={150}>Sáng</TableCell>
-                                    <TableCell width={150}>Trưa</TableCell>
-                                    <TableCell width={150}>Chiều</TableCell>
-                                    <TableCell width={200}>Hướng dẫn</TableCell>
+                                    <TableCell width={500}>Thời gian</TableCell>
+                                    <TableCell width={80}>Sáng</TableCell>
+                                    <TableCell width={80}>Trưa</TableCell>
+                                    <TableCell width={80}>Chiều</TableCell>
+                                    <TableCell width={500}>Hướng dẫn</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
                                 {prescription?.map((drug) => {
                                     return (
-                                        <TableRow key={drug.id}>
-                                            <TableCell width={200}>{drug?.drug?.name}</TableCell>
-                                            <TableCell width={600}>
-                                                {moment(drug?.startDate).format(`DD/MM/YYYY`)}
-                                                {" - "}
-                                                {moment(drug?.endDate).format(`DD/MM/YYYY`)}
-                                            </TableCell>
-                                            <TableCell width={150}>
-                                                {drug?.morningQuantity}
-                                            </TableCell>
-                                            <TableCell width={150}>
-                                                {drug?.afternoonQuantity}
-                                            </TableCell>
-                                            <TableCell width={150}>
-                                                {drug?.eveningQuantity}
-                                            </TableCell>
-                                            <TableCell width={200}>{drug?.description}</TableCell>
-                                        </TableRow>
+                                        <>
+                                            <TableRow key={drug.id}>
+                                                <TableCell width={200}>
+                                                    {drug?.drug?.name}
+                                                </TableCell>
+                                                <TableCell width={400}>
+                                                    {moment(drug?.startDate).format(`DD/MM/YYYY`)}
+                                                    {" - "}
+                                                    {moment(drug?.endDate).format(`DD/MM/YYYY`)}
+                                                </TableCell>
+                                                <TableCell width={100}>
+                                                    {drug?.morningQuantity}
+                                                </TableCell>
+                                                <TableCell width={100}>
+                                                    {drug?.afternoonQuantity}
+                                                </TableCell>
+                                                <TableCell width={100}>
+                                                    {drug?.eveningQuantity}
+                                                </TableCell>
+                                                <TableCell width={500}>
+                                                    {drug?.description}
+                                                </TableCell>
+                                            </TableRow>
+                                        </>
                                     );
                                 })}
                             </TableBody>
