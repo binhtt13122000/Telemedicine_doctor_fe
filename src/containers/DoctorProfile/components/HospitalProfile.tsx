@@ -170,6 +170,7 @@ const HospitalProfile: React.FC = () => {
                                                 display: "flex",
                                                 borderRadius: 5,
                                                 bgcolor: "#fafafa",
+                                                p: 2,
                                             }}
                                         >
                                             <Box sx={{ display: "block" }}>

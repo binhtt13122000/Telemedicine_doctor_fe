@@ -168,6 +168,7 @@ const MajorProfile: React.FC = () => {
                                                 display: "flex",
                                                 borderRadius: 5,
                                                 bgcolor: "#fafafa",
+                                                p: 1,
                                             }}
                                         >
                                             <Box sx={{ display: "block" }}>
