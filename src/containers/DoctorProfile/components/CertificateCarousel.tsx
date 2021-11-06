@@ -13,7 +13,7 @@ import BlockIcon from "@mui/icons-material/Block";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import VerifiedIcon from "@mui/icons-material/Verified";
-import { CircularProgress, Icon, IconButton, Typography } from "@mui/material";
+import { Card, CircularProgress, Icon, IconButton, Typography } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import MobileStepper from "@mui/material/MobileStepper";
@@ -104,7 +104,7 @@ const CertificateCarousel: React.FC = () => {
                     handleClose={handleCloseFormAdd}
                 />
             )}
-            <Box sx={{ height: 400, mb: 5, maxWidth: "100%", mx: "auto" }}>
+            <Card sx={{ borderRadius: 5 }}>
                 <Box
                     sx={{
                         display: "flex",
@@ -124,20 +124,20 @@ const CertificateCarousel: React.FC = () => {
                     </Box>
                 </Box>
 
-                <AutoPlaySwipeableViews
-                    axis={theme.direction === "rtl" ? "x-reverse" : "x"}
-                    index={activeStep}
-                    onChangeIndex={handleStepChange}
-                    enableMouseEvents
-                >
-                    {data?.certificationDoctors.length === 0 ? (
-                        <Box sx={{ minHeight: 350, bgcolor: "#fafafa" }}>
-                            <Typography component="div" align="center">
-                                <Box sx={{ p: 1, fontSize: 18 }}>Chưa có dữ liệu</Box>
-                            </Typography>
-                        </Box>
-                    ) : (
-                        <React.Fragment>
+                {data?.certificationDoctors.length === 0 ? (
+                    <Box sx={{ minHeight: 350, bgcolor: "#fafafa" }}>
+                        <Typography component="div" align="center">
+                            <Box sx={{ p: 1, fontSize: 18 }}>Chưa chứng chỉ</Box>
+                        </Typography>
+                    </Box>
+                ) : (
+                    <div>
+                        <AutoPlaySwipeableViews
+                            axis={theme.direction === "rtl" ? "x-reverse" : "x"}
+                            index={activeStep}
+                            onChangeIndex={handleStepChange}
+                            enableMouseEvents
+                        >
                             {data?.certificationDoctors?.map((step, index) => (
                                 <div key={step?.certification?.name}>
                                     <Box sx={{ display: "flex" }}>
@@ -162,7 +162,6 @@ const CertificateCarousel: React.FC = () => {
                                             sx={{
                                                 height: 400,
                                                 display: "block",
-
                                                 overflow: "hidden",
                                                 width: "100%",
                                             }}
@@ -172,9 +171,10 @@ const CertificateCarousel: React.FC = () => {
                                     ) : null}
                                 </div>
                             ))}
-                        </React.Fragment>
-                    )}
-                </AutoPlaySwipeableViews>
+                        </AutoPlaySwipeableViews>
+                    </div>
+                )}
+
                 <MobileStepper
                     steps={data?.certificationDoctors.length || 0}
                     position="static"
@@ -211,7 +211,7 @@ const CertificateCarousel: React.FC = () => {
                         </Button>
                     }
                 />
-            </Box>
+            </Card>
         </React.Fragment>
     );
 };

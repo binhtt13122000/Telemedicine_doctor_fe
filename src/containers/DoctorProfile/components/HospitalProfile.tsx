@@ -42,7 +42,7 @@ const HospitalProfile: React.FC = () => {
     const [openAdd, setOpenAdd] = useState<boolean>(false);
     const [hospital, setHospital] = useState<Hospital>(initHospital);
     if (isError) {
-        return <div> Errord</div>;
+        return <div> Error</div>;
     }
     if (isLoading) {
         return <CircularProgress />;
@@ -84,21 +84,13 @@ const HospitalProfile: React.FC = () => {
         try {
             let formData = new FormData();
             formData.append("Id", JSON.stringify(data?.id));
-            formData.append("Email", data.email);
-            formData.append("Name", data.name);
-            formData.append("Avatar", data.avatar);
             formData.append("PractisingCertificate", data.practisingCertificate);
             formData.append("CertificateCode", data.certificateCode);
             formData.append("PlaceOfCertificate", data.placeOfCertificate);
             formData.append("DateOfCertificate", data.dateOfCertificate);
             formData.append("ScopeOfPractice", data.scopeOfPractice);
-            formData.append("description", data.description);
-            formData.append("NumberOfConsultants", JSON.stringify(data.numberOfConsultants));
-            formData.append("NumberOfCancels", JSON.stringify(data.numberOfCancels));
-            formData.append("Rating", JSON.stringify(data.rating));
-            formData.append("IsVerify", JSON.stringify(data.isVerify));
+            formData.append("Description", data.description);
             formData.append("IsActive", JSON.stringify(data.isActive));
-            formData.append("CertificationDoctors", JSON.stringify(data.certificationDoctors));
             formData.append("HospitalDoctors", JSON.stringify(data.hospitalDoctors));
             formData.append("MajorDoctors", JSON.stringify(data.majorDoctors));
             const service = new DoctorService<Doctor>();
@@ -165,7 +157,7 @@ const HospitalProfile: React.FC = () => {
                             "& ul": { padding: 0 },
                         }}
                     >
-                        {data?.majorDoctors.length === 0 ? (
+                        {data?.hospitalDoctors.length === 0 ? (
                             <Typography component="div" align="center">
                                 <Box sx={{ p: 1, fontSize: 18 }}>Chưa có dữ liệu</Box>
                             </Typography>

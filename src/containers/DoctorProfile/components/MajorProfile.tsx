@@ -46,28 +46,20 @@ const MajorProfile: React.FC = () => {
         try {
             let formData = new FormData();
             formData.append("Id", JSON.stringify(data?.id));
-            formData.append("Email", data.email);
-            formData.append("Name", data.name);
-            formData.append("Avatar", data.avatar);
             formData.append("PractisingCertificate", data.practisingCertificate);
             formData.append("CertificateCode", data.certificateCode);
             formData.append("PlaceOfCertificate", data.placeOfCertificate);
             formData.append("DateOfCertificate", data.dateOfCertificate);
             formData.append("ScopeOfPractice", data.scopeOfPractice);
-            formData.append("description", data.description);
-            formData.append("NumberOfConsultants", JSON.stringify(data.numberOfConsultants));
-            formData.append("NumberOfCancels", JSON.stringify(data.numberOfCancels));
-            formData.append("Rating", JSON.stringify(data.rating));
-            formData.append("IsVerify", JSON.stringify(data.isVerify));
+            formData.append("Description", data.description);
             formData.append("IsActive", JSON.stringify(data.isActive));
-            formData.append("CertificationDoctors", JSON.stringify(data.certificationDoctors));
             formData.append("HospitalDoctors", JSON.stringify(data.hospitalDoctors));
             formData.append("MajorDoctors", JSON.stringify(data.majorDoctors));
             const service = new DoctorService<Doctor>();
             const response = await service.updateFormData(formData);
             if (response.status === 200) {
                 // eslint-disable-next-line no-console
-                console.log(response.data);
+                console.log("formdata", response.data);
                 refreshPage();
             }
         } catch (e) {
@@ -96,7 +88,10 @@ const MajorProfile: React.FC = () => {
         if (clearErrors) {
             clearErrors();
         }
-        refreshPage();
+        if (type === "SAVE") {
+            refreshPage();
+        }
+
         setOpen(false);
     };
 
@@ -165,53 +160,51 @@ const MajorProfile: React.FC = () => {
                                 <Box sx={{ p: 1, fontSize: 18 }}>Chưa có dữ liệu</Box>
                             </Typography>
                         ) : (
-                            <React.Fragment>
+                            <>
                                 {data?.majorDoctors?.map((item) => (
-                                    <>
-                                        <ListItem key={item?.id}>
-                                            <Box
-                                                sx={{
-                                                    display: "flex",
-                                                    borderRadius: 5,
-                                                    bgcolor: "#fafafa",
-                                                }}
-                                            >
-                                                <Box sx={{ display: "block" }}>
-                                                    <Typography variant="h6" component="h5">
-                                                        {item?.major?.name}
-                                                        {item?.major?.name ? (
-                                                            <Tooltip title="Còn hoạt động">
-                                                                <IconButton>
-                                                                    <CheckCircleOutlineIcon color="success" />
-                                                                </IconButton>
-                                                            </Tooltip>
-                                                        ) : (
-                                                            <Tooltip title="Không hoạt động">
-                                                                <IconButton>
-                                                                    <CheckCircleOutlineIcon color="error" />
-                                                                </IconButton>
-                                                            </Tooltip>
-                                                        )}
-                                                    </Typography>
-                                                    <Typography variant="body2" component="h5">
-                                                        Mô tả: Chuyên chữa trị các bệnh nội ngoại
-                                                        tiết {item?.major?.description}
-                                                    </Typography>
-                                                </Box>
-                                                <Box sx={{ display: "flex", ml: 4 }}>
-                                                    <Typography variant="h6" component="div">
-                                                        <IconButton
-                                                            onClick={() => handleOpen(item?.major)}
-                                                        >
-                                                            <Icon>edit</Icon>
-                                                        </IconButton>
-                                                    </Typography>
-                                                </Box>
+                                    <ListItem key={item?.id}>
+                                        <Box
+                                            sx={{
+                                                display: "flex",
+                                                borderRadius: 5,
+                                                bgcolor: "#fafafa",
+                                            }}
+                                        >
+                                            <Box sx={{ display: "block" }}>
+                                                <Typography variant="h6" component="h5">
+                                                    {item?.major?.name}
+                                                    {item?.major?.name ? (
+                                                        <Tooltip title="Còn hoạt động">
+                                                            <IconButton>
+                                                                <CheckCircleOutlineIcon color="success" />
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                    ) : (
+                                                        <Tooltip title="Không hoạt động">
+                                                            <IconButton>
+                                                                <CheckCircleOutlineIcon color="error" />
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                    )}
+                                                </Typography>
+                                                <Typography variant="body2" component="h5">
+                                                    Mô tả: Chuyên chữa trị các bệnh nội ngoại tiết{" "}
+                                                    {item?.major?.description}
+                                                </Typography>
                                             </Box>
-                                        </ListItem>
-                                    </>
+                                            <Box sx={{ display: "flex", ml: 4 }}>
+                                                <Typography variant="h6" component="div">
+                                                    <IconButton
+                                                        onClick={() => handleOpen(item?.major)}
+                                                    >
+                                                        <Icon>edit</Icon>
+                                                    </IconButton>
+                                                </Typography>
+                                            </Box>
+                                        </Box>
+                                    </ListItem>
                                 ))}
-                            </React.Fragment>
+                            </>
                         )}
                     </List>
                     <Box sx={{ mb: 2 }} />

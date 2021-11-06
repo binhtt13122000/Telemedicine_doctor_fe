@@ -6,7 +6,7 @@ import { DoctorFromAdd } from "../models/Doctor.model";
 import MultipleAutocomplete from "./MultipleAutocomplete";
 
 // import { Hospital } from "../models/Hospital.model";
-import { Button, Card, Grid, Modal, Typography } from "@mui/material";
+import { Button, Card, Grid, Modal, TextField, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 
 export interface IHospitalForm {
@@ -87,33 +87,13 @@ const HospitalFormAdd: React.FC<IHospitalForm> = (props: IHospitalForm) => {
                         "& > :not(style)": {
                             m: 2,
                             display: "flex",
-                            // justifyContent: "center",
+                            justifyContent: "center",
                         },
                     }}
                 >
-                    {/* <TextField
-                        id="hospital-code"
-                        label="Mã bệnh viện *"
-                        variant="outlined"
-                        error={!!errors.id}
-                        helperText={errors.id && "Mã bệnh viện là bắt buộc"}
-                        {...register("id", { required: true })}
-                    /> */}
-                    {/* <CustomizeAutocomplete
-                        query="/hospitals"
-                        field="groupName"
-                        label="Chuyên ngành"
-                        searchField="group-name"
-                        limit={10}
-                        errors={errors.id}
-                        errorMessage={"Nhóm ngành nghề là bắt buộc"}
-                        inputRef={idRef}
-                        {...idRefProps}
-                        changeValue={changeValue}
-                    /> */}
                     <Grid container columnSpacing={1}>
                         <Grid item xs={3}>
-                            <Typography variant="h6">Nơi công tác:</Typography>
+                            <Typography component="div">Nơi công tác:</Typography>
                         </Grid>
                         <Grid item xs={8}>
                             <MultipleAutocomplete
@@ -128,6 +108,19 @@ const HospitalFormAdd: React.FC<IHospitalForm> = (props: IHospitalForm) => {
                                 {...hospitalDoctorsProps}
                                 changeValue={changeValueHospitalDoctors}
                                 width="80%"
+                            />
+                        </Grid>
+                    </Grid>
+                    <Grid container>
+                        <Grid item xs={12} md={8} lg={8}>
+                            <TextField
+                                fullWidth
+                                id="major-description"
+                                label="Mô tả"
+                                variant="outlined"
+                                multiline
+                                rows={5}
+                                {...register("description")}
                             />
                         </Grid>
                     </Grid>

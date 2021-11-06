@@ -54,7 +54,7 @@ const PracticingProfile: React.FC = () => {
     const [open, setOpen] = useState(false);
     const [doctorPracticing, setDoctorPracticing] = useState<DoctorPraticing>();
     if (isError) {
-        return <div> Errord</div>;
+        return <div> Error</div>;
     }
     if (isLoading) {
         return <CircularProgress />;
@@ -83,9 +83,10 @@ const PracticingProfile: React.FC = () => {
             formData.append("MajorDoctors", JSON.stringify(data.majorDoctors));
             const service = new DoctorService<Doctor>();
             const response = await service.updateFormData(formData);
-            if (response.status === 201) {
+            if (response.status === 200) {
                 // eslint-disable-next-line no-console
                 console.log(response.data);
+                refreshPage();
             }
         } catch (e) {
             // eslint-disable-next-line no-console
@@ -103,6 +104,11 @@ const PracticingProfile: React.FC = () => {
         setOpenModal(true);
         data && setDoctorPracticing(data);
     };
+
+    const refreshPage = () => {
+        window.location.reload();
+    };
+
     const handleClose = (
         type: "SAVE" | "CANCEL",
         dataPracticing?: DoctorFromAdd,
@@ -119,6 +125,7 @@ const PracticingProfile: React.FC = () => {
         if (clearErrors) {
             clearErrors();
         }
+
         setOpenModal(false);
     };
     return (

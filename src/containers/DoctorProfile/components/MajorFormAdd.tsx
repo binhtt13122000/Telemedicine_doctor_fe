@@ -5,7 +5,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { DoctorFromAdd } from "../models/Doctor.model";
 import MultipleAutocomplete from "./MultipleAutocomplete";
 
-import { Button, Card, Grid, Modal, Typography } from "@mui/material";
+import { Button, Card, Grid, Modal, TextField, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 
 export interface IMajorForm {
@@ -35,6 +35,7 @@ const MajorFormAdd: React.FC<IMajorForm> = (props: IMajorForm) => {
         setValue("placeOfCertificate", dataMajorAdd.placeOfCertificate);
         setValue("dateOfCertificate", dataMajorAdd.dateOfCertificate);
         setValue("scopeOfPractice", dataMajorAdd.scopeOfPractice);
+        // setValue("description", dataMajorAdd.description);
         setValue("isActive", dataMajorAdd.isActive);
     }, [dataMajorAdd, setValue]);
 
@@ -67,7 +68,7 @@ const MajorFormAdd: React.FC<IMajorForm> = (props: IMajorForm) => {
                     left: "50%",
                     transform: "translate(-50%, -50%)",
                     width: "50%",
-                    minWidth: 275,
+                    minWidth: 200,
                     mx: "auto",
                     p: 1,
                     m: 2,
@@ -79,6 +80,7 @@ const MajorFormAdd: React.FC<IMajorForm> = (props: IMajorForm) => {
                         Thông tin Chuyên ngành
                     </Typography>
                 </Box>
+
                 <Box
                     component="form"
                     sx={{
@@ -91,7 +93,7 @@ const MajorFormAdd: React.FC<IMajorForm> = (props: IMajorForm) => {
                 >
                     <Grid container columnSpacing={1}>
                         <Grid item xs={3}>
-                            <Typography variant="h6">Chuyên ngành:</Typography>
+                            <Typography component="div">Chuyên ngành:</Typography>
                         </Grid>
                         <Grid item xs={8}>
                             <MultipleAutocomplete
@@ -106,6 +108,19 @@ const MajorFormAdd: React.FC<IMajorForm> = (props: IMajorForm) => {
                                 {...majorDoctorsProps}
                                 changeValue={changeValueMajorDoctors}
                                 width="80%"
+                            />
+                        </Grid>
+                    </Grid>
+                    <Grid container>
+                        <Grid item xs={12} md={8} lg={8}>
+                            <TextField
+                                fullWidth
+                                id="major-description"
+                                label="Mô tả"
+                                variant="outlined"
+                                multiline
+                                rows={5}
+                                {...register("description")}
                             />
                         </Grid>
                     </Grid>
