@@ -93,7 +93,7 @@ const Profile: React.FC = () => {
     return (
         <React.Fragment>
             {account && <ProfileForm dataProfile={account} open={open} handleClose={handleClose} />}
-            <Card sx={{ minHeight: "100%", width: 450, borderRadius: 5, pl: 5 }}>
+            <Card sx={{ minHeight: "100%", maxWidth: 400, borderRadius: 5, pl: 5 }}>
                 <Box sx={{ display: "flex", justifyContent: "space-between" }}>
                     <Typography sx={{ mt: 3 }} variant="h6" component="div">
                         Thông tin bác sĩ
@@ -107,12 +107,8 @@ const Profile: React.FC = () => {
                     </Box>
                 </Box>
                 <Box sx={{ mt: 2 }} />
-                <Box>
-                    <Box
-                        sx={{
-                            ml: 15,
-                        }}
-                    >
+                <Box sx={{ px: 3, mx: 5 }}>
+                    <Box sx={{ mb: 1 }}>
                         <Avatar
                             sx={{ borderRadius: 10, width: 150, height: 150 }}
                             variant="square"
@@ -120,20 +116,17 @@ const Profile: React.FC = () => {
                             src={data?.avatar}
                         />
                     </Box>
-                    <Box
-                        sx={{
-                            ml: 17,
-                        }}
-                    >
+                    <Box sx={{ ml: 2 }}>
                         <Rating name="simple-controlled" disabled value={value} />
                     </Box>
                 </Box>
-                <Box sx={{ mt: 2 }} />
+
                 <Box
                     sx={{
                         alignItems: "left",
                         display: "flex",
                         flexDirection: "column",
+                        p: 2,
                     }}
                 >
                     <Stack direction="row" spacing={1}>

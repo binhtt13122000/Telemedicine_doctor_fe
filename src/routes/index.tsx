@@ -12,6 +12,8 @@ import DashboardVer2 from "src/containers/DashboardVer2";
 import DoctorForm from "src/containers/DoctorForm";
 import DoctorProfile from "src/containers/DoctorProfile";
 import Guest from "src/containers/Guest";
+import HealthCheckPatient from "src/containers/HealthCheck";
+import HealthCheckDetailPatient from "src/containers/HealthCheck/component/HealthCheckDetail";
 import HealthCheckListing from "src/containers/HealthCheckList";
 import Layout from "src/containers/Layout";
 import Login from "src/containers/Login";
@@ -69,6 +71,16 @@ export const privateRoutes = [
         path: "/health-checks",
         name: "health-check",
         component: HealthCheckListing,
+    },
+    {
+        path: "/health",
+        name: "health",
+        component: HealthCheckPatient,
+    },
+    {
+        path: "/health-checks/:id",
+        name: "healthCheckDetail",
+        component: HealthCheckDetailPatient,
     },
 ];
 

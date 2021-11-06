@@ -12,14 +12,20 @@ export const routes = [
     },
     {
         id: 3,
-        name: "Lịch hẹn",
+        name: "Cuộc hẹn",
         path: "/schedule",
         icon: appointment,
     },
+    // {
+    //     id: 4,
+    //     name: "Lịch khám",
+    //     path: "/health-checks",
+    //     icon: healthCheck,
+    // },
     {
-        id: 3,
+        id: 4,
         name: "Lịch khám",
-        path: "/health-checks",
+        path: "/health",
         icon: healthCheck,
     },
     // {
@@ -29,7 +35,7 @@ export const routes = [
     //     icon: patient,
     // },
     {
-        id: 4,
+        id: 5,
         name: "Thông tin cá nhân",
         path: "/doctors",
         icon: user,

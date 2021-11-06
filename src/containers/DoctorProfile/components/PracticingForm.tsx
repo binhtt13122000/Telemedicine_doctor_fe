@@ -1,5 +1,6 @@
 import React from "react";
 
+import moment from "moment";
 import { SubmitHandler, useForm } from "react-hook-form";
 
 import logo from "../../../assets/logo.png";
@@ -30,7 +31,8 @@ const Input = styled("input")({
 const PracticingForm: React.FC<IPracticingForm> = (props: IPracticingForm) => {
     const { dataPracticing } = props;
     // const [checked, setChecked] = useState<boolean>(dataPracticing.isActive);
-    const [date, setDate] = React.useState<Date | null>(new Date("2000-01-01T21:11:54"));
+    const [date, setDate] = React.useState<string | null>();
+    const [maxDate] = React.useState<Date>(new Date());
     const [imgLink, setImgLink] = React.useState<string>(logo);
     const [file, setFile] = React.useState<Blob>();
 
@@ -66,7 +68,8 @@ const PracticingForm: React.FC<IPracticingForm> = (props: IPracticingForm) => {
     };
 
     const handleChange = (newDate: Date | null) => {
-        setDate(newDate);
+        setDate(moment(newDate).format("YYYY/MM/DD"));
+        setValue("dateOfCertificate", moment(newDate).format("YYYY/MM/DD"));
     };
 
     return (
@@ -128,7 +131,8 @@ const PracticingForm: React.FC<IPracticingForm> = (props: IPracticingForm) => {
                             <LocalizationProvider dateAdapter={AdapterDateFns}>
                                 <DesktopDatePicker
                                     inputFormat="dd/MM/yyyy"
-                                    value={date}
+                                    value={date && Date.parse(date)}
+                                    maxDate={maxDate}
                                     onChange={handleChange}
                                     renderInput={(params) => (
                                         <TextField

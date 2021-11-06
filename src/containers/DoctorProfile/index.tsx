@@ -21,12 +21,15 @@ const DoctorProfile: React.FC = () => {
             >
                 <Container maxWidth="lg">
                     <Box sx={{ mt: 2 }} />
-                    <Grid container spacing={4}>
-                        <Grid item xs={12} md={5}>
+                    <Grid container spacing={2}>
+                        <Grid item xs={12} md={6} lg={4}>
                             <Profile />
                         </Grid>
-                        <Grid item xs={5} lg={7} md={4}>
-                            <CertificateCarousel />
+                        <Grid item xs={12} md={6} lg={4}>
+                            <MajorProfile />
+                        </Grid>
+                        <Grid item xs={12} md={6} lg={4}>
+                            <HospitalProfile />
                         </Grid>
                     </Grid>
                     <Box sx={{ mt: 2 }} />
@@ -34,14 +37,12 @@ const DoctorProfile: React.FC = () => {
                     <Box sx={{ mt: 2 }} />
 
                     <Grid container spacing={2}>
-                        <Grid item xs={7} md={4} lg={4}>
+                        <Grid item xs={12} md={6} lg={4}>
                             <PracticingProfile />
                         </Grid>
-                        <Grid item xs={7} md={4} lg={4}>
-                            <MajorProfile />
-                        </Grid>
-                        <Grid item xs={7} md={4} lg={4}>
-                            <HospitalProfile />
+
+                        <Grid item xs={12} md={8} lg={8}>
+                            <CertificateCarousel />
                         </Grid>
                     </Grid>
                     <Box sx={{ mt: 2 }} />
