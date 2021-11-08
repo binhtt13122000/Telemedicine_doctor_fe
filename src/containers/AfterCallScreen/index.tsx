@@ -1,6 +1,6 @@
 import { useHistory } from "react-router";
 
-import img from "../../../../assets/waiting-screen.png";
+import img from "../../assets/waiting-screen.png";
 
 import { Button, Grid, Typography } from "@mui/material";
 
