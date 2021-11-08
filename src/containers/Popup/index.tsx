@@ -128,7 +128,7 @@ const PrescriptionPopup: React.FC<IPrescriptionForm> = (props: IPrescriptionForm
                             <Stack direction="row" spacing={1}>
                                 <Typography variant="body1">Khám ngày: </Typography>
                                 <Typography variant="body1">
-                                    {props.healthCheck?.createdTime}
+                                    {moment(props.healthCheck?.createdTime).format("DD/MM/YYYY")}
                                 </Typography>
                             </Stack>
 
