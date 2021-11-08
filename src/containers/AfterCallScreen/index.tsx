@@ -1,8 +1,7 @@
 import { useHistory } from "react-router";
 
-import img from "../../../../assets/waiting-screen.png";
-
 import { Button, Grid, Typography } from "@mui/material";
+import img from "src/assets/waiting-screen.png";
 
 const AfterCallScreen: React.FC = () => {
     const history = useHistory();

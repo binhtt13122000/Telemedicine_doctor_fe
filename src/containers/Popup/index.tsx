@@ -32,7 +32,7 @@ const PrescriptionPopup: React.FC<IPrescriptionForm> = (props: IPrescriptionForm
     // const { prescription, healthCheck } = props;
     return (
         <React.Fragment>
-            <Dialog open={props.open} scroll="paper">
+            <Dialog open={props.open} scroll="paper" sx={{ zIndex: 4000 }}>
                 <DialogTitle>Đơn thuốc</DialogTitle>
                 <DialogContent>
                     <Paper elevation={0} variant="outlined" square />

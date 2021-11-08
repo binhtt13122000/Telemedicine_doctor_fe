@@ -45,6 +45,8 @@ const SnackbarProvider: React.FC = ({ children }) => {
             return;
         }
         setOpen(false);
+        // eslint-disable-next-line no-console
+        console.log(time);
         if (!open) {
             setAlert({});
         }
@@ -60,7 +62,7 @@ const SnackbarProvider: React.FC = ({ children }) => {
                 }}
                 open={open}
                 onClose={handleClose}
-                autoHideDuration={time}
+                autoHideDuration={30000}
                 {...snackbar}
             >
                 <AlertBase
