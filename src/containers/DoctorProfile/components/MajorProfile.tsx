@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 
+import useSnackbar from "src/components/Snackbar/useSnackbar";
+
 import useGetDoctor from "../hooks/useGetDoctor";
 import usePutMajor from "../hooks/usePutMajor";
 import { Account } from "../models/Account.model";
@@ -35,6 +37,7 @@ const MajorProfile: React.FC = () => {
     const [open, setOpen] = useState<boolean>(false);
     const [openAdd, setOpenAdd] = useState<boolean>(false);
     const [major] = useState<Major>(initCetification);
+    const showSnackbar = useSnackbar();
     if (isError) {
         return <div> Error</div>;
     }
@@ -59,7 +62,12 @@ const MajorProfile: React.FC = () => {
             if (response.status === 200) {
                 // eslint-disable-next-line no-console
                 console.log("formdata", response.data);
-                refreshPage();
+                showSnackbar({
+                    children: "Bạn đã đăng kí thành công, chờ xét duyệt",
+                    severity: "success",
+                    color: "success",
+                });
+                // refreshPage();
             }
         } catch (e) {
             // eslint-disable-next-line no-console

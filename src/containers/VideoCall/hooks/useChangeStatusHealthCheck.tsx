@@ -7,7 +7,7 @@ export interface IChangeStatus {
     reasonCancel: string;
     status: string;
 }
-const useChangeStatusHealthCheck = () => {
+const useChangeStatusHealthCheck = (leaveChannel: () => void) => {
     const result = useMutation<unknown, Error, IChangeStatus, unknown>(
         ["useChangeStatusHealthCheck"],
         async (variable) => {
@@ -18,7 +18,9 @@ const useChangeStatusHealthCheck = () => {
             return result.data;
         },
         {
-            onSuccess: () => {},
+            onSuccess: () => {
+                leaveChannel();
+            },
         }
     );
     return result;

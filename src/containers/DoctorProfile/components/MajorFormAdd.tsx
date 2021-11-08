@@ -39,11 +39,14 @@ const MajorFormAdd: React.FC<IMajorForm> = (props: IMajorForm) => {
         setValue("isActive", dataMajorAdd.isActive);
     }, [dataMajorAdd, setValue]);
 
-    const submitHandler: SubmitHandler<DoctorFromAdd> = (dataMajorAdd: DoctorFromAdd) => {
+    const submitHandler: SubmitHandler<DoctorFromAdd> = (dataMajorAdd: DoctorFromAdd, e) => {
         // eslint-disable-next-line no-console
         console.log(dataMajorAdd);
-        if (dataMajorAdd) {
-            props.handleClose("SAVE", dataMajorAdd, clearErrors);
+        if (e) {
+            e?.preventDefault();
+            if (dataMajorAdd) {
+                props.handleClose("SAVE", dataMajorAdd, clearErrors);
+            }
         }
     };
 

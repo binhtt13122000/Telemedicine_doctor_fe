@@ -156,6 +156,18 @@ export const VideoCall: React.FC<VideoCallProps> = (props: VideoCallProps) => {
 
     const client = useClient();
 
+    const leaveChannel = async () => {
+        await client.leave();
+        client.removeAllListeners();
+        if (props.tracks) {
+            props.tracks[0].close();
+            props.tracks[1].close();
+        }
+        props.setStart(false);
+        history.push("/after-call");
+        window.location.reload();
+    };
+
     const clickIcon = (type: "info" | "dashboard" | "invite") => {
         if (checkType.type !== type) {
             setCheckType({
@@ -213,10 +225,10 @@ export const VideoCall: React.FC<VideoCallProps> = (props: VideoCallProps) => {
             setValue(`prescriptions.${number}.drugId`, Number(value["id"]));
         }
     };
-    const { mutate: changeStatus } = useChangeStatusHealthCheck();
+    const { mutate: changeStatus } = useChangeStatusHealthCheck(leaveChannel);
 
     const endCall = () => {
-        leaveChannel();
+        // leaveChannel();
         changeStatus({
             id: props.healthCheck?.id || 0,
             reasonCancel: "",
@@ -267,18 +279,6 @@ export const VideoCall: React.FC<VideoCallProps> = (props: VideoCallProps) => {
                 });
             }
         }
-    };
-
-    const leaveChannel = async () => {
-        await client.leave();
-        client.removeAllListeners();
-        if (props.tracks) {
-            props.tracks[0].close();
-            props.tracks[1].close();
-        }
-        props.setStart(false);
-        history.replace("/after-call");
-        window.location.reload();
     };
 
     const info = () => {
