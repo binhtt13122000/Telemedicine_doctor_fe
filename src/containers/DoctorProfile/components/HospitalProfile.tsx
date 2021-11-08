@@ -13,9 +13,7 @@ import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import {
     Button,
     Card,
-    Chip,
     CircularProgress,
-    Icon,
     IconButton,
     List,
     ListItem,
@@ -40,7 +38,7 @@ const HospitalProfile: React.FC = () => {
     const { mutate } = usePutHospital();
     const [open, setOpen] = useState<boolean>(false);
     const [openAdd, setOpenAdd] = useState<boolean>(false);
-    const [hospital, setHospital] = useState<Hospital>(initHospital);
+    const [hospital] = useState<Hospital>(initHospital);
     if (isError) {
         return <div> Error</div>;
     }
@@ -120,10 +118,10 @@ const HospitalProfile: React.FC = () => {
         }
         setOpenAdd(false);
     };
-    const handleOpen = async (hos: Hospital) => {
-        setOpen(true);
-        setHospital(hos);
-    };
+    // const handleOpen = async (hos: Hospital) => {
+    //     setOpen(true);
+    //     setHospital(hos);
+    // };
     const handleCreate = () => {
         setOpenAdd(true);
     };
@@ -153,7 +151,7 @@ const HospitalProfile: React.FC = () => {
                             bgcolor: "background.paper",
                             position: "relative",
                             overflow: "auto",
-                            maxHeight: 300,
+                            maxHeight: 350,
                             "& ul": { padding: 0 },
                         }}
                     >
@@ -198,7 +196,7 @@ const HospitalProfile: React.FC = () => {
                                                 </Typography>
 
                                                 <Box sx={{ mt: 1 }} />
-                                                <Typography variant="body2" component="h5">
+                                                {/* <Typography variant="body2" component="h5">
                                                     Tình trạng:{" "}
                                                     {item?.isWorking ? (
                                                         <Chip
@@ -213,20 +211,18 @@ const HospitalProfile: React.FC = () => {
                                                             color="error"
                                                         />
                                                     )}
-                                                </Typography>
+                                                </Typography> */}
                                             </Box>
-                                            <Box sx={{ display: "flex" }}>
+                                            {/* <Box sx={{ display: "flex" }}>
                                                 <Typography variant="h6" component="h5">
-                                                    {/* <IconButton>
-                                                <Icon color="error">delete</Icon>
-                                            </IconButton> */}
+
                                                     <IconButton
                                                         onClick={() => handleOpen(item?.hospital)}
                                                     >
                                                         <Icon>edit</Icon>
                                                     </IconButton>
                                                 </Typography>
-                                            </Box>
+                                            </Box> */}
                                         </Box>
                                     </ListItem>
                                 ))}

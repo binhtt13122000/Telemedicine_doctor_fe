@@ -14,7 +14,6 @@ import {
     Button,
     Card,
     CircularProgress,
-    Icon,
     IconButton,
     List,
     ListItem,
@@ -35,7 +34,7 @@ const MajorProfile: React.FC = () => {
     const { mutate } = usePutMajor();
     const [open, setOpen] = useState<boolean>(false);
     const [openAdd, setOpenAdd] = useState<boolean>(false);
-    const [major, setMajor] = useState<Major>(initCetification);
+    const [major] = useState<Major>(initCetification);
     if (isError) {
         return <div> Error</div>;
     }
@@ -95,10 +94,10 @@ const MajorProfile: React.FC = () => {
         setOpen(false);
     };
 
-    const handleOpen = async (maj: Major) => {
-        setOpen(true);
-        setMajor(maj);
-    };
+    // const handleOpen = async (maj: Major) => {
+    //     setOpen(true);
+    //     setMajor(maj);
+    // };
     // Edit major
     //Add major
     const handleCreate = () => {
@@ -151,7 +150,7 @@ const MajorProfile: React.FC = () => {
                             bgcolor: "background.paper",
                             position: "relative",
                             overflow: "auto",
-                            maxHeight: 300,
+                            maxHeight: 350,
                             "& ul": { padding: 0 },
                         }}
                     >
@@ -193,7 +192,7 @@ const MajorProfile: React.FC = () => {
                                                     {item?.major?.description}
                                                 </Typography>
                                             </Box>
-                                            <Box sx={{ display: "flex", ml: 4 }}>
+                                            {/* <Box sx={{ display: "flex", ml: 4 }}>
                                                 <Typography variant="h6" component="div">
                                                     <IconButton
                                                         onClick={() => handleOpen(item?.major)}
@@ -201,7 +200,7 @@ const MajorProfile: React.FC = () => {
                                                         <Icon>edit</Icon>
                                                     </IconButton>
                                                 </Typography>
-                                            </Box>
+                                            </Box> */}
                                         </Box>
                                     </ListItem>
                                 ))}
