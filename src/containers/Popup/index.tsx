@@ -75,7 +75,7 @@ const PrescriptionPopup: React.FC<IPrescriptionForm> = (props: IPrescriptionForm
                     <Box sx={{ mb: 2 }} />
                     <Divider />
                     <Box sx={{ mb: 2 }} />
-                    <Box sx={{ display: "block", mb: "8rem" }}>
+                    <Box sx={{ display: "block", mb: "6rem" }}>
                         {props.prescription.prescriptions.map((item, index) => (
                             <Card
                                 sx={{ color: "text.secondary", p: 1, mb: 1, width: "95%" }}
@@ -127,22 +127,14 @@ const PrescriptionPopup: React.FC<IPrescriptionForm> = (props: IPrescriptionForm
                         <Box sx={{ display: "block" }}>
                             <Stack direction="row" spacing={1}>
                                 <Typography variant="body1">Khám ngày: </Typography>
-                                <Typography variant="body1">04/11/2021</Typography>
+                                <Typography variant="body1">
+                                    {moment(props.healthCheck?.createdTime).format("DD/MM/YYYY")}
+                                </Typography>
                             </Stack>
 
                             <Typography variant="body1">
                                 Lời dặn: {props.prescription.advice}
                             </Typography>
-                        </Box>
-                        <Box sx={{ display: "block" }}>
-                            <Stack direction="row" spacing={1}>
-                                <Typography variant="body1">Ngày 02 tháng 5 năm 2021</Typography>
-                            </Stack>
-                            <Box sx={{ display: "block", mt: 2 }}>
-                                <Typography variant="body1">
-                                    Bác sĩ tư vấn: Lê Trọng Nhân
-                                </Typography>
-                            </Box>
                         </Box>
                     </Box>
                     <Paper />

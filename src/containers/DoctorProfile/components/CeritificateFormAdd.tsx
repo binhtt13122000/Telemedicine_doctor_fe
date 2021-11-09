@@ -2,10 +2,9 @@ import * as React from "react";
 
 import { SubmitHandler, useForm } from "react-hook-form";
 
-import CustomizeAutocomplete from "src/components/CustomizeAutocomplete";
-
 import logo from "../../../assets/logo.png";
 import { CetificationAdd } from "../models/Doctor.model";
+import CustomizeAutocompleteActive from "./CustomizeAutocompleteActive";
 
 import { PhotoCamera } from "@mui/icons-material";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
@@ -123,7 +122,7 @@ const CertificationFormAdd: React.FC<ICertificationForm> = (props: ICertificatio
                             },
                         }}
                     >
-                        <CustomizeAutocomplete
+                        <CustomizeAutocompleteActive
                             query="/certifications"
                             field="name"
                             label="Nhóm chứng chỉ"

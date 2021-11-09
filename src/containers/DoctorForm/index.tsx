@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useHistory } from "react-router";
 
-import MultipleAutocomplete from "./components/MultipleAutocomplete";
+import MultipleAutocompleteActive from "../DoctorProfile/components/MultipleAutocompleteActive";
 import useSnackbar from "src/components/Snackbar/useSnackbar";
 
 import defaultImg from "../../assets/default-image.png";
@@ -158,7 +158,7 @@ const DoctorForm: React.FC = () => {
                         <Typography sx={{ fontSize: 20 }}>Nơi công tác *</Typography>
                     </Grid>
                     <Grid item xs={9}>
-                        <MultipleAutocomplete
+                        <MultipleAutocompleteActive
                             id="hospitals-selection"
                             query="/hospitals"
                             field="name"
@@ -176,7 +176,7 @@ const DoctorForm: React.FC = () => {
                         <Typography sx={{ fontSize: 20 }}>Chuyên ngành *</Typography>
                     </Grid>
                     <Grid item xs={9}>
-                        <MultipleAutocomplete
+                        <MultipleAutocompleteActive
                             id="majors-selection"
                             query="/majors"
                             field="name"

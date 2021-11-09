@@ -131,7 +131,7 @@ const Profile: React.FC = () => {
                 >
                     <Stack direction="row" spacing={1}>
                         <Typography variant="subtitle1" component="div">
-                            {data?.isMale ? "Bà" : "Ông"}{" "}
+                            {data?.isMale ? "Ông" : "Bà"}{" "}
                             {`${data?.firstName}
                         ${data?.lastName}`}
                         </Typography>

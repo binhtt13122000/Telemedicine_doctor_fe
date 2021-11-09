@@ -3,7 +3,7 @@ import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 
 import { DoctorFromAdd } from "../models/Doctor.model";
-import MultipleAutocomplete from "./MultipleAutocomplete";
+import MultipleAutocompleteActive from "./MultipleAutocompleteActive";
 
 // import { Hospital } from "../models/Hospital.model";
 import { Button, Card, Grid, Modal, TextField, Typography } from "@mui/material";
@@ -96,7 +96,7 @@ const HospitalFormAdd: React.FC<IHospitalForm> = (props: IHospitalForm) => {
                             <Typography component="div">Nơi công tác:</Typography>
                         </Grid>
                         <Grid item xs={8}>
-                            <MultipleAutocomplete
+                            <MultipleAutocompleteActive
                                 id="hospitals-selection"
                                 query="/hospitals"
                                 field="name"
